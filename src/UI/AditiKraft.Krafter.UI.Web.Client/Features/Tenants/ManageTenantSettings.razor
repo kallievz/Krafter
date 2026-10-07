@@ -1,0 +1,74 @@
+@using AditiKraft.Krafter.UI.Web.Client.Common.Models
+
+<RadzenStack Gap="0.75rem">
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+        <RadzenText TextStyle="TextStyle.Subtitle1">Settings for @TenantInput?.Name</RadzenText>
+        <RadzenButton Size="ButtonSize.Small" Icon="add" Text="Add Setting" Click="@BeginAddAsync" />
+    </RadzenStack>
+
+    <RadzenDataGrid Data="@_settings" TItem="TenantSettingDto" IsLoading="@_isLoading" AllowPaging="true" PageSize="10"
+                    AllowSorting="true" AllowFiltering="true" Responsive="true">
+        <Columns>
+            <RadzenDataGridColumn Property="Key" Title="Key" />
+            <RadzenDataGridColumn Property="Value" Title="Value" />
+            <RadzenDataGridColumn Property="IsSensitive" Title="Sensitive" />
+            <RadzenDataGridColumn Title="Actions" Filterable="false" Sortable="false" Width="120px">
+                <Template Context="data">
+                    <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Icon="edit"
+                                  Text="Edit" Click="@(() => BeginEditAsync(data))" />
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+
+    @if (_isEditing)
+    {
+        <RadzenTemplateForm TItem="UpsertTenantSettingRequest" Data="@_request" Submit="@SubmitAsync">
+            <FluentValidationValidator Options="@(options => options.IncludeAllRuleSets())" />
+
+            <RadzenStack Gap="0.5rem" Orientation="Orientation.Vertical">
+                <RadzenRow AlignItems="AlignItems.Center">
+                    <RadzenColumn Size="12" SizeMD="3">
+                        <RadzenLabel Text="Key" Component="Key" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="12" SizeMD="9">
+                        <RadzenTextBox Name="Key" Style="width: 100%" @bind-Value="_request.Key" />
+                    </RadzenColumn>
+                    <ValidationMessage For="@(() => _request.Key)" />
+                </RadzenRow>
+
+                <RadzenRow AlignItems="AlignItems.Center">
+                    <RadzenColumn Size="12" SizeMD="3">
+                        <RadzenLabel Text="Value" Component="Value" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="12" SizeMD="9">
+                        <RadzenTextArea Name="Value" Style="width: 100%" Rows="3" @bind-Value="_request.Value" />
+                    </RadzenColumn>
+                    <ValidationMessage For="@(() => _request.Value)" />
+                </RadzenRow>
+
+                <RadzenRow AlignItems="AlignItems.Center">
+                    <RadzenColumn Size="12" SizeMD="3">
+                        <RadzenLabel Text="Sensitive" Component="IsSensitive" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="12" SizeMD="9">
+                        <RadzenCheckBox Name="IsSensitive" @bind-Value="_request.IsSensitive" />
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenStack>
+
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.5rem">
+                <RadzenButton ButtonType="ButtonType.Submit" IsBusy="_isBusy" Icon="save" Text="Save" Size="ButtonSize.Small" />
+                <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Icon="cancel" Text="Cancel"
+                              Size="ButtonSize.Small" Click="@CancelEditAsync" />
+            </RadzenStack>
+        </RadzenTemplateForm>
+    }
+
+    @if (ShowCloseButton)
+    {
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+            <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Icon="close" Text="Close" Click="@CloseAsync" />
+        </RadzenStack>
+    }
+</RadzenStack>

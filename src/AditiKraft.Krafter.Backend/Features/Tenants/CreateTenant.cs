@@ -1,9 +1,11 @@
 using AditiKraft.Krafter.Backend.Common.Auth;
 using AditiKraft.Krafter.Backend.Common.Tenants;
 using AditiKraft.Krafter.Backend.Features.Tenants.Common;
+using AditiKraft.Krafter.Backend.Infrastructure.Notifications;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
 using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Backend.Web.Authorization;
+using AditiKraft.Krafter.Backend.Web.Configuration;
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Auth.Permissions;
 using AditiKraft.Krafter.Contracts.Common.Enums;
@@ -13,6 +15,7 @@ using FluentValidation.Results;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Npgsql;
 
 namespace AditiKraft.Krafter.Backend.Features.Tenants;
@@ -23,11 +26,13 @@ public sealed class CreateTenant
         TenantDbContext dbContext,
         IServiceProvider serviceProvider,
         ICurrentUser currentUser,
-        AppUrls urls) : IScopedHandler
+        AppUrls urls,
+        IOptions<SecuritySettings> securitySettings,
+        SMTPEmailSettings smtpEmailSettings) : IScopedHandler
     {
         public async Task<Response> CreateAsync(CreateOrUpdateTenantRequest request, CancellationToken cancellationToken)
         {
-            if (TenantSettings.TenancyMode == TenancyMode.Single)
+            if (AditiKraft.Krafter.Contracts.Common.TenantSettings.TenancyMode == TenancyMode.Single)
             {
                 return Response.BadRequest("Tenant creation is not allowed in single-tenant mode.");
             }
@@ -58,6 +63,7 @@ public sealed class CreateTenant
             entity.CreatedById = currentUser.GetUserId();
 
             dbContext.Tenants.Add(entity);
+            dbContext.TenantSettings.AddRange(CreateDefaultSettings(entity.Id!, securitySettings.Value, smtpEmailSettings));
             try
             {
                 await dbContext.SaveChangesAsync(cancellationToken);
@@ -79,6 +85,109 @@ public sealed class CreateTenant
             await seedService.SeedBasicDataAsync(new SeedDataRequest());
 
             return new Response();
+        }
+
+        private static List<TenantSetting> CreateDefaultSettings(
+            string tenantId,
+            SecuritySettings securitySettings,
+            SMTPEmailSettings smtpEmailSettings)
+        {
+            return
+            [
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
+                    Key = TenantSettingKeys.SecurityPasswordReusePreventionWindowInDays,
+                    Value = securitySettings.PasswordReusePreventionWindowInDays.ToString()
+                },
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
+                    Key = TenantSettingKeys.SecurityPasswordExpiryInDays,
+                    Value = securitySettings.PasswordExpiryInDays.ToString()
+                },
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
+                    Key = TenantSettingKeys.SecurityPasswordExpiryNotificationCooldownInDays,
+                    Value = securitySettings.PasswordExpiryNotificationCooldownInDays.ToString()
+                },
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
+                    Key = TenantSettingKeys.NotificationsProvider,
+                    Value = "smtp"
+                },
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
+                    Key = TenantSettingKeys.NotificationsSmtpHost,
+                    Value = smtpEmailSettings.Host
+                },
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
+                    Key = TenantSettingKeys.NotificationsSmtpPort,
+                    Value = smtpEmailSettings.Port.ToString()
+                },
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
+                    Key = TenantSettingKeys.NotificationsSmtpUserName,
+                    Value = smtpEmailSettings.UserName
+                },
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
+                    Key = TenantSettingKeys.NotificationsSmtpPassword,
+                    Value = smtpEmailSettings.Password,
+                    IsSensitive = true
+                },
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
+                    Key = TenantSettingKeys.NotificationsSmtpSenderEmail,
+                    Value = smtpEmailSettings.SenderEmail
+                },
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
+                    Key = TenantSettingKeys.NotificationsSmtpSenderName,
+                    Value = smtpEmailSettings.SenderName
+                },
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
+                    Key = TenantSettingKeys.NotificationsSendGridApiKey,
+                    Value = string.Empty,
+                    IsSensitive = true
+                },
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
+                    Key = TenantSettingKeys.NotificationsSendGridSenderEmail,
+                    Value = string.Empty
+                },
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
+                    Key = TenantSettingKeys.NotificationsSendGridSenderName,
+                    Value = string.Empty
+                }
+            ];
         }
     }
 

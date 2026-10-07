@@ -66,6 +66,27 @@ public partial class Tenants(
         }
     }
 
+    private async Task ManageSettingsAsync(TenantDto tenant)
+    {
+        _ = await dialogService.OpenAsync<ManageTenantSettings>($"Tenant Settings - {tenant.Name}",
+            new Dictionary<string, object?>
+            {
+                { "TenantInput", tenant },
+                { "ShowCloseButton", true }
+            },
+            new DialogOptions { Width = "65vw", Resizable = true, Draggable = true, Top = "5vh" });
+    }
+
+    private void NavigateToSettingsPage(TenantDto tenant)
+    {
+        if (string.IsNullOrWhiteSpace(tenant.Id))
+        {
+            return;
+        }
+
+        navigationManager.NavigateTo($"/{ApiRoutes.Tenants}/{tenant.Id}/settings");
+    }
+
     private async Task DeleteAsync(TenantDto input)
     {
         bool? confirmed = await dialogService.Confirm(
@@ -110,6 +131,14 @@ public partial class Tenants(
         else if (item is { Value: PermissionAction.Delete })
         {
             await DeleteAsync(data);
+        }
+        else if (item is { Value: "settings" })
+        {
+            await ManageSettingsAsync(data);
+        }
+        else if (item is { Value: "settings-page" })
+        {
+            NavigateToSettingsPage(data);
         }
     }
 }

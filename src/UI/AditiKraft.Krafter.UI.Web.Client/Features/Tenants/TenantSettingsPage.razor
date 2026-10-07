@@ -1,0 +1,25 @@
+@using AditiKraft.Krafter.UI.Web.Client.Common.Permissions
+@attribute [Route(RoutePath)]
+@attribute [MustHavePermission(PermissionAction.View, PermissionResource.Tenants)]
+
+<PageTitle>Tenant Settings</PageTitle>
+
+@if (_isLoading)
+{
+    <RadzenProgressBarCircular Mode="ProgressBarMode.Indeterminate" />
+}
+else if (_tenant is null)
+{
+    <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false">Tenant not found.</RadzenAlert>
+}
+else
+{
+    <RadzenStack Gap="0.75rem" class="rz-p-2">
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+            <RadzenText TextStyle="TextStyle.H6">Tenant Settings - @_tenant.Name</RadzenText>
+            <RadzenButton Size="ButtonSize.Small" Icon="arrow_back" Text="Back to tenants" Click="BackAsync" />
+        </RadzenStack>
+
+        <ManageTenantSettings TenantInput="_tenant" ShowCloseButton="false" />
+    </RadzenStack>
+}

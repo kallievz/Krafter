@@ -5,13 +5,16 @@ using AditiKraft.Krafter.Backend.Features.Tenants;
 using AditiKraft.Krafter.Backend.Features.Tenants.Common;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Jobs;
+using AditiKraft.Krafter.Backend.Infrastructure.Notifications;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
+using AditiKraft.Krafter.Backend.Web.Configuration;
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Npgsql;
 
 namespace AditiKraft.Krafter.Tests.Tenants;
@@ -60,7 +63,13 @@ public sealed class TenantCreationTests
             IsActive = true,
             ValidUpto = new DateTime(2030, 6, 15, 18, 15, 0, DateTimeKind.Utc)
         };
-        var create = new CreateTenant.Handler(db, provider, currentUser, _urls);
+        var create = new CreateTenant.Handler(
+            db,
+            provider,
+            currentUser,
+            _urls,
+            Options.Create(new SecuritySettings()),
+            new SMTPEmailSettings());
 
         DateTime before = DateTime.UtcNow;
         Response created = await create.CreateAsync(request, CancellationToken.None);
@@ -110,7 +119,13 @@ public sealed class TenantCreationTests
         await using TenantDbContext db = CreateDb();
         CreateOrUpdateTenantRequest request = ValidRequest(identifier);
         request.Id = "root";
-        var handler = new CreateTenant.Handler(db, null!, null!, _urls);
+        var handler = new CreateTenant.Handler(
+            db,
+            null!,
+            null!,
+            _urls,
+            Options.Create(new SecuritySettings()),
+            new SMTPEmailSettings());
 
         Response response = await handler.CreateAsync(request, CancellationToken.None);
 
@@ -136,7 +151,13 @@ public sealed class TenantCreationTests
         await using TenantDbContext db = CreateDb();
         db.Tenants.Add(ExistingTenant("existing", "Blue"));
         await db.SaveChangesAsync();
-        var handler = new CreateTenant.Handler(db, null!, null!, _urls);
+        var handler = new CreateTenant.Handler(
+            db,
+            null!,
+            null!,
+            _urls,
+            Options.Create(new SecuritySettings()),
+            new SMTPEmailSettings());
 
         Response response = await handler.CreateAsync(ValidRequest("blue"), CancellationToken.None);
 
@@ -220,7 +241,14 @@ public sealed class TenantCreationTests
 
         Response response = updating
             ? await new UpdateTenant.Handler(db, null!, _urls).UpdateAsync("edited", ValidRequest("blue"), CancellationToken.None)
-            : await new CreateTenant.Handler(db, null!, new CurrentUser(), _urls).CreateAsync(ValidRequest("blue"), CancellationToken.None);
+            : await new CreateTenant.Handler(
+                    db,
+                    null!,
+                    new CurrentUser(),
+                    _urls,
+                    Options.Create(new SecuritySettings()),
+                    new SMTPEmailSettings())
+                .CreateAsync(ValidRequest("blue"), CancellationToken.None);
 
         Assert.Equal(409, response.StatusCode);
         db.ChangeTracker.Clear();

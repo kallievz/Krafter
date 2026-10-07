@@ -73,6 +73,8 @@
                         <AuthorizeView
                             Policy="@(PermissionDefinition.NameFor(PermissionAction.Update, PermissionResource.Tenants))">
                             <RadzenSplitButtonItem Text="Edit" Value="@PermissionAction.Update" Icon="edit" />
+                            <RadzenSplitButtonItem Text="Settings" Value="settings" Icon="tune" />
+                            <RadzenSplitButtonItem Text="Settings Page" Value="settings-page" Icon="open_in_new" />
                         </AuthorizeView>
                         <AuthorizeView
                             Policy="@(PermissionDefinition.NameFor(PermissionAction.Delete, PermissionResource.Tenants))">

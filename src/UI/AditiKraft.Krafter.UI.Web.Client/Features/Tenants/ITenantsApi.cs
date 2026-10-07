@@ -21,6 +21,14 @@ public interface ITenantsApi
     public Task<Response> DeleteTenantAsync(string id,
         CancellationToken cancellationToken = default);
 
+    [Get("/api/tenants/{id}/settings")]
+    public Task<Response<List<TenantSettingDto>>> GetTenantSettingsAsync(string id,
+        CancellationToken cancellationToken = default);
+
+    [Post("/api/tenants/{id}/settings")]
+    public Task<Response> UpsertTenantSettingAsync(string id, [Body] UpsertTenantSettingRequest request,
+        CancellationToken cancellationToken = default);
+
     [Post("/api/tenants/seed-data")]
     public Task<Response> SeedDataAsync([Body] SeedDataRequest request, CancellationToken cancellationToken = default);
 }

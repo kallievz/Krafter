@@ -1,3 +1,4 @@
+using TickerQ.Dashboard.DependencyInjection;
 using TickerQ.DependencyInjection;
 using TickerQ.EntityFrameworkCore.Customizer;
 using TickerQ.EntityFrameworkCore.DependencyInjection;
@@ -15,6 +16,8 @@ public static class JobsConfiguration
             {
                 store.UseApplicationDbContext<BackgroundJobsContext>(ConfigurationType.IgnoreModelCustomizer);
             });
+
+            ServiceExtensions.AddDashboard(options, dashboard => dashboard.SetBasePath("tickerq"));
         });
 
         return services;

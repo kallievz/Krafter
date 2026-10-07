@@ -180,6 +180,10 @@ public sealed class TenantEditorTests
         public Task<Response<PaginationResponse<TenantDto>>> GetTenantsAsync(GetRequestInput request, CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
         public Task<Response> DeleteTenantAsync(string id, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+        public Task<Response<List<TenantSettingDto>>> GetTenantSettingsAsync(string id, CancellationToken cancellationToken = default) =>
+            throw new NotSupportedException();
+        public Task<Response> UpsertTenantSettingAsync(string id, UpsertTenantSettingRequest request, CancellationToken cancellationToken = default) =>
+            throw new NotSupportedException();
         public Task<Response> SeedDataAsync(SeedDataRequest request, CancellationToken cancellationToken = default) => throw new NotSupportedException();
     }
 }

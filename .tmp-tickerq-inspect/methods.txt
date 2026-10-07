@@ -1,0 +1,2 @@
+TickerQ.Dashboard.DependencyInjection.ServiceExtensions.AddDashboard( tickerConfiguration, System.Action`1[[TickerQ.Dashboard.DashboardOptionsBuilder, TickerQ.Dashboard, Version=10.4.0.0, Culture=neutral, PublicKeyToken=null]] configureDashboard)
+TickerQ.Dashboard.Endpoints.DashboardEndpoints.MapDashboardEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder endpoints, TickerQ.Dashboard.DashboardOptionsBuilder config)

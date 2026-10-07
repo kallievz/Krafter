@@ -1,6 +1,3 @@
-using System.Net;
-using System.Net.Mail;
-
 namespace AditiKraft.Krafter.Backend.Infrastructure.Notifications;
 
 public static class NotificationsConfiguration
@@ -13,16 +10,6 @@ public static class NotificationsConfiguration
                                          ?? throw new InvalidOperationException("SMTP settings must be configured");
 
         services.AddSingleton(smtpSettings);
-
-        services.AddSingleton(sp =>
-        {
-            SMTPEmailSettings settings = sp.GetRequiredService<SMTPEmailSettings>();
-            return new SmtpClient(settings.Host, settings.Port)
-            {
-                Credentials = new NetworkCredential(settings.UserName, settings.Password),
-                EnableSsl = true
-            };
-        });
 
         services.AddScoped<IEmailService, EmailService>();
 

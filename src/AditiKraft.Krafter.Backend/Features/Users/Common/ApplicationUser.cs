@@ -12,6 +12,8 @@ public class ApplicationUser : IdentityUser<string>, ICommonAuthEntityProperty
     public string? CreatedById { get; set; }
     public DateTime? UpdatedOn { get; set; }
     public string? UpdatedById { get; set; }
+    public DateTime? LastPasswordChangedOn { get; set; }
+    public DateTime? LastPasswordExpiryNotificationOn { get; set; }
 
     [PersonalData] public string? Name { get; set; }
 
@@ -24,6 +26,7 @@ public class ApplicationUser : IdentityUser<string>, ICommonAuthEntityProperty
     #region Navigation Properties
 
     public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } = new HashSet<ApplicationUserRole>();
+    public virtual ICollection<PasswordHistory> PasswordHistories { get; set; } = new HashSet<PasswordHistory>();
 
     #endregion Navigation Properties
 

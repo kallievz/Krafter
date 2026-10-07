@@ -43,6 +43,16 @@ public class MenuService
                     Icon = "admin_panel_settings",
                     Tags = new[] { "roles", "permissions", "access control", "user groups" },
                     Permission = PermissionDefinition.NameFor(PermissionAction.View, PermissionResource.Roles)
+                },
+                new Menu
+                {
+                    Name = "Jobs Dashboard",
+                    Path = "jobs-dashboard",
+                    Title = "TickerQ Jobs Dashboard",
+                    Description = "View and monitor background jobs in the TickerQ dashboard.",
+                    Icon = "monitor_heart",
+                    Tags = new[] { "jobs", "tickerq", "dashboard", "background processing" },
+                    Permission = PermissionDefinition.NameFor(PermissionAction.View, PermissionResource.Notifications)
                 }
             }
         },

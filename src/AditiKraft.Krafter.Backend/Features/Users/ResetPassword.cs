@@ -10,9 +10,11 @@ namespace AditiKraft.Krafter.Backend.Features.Users;
 
 public sealed class ResetPassword
 {
-    internal sealed class Handler(UserManager<ApplicationUser> userManager) : IScopedHandler
+    internal sealed class Handler(
+        UserManager<ApplicationUser> userManager,
+        IPasswordPolicyService passwordPolicyService) : IScopedHandler
     {
-        public async Task<Response> ResetPasswordAsync(ResetPasswordRequest request)
+        public async Task<Response> ResetPasswordAsync(ResetPasswordRequest request, CancellationToken cancellationToken)
         {
             ApplicationUser? user = await userManager.FindByEmailAsync(request.Email?.Normalize()!);
             if (user is null)
@@ -22,6 +24,16 @@ public sealed class ResetPassword
                     Message = "If the email is registered, you will receive a password reset link.",
                     StatusCode = 200,
                     IsError = false
+                };
+            }
+
+            if (await passwordPolicyService.IsPasswordReusedWithinWindowAsync(user, request.Password!, cancellationToken))
+            {
+                return new Response
+                {
+                    Message = "You cannot reuse a recently used password.",
+                    StatusCode = 400,
+                    IsError = true
                 };
             }
 
@@ -36,6 +48,7 @@ public sealed class ResetPassword
                 };
             }
 
+            await passwordPolicyService.RecordPasswordChangeAsync(user, cancellationToken);
             return new Response();
         }
     }
@@ -49,9 +62,10 @@ public sealed class ResetPassword
 
             userGroup.MapPost($"/{RouteSegment.ResetPassword}", async (
                     [FromBody] ResetPasswordRequest request,
-                    [FromServices] Handler handler) =>
+                    [FromServices] Handler handler,
+                    CancellationToken cancellationToken) =>
                 {
-                    Response res = await handler.ResetPasswordAsync(request);
+                    Response res = await handler.ResetPasswordAsync(request, cancellationToken);
                     return Results.Json(res, statusCode: res.StatusCode);
                 })
                 .Produces<Response>();

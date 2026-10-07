@@ -1,5 +1,8 @@
+using AditiKraft.Krafter.Backend.Common.Tenants;
 using AditiKraft.Krafter.Backend.Features.Auth.Common;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
+using AditiKraft.Krafter.Backend.Infrastructure.Jobs;
+using AditiKraft.Krafter.Backend.Infrastructure.Notifications;
 using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Backend.Web.Configuration;
 using AditiKraft.Krafter.Contracts.Common;
@@ -16,6 +19,9 @@ public sealed class Login
     internal sealed class Handler(
         UserManager<ApplicationUser> userManager,
         ITokenService tokenService,
+        ITenantGetterService tenantGetterService,
+        IPasswordPolicyService passwordPolicyService,
+        IJobService jobService,
         IOptions<SecuritySettings> securitySettings
     ) : IScopedHandler
     {
@@ -23,7 +29,7 @@ public sealed class Login
 
         public async Task<Response<TokenResponse>> LoginAsync(
             TokenRequest request, string ipAddress,
-            CancellationToken _)
+            CancellationToken cancellationToken)
         {
             ApplicationUser? user = await userManager.FindByEmailAsync(request.Email.Trim().Normalize());
             if (user is null)
@@ -44,6 +50,39 @@ public sealed class Login
             if (_securitySettings.RequireConfirmedAccount && !user.EmailConfirmed)
             {
                 return Response<TokenResponse>.BadRequest("E-Mail not confirmed.");
+            }
+
+            if (await passwordPolicyService.IsPasswordExpiredAsync(user, cancellationToken))
+            {
+                if (await passwordPolicyService.ShouldSendPasswordExpiryNotificationAsync(user, cancellationToken) &&
+                    !string.IsNullOrWhiteSpace(user.Email))
+                {
+                    string subject = "Password Expired";
+                    string userName = $"{user.FirstName} {user.LastName}";
+                    string htmlBody = $@"
+<html>
+<head>
+    <title>Password Expired</title>
+</head>
+<body>
+    <p>Hello {userName},</p>
+    <p>Your password has expired and must be reset before you can sign in.</p>
+    <p>Please use the <strong>Forgot Password</strong> option on the login page to set a new password.</p>
+    <p>Best regards,</p>
+    <p>{tenantGetterService.Tenant.Name} Team</p>
+</body>
+</html>";
+
+                    await jobService.EnqueueAsync(
+                        new SendEmailRequestInput { Email = user.Email, Subject = subject, HtmlMessage = htmlBody },
+                        nameof(Jobs.SendEmailJobAsync),
+                        cancellationToken);
+
+                    passwordPolicyService.MarkPasswordExpiryNotificationSent(user);
+                    _ = await userManager.UpdateAsync(user);
+                }
+
+                return Response<TokenResponse>.Forbidden("Password expired. Please reset your password.");
             }
 
             return Response<TokenResponse>.Success(await tokenService.GenerateTokensAndUpdateUser(user, ipAddress));

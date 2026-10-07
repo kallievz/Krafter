@@ -17,7 +17,7 @@ namespace AditiKraft.Krafter.Backend.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.0")
+                .HasAnnotation("ProductVersion", "10.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -104,8 +104,6 @@ namespace AditiKraft.Krafter.Backend.Migrations
                         .IsUnique();
 
                     b.ToTable("ApplicationRole", (string)null);
-
-                    b.HasAnnotation("SqlServer:IsTemporal", true);
                 });
 
             modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Roles.Common.ApplicationRoleClaim", b =>
@@ -162,8 +160,6 @@ namespace AditiKraft.Krafter.Backend.Migrations
                     b.HasIndex("UpdatedById");
 
                     b.ToTable("ApplicationRoleClaim", (string)null);
-
-                    b.HasAnnotation("SqlServer:IsTemporal", true);
                 });
 
             modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUser", b =>
@@ -212,6 +208,12 @@ namespace AditiKraft.Krafter.Backend.Migrations
 
                     b.Property<string>("LastName")
                         .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastPasswordChangedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("LastPasswordExpiryNotificationOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -279,8 +281,6 @@ namespace AditiKraft.Krafter.Backend.Migrations
                         .IsUnique();
 
                     b.ToTable("ApplicationUser", (string)null);
-
-                    b.HasAnnotation("SqlServer:IsTemporal", true);
                 });
 
             modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUserClaim", b =>
@@ -337,8 +337,6 @@ namespace AditiKraft.Krafter.Backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ApplicationUserClaim", (string)null);
-
-                    b.HasAnnotation("SqlServer:IsTemporal", true);
                 });
 
             modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUserLogin", b =>
@@ -406,8 +404,6 @@ namespace AditiKraft.Krafter.Backend.Migrations
                     b.HasIndex("UpdatedById");
 
                     b.ToTable("ApplicationUserRole", (string)null);
-
-                    b.HasAnnotation("SqlServer:IsTemporal", true);
                 });
 
             modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUserToken", b =>
@@ -427,6 +423,58 @@ namespace AditiKraft.Krafter.Backend.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Users.Common.PasswordHistory", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<string>("CreatedById")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("DeleteReason")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("UserId", "CreatedOn");
+
+                    b.ToTable("PasswordHistory", (string)null);
                 });
 
             modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Roles.Common.ApplicationRole", b =>
@@ -560,6 +608,31 @@ namespace AditiKraft.Krafter.Backend.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Users.Common.PasswordHistory", b =>
+                {
+                    b.HasOne("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUser", "User")
+                        .WithMany("PasswordHistories")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("UpdatedBy");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Roles.Common.ApplicationRole", b =>
                 {
                     b.Navigation("UserRoles");
@@ -567,6 +640,8 @@ namespace AditiKraft.Krafter.Backend.Migrations
 
             modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUser", b =>
                 {
+                    b.Navigation("PasswordHistories");
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

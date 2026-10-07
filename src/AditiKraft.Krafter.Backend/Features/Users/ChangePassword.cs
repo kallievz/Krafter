@@ -18,9 +18,10 @@ public sealed class ChangePassword
         UserManager<ApplicationUser> userManager,
         ICurrentUser currentUser,
         ITenantGetterService tenantGetterService,
-        IJobService jobService) : IScopedHandler
+        IJobService jobService,
+        IPasswordPolicyService passwordPolicyService) : IScopedHandler
     {
-        public async Task<Response> ChangePasswordAsync(ChangePasswordRequest request)
+        public async Task<Response> ChangePasswordAsync(ChangePasswordRequest request, CancellationToken cancellationToken)
         {
             ApplicationUser? user = await userManager.FindByIdAsync(currentUser.GetUserId());
             if (user is null)
@@ -28,11 +29,23 @@ public sealed class ChangePassword
                 return new Response { IsError = true, Message = "User Not Found", StatusCode = 404 };
             }
 
+            if (await passwordPolicyService.IsPasswordReusedWithinWindowAsync(user, request.NewPassword, cancellationToken))
+            {
+                return new Response
+                {
+                    IsError = true,
+                    Message = "You cannot reuse a recently used password.",
+                    StatusCode = 400
+                };
+            }
+
             IdentityResult result = await userManager.ChangePasswordAsync(user, request.Password, request.NewPassword);
             if (!result.Succeeded)
             {
                 return new Response { IsError = true, Message = "Current password is incorrect", StatusCode = 400 };
             }
+
+            await passwordPolicyService.RecordPasswordChangeAsync(user, cancellationToken);
 
             string emailSubject = "Password Changed";
             string userName = $"{user.FirstName} {user.LastName}";
@@ -57,7 +70,7 @@ public sealed class ChangePassword
                 await jobService.EnqueueAsync(
                     new SendEmailRequestInput { Email = user.Email, Subject = emailSubject, HtmlMessage = emailBody },
                     nameof(Jobs.SendEmailJobAsync),
-                    CancellationToken.None);
+                    cancellationToken);
             }
 
             return new Response();
@@ -73,9 +86,10 @@ public sealed class ChangePassword
 
             userGroup.MapPost($"/{RouteSegment.ChangePassword}", async (
                     [FromBody] ChangePasswordRequest request,
-                    [FromServices] Handler handler) =>
+                    [FromServices] Handler handler,
+                    CancellationToken cancellationToken) =>
                 {
-                    Response res = await handler.ChangePasswordAsync(request);
+                    Response res = await handler.ChangePasswordAsync(request, cancellationToken);
                     return Results.Json(res, statusCode: res.StatusCode);
                 })
                 .Produces<Response>()

@@ -22,6 +22,7 @@ public class ApplicationDbContext(
     public virtual DbSet<ApplicationUser> Users { get; set; }
 #pragma warning restore CS0108, CS0114
     public virtual DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
+    public virtual DbSet<PasswordHistory> PasswordHistories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -62,6 +63,11 @@ public class ApplicationDbContext(
                 .HasForeignKey(ur => ur.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            entity.HasMany(e => e.PasswordHistories)
+                .WithOne(e => e.User)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             entity.HasIndex(e => e.NormalizedEmail).IsUnique(false);
             entity.HasIndex(e => new { e.NormalizedEmail, e.TenantId }).IsUnique();
 
@@ -92,6 +98,17 @@ public class ApplicationDbContext(
 
             entity.Property(c => c.CreatedById).HasMaxLength(36);
             entity.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == tenantGetterService.Tenant.Id);
+        });
+
+        modelBuilder.Entity<PasswordHistory>(entity =>
+        {
+            entity.Property(c => c.Id).HasMaxLength(36);
+            entity.Property(c => c.CreatedById).HasMaxLength(36).IsRequired(false);
+            entity.Property(c => c.UserId).HasMaxLength(36);
+            entity.Property(c => c.PasswordHash).IsRequired();
+            entity.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == tenantGetterService.Tenant.Id);
+
+            entity.HasIndex(c => new { c.UserId, c.CreatedOn });
         });
 
         modelBuilder.Entity<ApplicationUserLogin>(entity =>

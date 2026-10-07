@@ -17,5 +17,6 @@ public class Tenant
     public string? CreatedById { get; set; }
 
     public string? TablesToCopy { get; set; }
+    public ICollection<TenantSetting> Settings { get; set; } = new List<TenantSetting>();
     //does sql server allow storing list of string in one column
 }

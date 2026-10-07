@@ -17,7 +17,7 @@ namespace AditiKraft.Krafter.Backend.Migrations.TenantDb
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.0")
+                .HasAnnotation("ProductVersion", "10.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -75,6 +75,160 @@ namespace AditiKraft.Krafter.Backend.Migrations.TenantDb
                             Name = "Default",
                             ValidUpto = new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999)
                         });
+                });
+
+            modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Tenants.Common.TenantSetting", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<bool>("IsSensitive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(4096)
+                        .HasColumnType("character varying(4096)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "Key")
+                        .IsUnique();
+
+                    b.ToTable("TenantSetting", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101001",
+                            IsSensitive = false,
+                            Key = "Security:Password:ReusePreventionWindowInDays",
+                            TenantId = "root",
+                            Value = "90"
+                        },
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101002",
+                            IsSensitive = false,
+                            Key = "Security:Password:ExpiryInDays",
+                            TenantId = "root",
+                            Value = "90"
+                        },
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101003",
+                            IsSensitive = false,
+                            Key = "Security:Password:ExpiryNotificationCooldownInDays",
+                            TenantId = "root",
+                            Value = "1"
+                        },
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101004",
+                            IsSensitive = false,
+                            Key = "Notifications:Provider",
+                            TenantId = "root",
+                            Value = "smtp"
+                        },
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101005",
+                            IsSensitive = false,
+                            Key = "Notifications:Smtp:Host",
+                            TenantId = "root",
+                            Value = ""
+                        },
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101006",
+                            IsSensitive = false,
+                            Key = "Notifications:Smtp:Port",
+                            TenantId = "root",
+                            Value = "587"
+                        },
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101007",
+                            IsSensitive = false,
+                            Key = "Notifications:Smtp:UserName",
+                            TenantId = "root",
+                            Value = ""
+                        },
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101008",
+                            IsSensitive = true,
+                            Key = "Notifications:Smtp:Password",
+                            TenantId = "root",
+                            Value = ""
+                        },
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101009",
+                            IsSensitive = false,
+                            Key = "Notifications:Smtp:SenderEmail",
+                            TenantId = "root",
+                            Value = ""
+                        },
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101010",
+                            IsSensitive = false,
+                            Key = "Notifications:Smtp:SenderName",
+                            TenantId = "root",
+                            Value = ""
+                        },
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101011",
+                            IsSensitive = true,
+                            Key = "Notifications:SendGrid:ApiKey",
+                            TenantId = "root",
+                            Value = ""
+                        },
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101012",
+                            IsSensitive = false,
+                            Key = "Notifications:SendGrid:SenderEmail",
+                            TenantId = "root",
+                            Value = ""
+                        },
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101013",
+                            IsSensitive = false,
+                            Key = "Notifications:SendGrid:SenderName",
+                            TenantId = "root",
+                            Value = ""
+                        });
+                });
+
+            modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Tenants.Common.TenantSetting", b =>
+                {
+                    b.HasOne("AditiKraft.Krafter.Backend.Features.Tenants.Common.Tenant", "Tenant")
+                        .WithMany("Settings")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Tenants.Common.Tenant", b =>
+                {
+                    b.Navigation("Settings");
                 });
 #pragma warning restore 612, 618
         }
