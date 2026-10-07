@@ -1,6 +1,4 @@
 using AditiKraft.Krafter.Contracts.Common;
-using AditiKraft.Krafter.Contracts.Common.Models;
-using AditiKraft.Krafter.Contracts.Contracts.Auth;
 
 namespace AditiKraft.Krafter.UI.Web.Infrastructure.Auth;
 
@@ -17,14 +15,14 @@ namespace AditiKraft.Krafter.UI.Web.Infrastructure.Auth;
 /// </summary>
 public class AuthCookieMiddleware(RequestDelegate next)
 {
-    private static readonly HashSet<string> AuthPaths = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly HashSet<string> _authPaths = new(StringComparer.OrdinalIgnoreCase)
     {
         $"/{ApiRoutes.ApiPrefix}/{ApiRoutes.Tokens}",
         $"/{ApiRoutes.ApiPrefix}/{ApiRoutes.Tokens}/{RouteSegment.Refresh}",
         $"/{ApiRoutes.ApiPrefix}/{ApiRoutes.ExternalAuth}/{RouteSegment.Google}"
     };
 
-    private static readonly System.Text.Json.JsonSerializerOptions JsonOptions = new()
+    private static readonly System.Text.Json.JsonSerializerOptions _jsonOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
@@ -54,7 +52,7 @@ public class AuthCookieMiddleware(RequestDelegate next)
                 try
                 {
                     Response<TokenResponse>? tokenResponse =
-                        await System.Text.Json.JsonSerializer.DeserializeAsync<Response<TokenResponse>>(buffer, JsonOptions);
+                        await System.Text.Json.JsonSerializer.DeserializeAsync<Response<TokenResponse>>(buffer, _jsonOptions);
 
                     if (tokenResponse is { Data: not null, IsError: false })
                     {
@@ -87,6 +85,6 @@ public class AuthCookieMiddleware(RequestDelegate next)
             return false;
         }
 
-        return AuthPaths.Contains(request.Path.Value ?? string.Empty);
+        return _authPaths.Contains(request.Path.Value ?? string.Empty);
     }
 }

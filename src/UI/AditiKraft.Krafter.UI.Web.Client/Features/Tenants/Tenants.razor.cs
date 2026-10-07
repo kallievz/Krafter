@@ -13,11 +13,10 @@ public partial class Tenants(
 ) : ComponentBase
 {
     public const string RoutePath = ApiRoutes.Tenants;
-    private RadzenDataGrid<TenantDto> grid = default!;
-    private bool IsLoading = true;
-    private GetRequestInput _requestInput = new();
+    private bool _isLoading = true;
+    private readonly GetRequestInput _requestInput = new();
 
-    private Response<PaginationResponse<TenantDto>>? response = new() { Data = new PaginationResponse<TenantDto>() };
+    private Response<PaginationResponse<TenantDto>>? _response = new() { Data = new PaginationResponse<TenantDto>() };
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,21 +33,21 @@ public partial class Tenants(
 
     private async Task GetListAsync(bool resetPaginationData = false)
     {
-        IsLoading = true;
+        _isLoading = true;
         if (resetPaginationData)
         {
             _requestInput.SkipCount = 0;
         }
 
-        response = await api.CallAsync(() => tenantsApi.GetTenantsAsync(_requestInput));
-        IsLoading = false;
+        _response = await api.CallAsync(() => tenantsApi.GetTenantsAsync(_requestInput));
+        _isLoading = false;
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task Add()
+    private async Task AddAsync()
     {
         object? result = await dialogService.OpenAsync<CreateOrUpdateTenant>($"Add New Tenant",
-            new Dictionary<string, object> { { "TenantInput", new TenantDto() } },
+            new Dictionary<string, object?> { { "TenantInput", new TenantDto() } },
             new DialogOptions { Width = "40vw", Resizable = true, Draggable = true, Top = "5vh" });
         if (result is true)
         {
@@ -56,10 +55,10 @@ public partial class Tenants(
         }
     }
 
-    private async Task Update(TenantDto tenant)
+    private async Task UpdateAsync(TenantDto tenant)
     {
         object? result = await dialogService.OpenAsync<CreateOrUpdateTenant>($"Update Tenant {tenant.Name}",
-            new Dictionary<string, object> { { "TenantInput", tenant } },
+            new Dictionary<string, object?> { { "TenantInput", tenant } },
             new DialogOptions { Width = "40vw", Resizable = true, Draggable = true, Top = "5vh" });
         if (result is true)
         {
@@ -67,7 +66,7 @@ public partial class Tenants(
         }
     }
 
-    private async Task Delete(TenantDto input)
+    private async Task DeleteAsync(TenantDto input)
     {
         bool? confirmed = await dialogService.Confirm(
             $"Are you sure you want to delete tenant '{input.Name}'?",
@@ -87,9 +86,9 @@ public partial class Tenants(
         }
     }
 
-    private async Task LoadData(LoadDataArgs args)
+    private async Task LoadDataAsync(LoadDataArgs args)
     {
-        IsLoading = true;
+        _isLoading = true;
         await Task.Yield();
         _requestInput.SkipCount = args.Skip ?? 0;
         _requestInput.MaxResultCount = args.Top ?? 10;
@@ -98,19 +97,19 @@ public partial class Tenants(
         await GetListAsync();
     }
 
-    private async Task ActionClicked(RadzenSplitButtonItem? item, TenantDto data)
+    private async Task ActionClickedAsync(RadzenSplitButtonItem? item, TenantDto data)
     {
         if (item is { Value: PermissionAction.Update })
         {
-            await Update(data);
+            await UpdateAsync(data);
         }
         else if (item is { Value: PermissionAction.Create })
         {
-            await Add();
+            await AddAsync();
         }
         else if (item is { Value: PermissionAction.Delete })
         {
-            await Delete(data);
+            await DeleteAsync(data);
         }
     }
 }

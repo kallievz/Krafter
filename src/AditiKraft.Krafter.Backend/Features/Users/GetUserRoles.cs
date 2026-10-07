@@ -1,6 +1,6 @@
-using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Backend.Features.Roles.Common;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
+using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Backend.Web.Authorization;
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Auth.Permissions;
@@ -28,26 +28,16 @@ public sealed class GetUserRoles
             }
 
             IList<string> userRoleNames = await userManager.GetRolesAsync(user);
-            List<ApplicationRole>? roles = await roleManager.Roles
+            List<UserRoleDto> userRoles = await roleManager.Roles.AsNoTracking()
                 .Where(c => c.Name != null && userRoleNames.Contains(c.Name))
-                .ToListAsync(cancellationToken);
-
-            if (roles is null || !roles.Any())
-            {
-                return new Response<List<UserRoleDto>> { Data = new List<UserRoleDto>() };
-            }
-
-            var userRoles = new List<UserRoleDto>();
-            foreach (ApplicationRole role in roles)
-            {
-                userRoles.Add(new UserRoleDto
+                .Select(role => new UserRoleDto
                 {
                     RoleId = role.Id,
                     RoleName = role.Name,
                     Description = role.Description,
-                    Enabled = await userManager.IsInRoleAsync(user, role.Name!)
-                });
-            }
+                    Enabled = true
+                })
+                .ToListAsync(cancellationToken);
 
             return new Response<List<UserRoleDto>> { Data = userRoles };
         }
@@ -74,6 +64,3 @@ public sealed class GetUserRoles
         }
     }
 }
-
-
-

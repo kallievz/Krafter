@@ -16,6 +16,3 @@ public class EmailService(SmtpClient smtpClient, SMTPEmailSettings smtpEmailSett
         await smtpClient.SendMailAsync(message);
     }
 }
-
-
-

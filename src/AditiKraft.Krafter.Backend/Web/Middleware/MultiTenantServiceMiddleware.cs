@@ -93,5 +93,4 @@ public class MultiTenantServiceMiddleware(
             (apiUri is not null && host.Equals(apiUri.Host, StringComparison.OrdinalIgnoreCase)) ||
             host.Equals(serverApiUri.Host, StringComparison.OrdinalIgnoreCase);
     }
-
 }

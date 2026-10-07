@@ -8,7 +8,7 @@
         <RadzenStack Orientation="Orientation.Vertical">
 
 
-            <RadzenSplitButton AlwaysOpenPopup="true" Click="@(args => SplitButtonClick(args))" Text="@context.User.GetFullName()" Icon="account_circle" Style="margin-right: 4px">
+            <RadzenSplitButton AlwaysOpenPopup="true" Click="@(args => SplitButtonClickAsync(args))" Text="@context.User.GetFullName()" Icon="account_circle" Style="margin-right: 4px">
                 <ChildContent>
                     <RadzenSplitButtonItem Text="Logout" Value="Logout" Icon="logout"/>
                     <RadzenSplitButtonItem Text="Change Password" Value="ChangePassword" Icon="account_balance_wallet"/>
@@ -34,6 +34,6 @@
 
     </Authorized>
     <NotAuthorized>
-        <RadzenButton Click="@(() => NavigateToLogin())" Text="Login" Style="margin-right: 4px"></RadzenButton>
+        <RadzenButton Click="@(() => NavigateToLoginAsync())" Text="Login" Style="margin-right: 4px"></RadzenButton>
     </NotAuthorized>
 </AuthorizeView>

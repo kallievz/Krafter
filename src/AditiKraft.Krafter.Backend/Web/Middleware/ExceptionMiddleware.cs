@@ -31,7 +31,7 @@ public class ExceptionMiddleware(ICurrentUser currentUser, ILogger<ExceptionMidd
             var res = new Response { IsError = true };
             string email = currentUser.GetUserEmail() is string userEmail ? userEmail : "Anonymous";
             string userId = currentUser.GetUserId();
-            string errorId = Guid.NewGuid().ToString();
+            string errorId = Guid.CreateVersion7().ToString();
             var errorResult = new ErrorResult { };
             if (exception is not AppException && exception.InnerException != null)
             {

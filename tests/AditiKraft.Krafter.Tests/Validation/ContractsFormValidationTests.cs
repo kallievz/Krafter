@@ -6,6 +6,7 @@ using AditiKraft.Krafter.UI.Web.Client.Features.Tenants;
 using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Services;
 using Blazored.FluentValidation;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Web.HtmlRendering;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,14 +23,15 @@ public sealed class ContractsFormValidationTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task RoleFormDiscoversSharedValidatorAndDisplaysFieldErrors(bool tooLong)
+    public async Task RoleFormDiscoversSharedValidatorAndDisplaysFieldErrorsAsync(bool tooLong)
     {
         await using var editor = new Editor();
         HtmlRootComponent root = await editor.RenderAsync<CreateOrUpdateRole>();
 
         await editor.RunAsync(async () =>
         {
-            CreateOrUpdateRoleRequest model = editor.Form<CreateOrUpdateRoleRequest>().Data;
+            CreateOrUpdateRoleRequest? model = editor.Form<CreateOrUpdateRoleRequest>().Data;
+            Assert.NotNull(model);
             model.Name = tooLong ? new string('n', 14) : "";
             model.Description = tooLong ? new string('d', 101) : "";
 
@@ -41,7 +43,9 @@ public sealed class ContractsFormValidationTests
             model.Name = "Editor";
             model.Description = "Can edit users";
             Assert.True(await editor.Validator.ValidateAsync());
-            Assert.Empty(editor.Form<CreateOrUpdateRoleRequest>().EditContext.GetValidationMessages());
+            EditContext? roleEditContext = editor.Form<CreateOrUpdateRoleRequest>().EditContext;
+            Assert.NotNull(roleEditContext);
+            Assert.Empty(roleEditContext.GetValidationMessages());
             Assert.DoesNotContain("validation-message", root.ToHtmlString());
         });
     }
@@ -49,14 +53,15 @@ public sealed class ContractsFormValidationTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task TenantFormDiscoversSharedValidatorAndDisplaysFieldErrors(bool tooLong)
+    public async Task TenantFormDiscoversSharedValidatorAndDisplaysFieldErrorsAsync(bool tooLong)
     {
         await using var editor = new Editor();
         HtmlRootComponent root = await editor.RenderAsync<CreateOrUpdateTenant>();
 
         await editor.RunAsync(async () =>
         {
-            CreateOrUpdateTenantRequest model = editor.Form<CreateOrUpdateTenantRequest>().Data;
+            CreateOrUpdateTenantRequest? model = editor.Form<CreateOrUpdateTenantRequest>().Data;
+            Assert.NotNull(model);
             model.Name = tooLong ? new string('n', 41) : "";
             model.Identifier = tooLong ? new string('i', 11) : "";
             model.AdminEmail = tooLong ? "invalid-email" : "";
@@ -77,7 +82,9 @@ public sealed class ContractsFormValidationTests
             model.IsActive = true;
             model.ValidUpto = new DateTime(2030, 1, 1);
             Assert.True(await editor.Validator.ValidateAsync());
-            Assert.Empty(editor.Form<CreateOrUpdateTenantRequest>().EditContext.GetValidationMessages());
+            EditContext? tenantEditContext = editor.Form<CreateOrUpdateTenantRequest>().EditContext;
+            Assert.NotNull(tenantEditContext);
+            Assert.Empty(tenantEditContext.GetValidationMessages());
             Assert.DoesNotContain("validation-message", root.ToHtmlString());
         });
     }
@@ -85,14 +92,15 @@ public sealed class ContractsFormValidationTests
     [Theory]
     [InlineData("krafter")]
     [InlineData("status")]
-    public async Task TenantFormUsesConfiguredReservedIdentifiers(string identifier)
+    public async Task TenantFormUsesConfiguredReservedIdentifiersAsync(string identifier)
     {
         await using var editor = new Editor();
         HtmlRootComponent root = await editor.RenderAsync<CreateOrUpdateTenant>();
 
         await editor.RunAsync(async () =>
         {
-            CreateOrUpdateTenantRequest model = editor.Form<CreateOrUpdateTenantRequest>().Data;
+            CreateOrUpdateTenantRequest? model = editor.Form<CreateOrUpdateTenantRequest>().Data;
+            Assert.NotNull(model);
             model.Name = "Example tenant";
             model.Identifier = identifier;
             model.AdminEmail = "admin@example.com";
@@ -109,9 +117,9 @@ public sealed class ContractsFormValidationTests
 
     private sealed class Editor : IAsyncDisposable
     {
-        private readonly ServiceProvider services;
-        private readonly CapturingActivator components;
-        private readonly HtmlRenderer renderer;
+        private readonly ServiceProvider _services;
+        private readonly CapturingActivator _components;
+        private readonly HtmlRenderer _renderer;
 
         public Editor()
         {
@@ -135,24 +143,24 @@ public sealed class ContractsFormValidationTests
             // Match UI discovery: the forms find the Contracts validators without explicit validator registration.
             registrations.AddSingleton<CapturingActivator>();
             registrations.AddSingleton<IComponentActivator>(provider => provider.GetRequiredService<CapturingActivator>());
-            services = registrations.BuildServiceProvider();
-            components = services.GetRequiredService<CapturingActivator>();
-            renderer = new HtmlRenderer(services, services.GetRequiredService<ILoggerFactory>());
+            _services = registrations.BuildServiceProvider();
+            _components = _services.GetRequiredService<CapturingActivator>();
+            _renderer = new HtmlRenderer(_services, _services.GetRequiredService<ILoggerFactory>());
         }
 
-        public FluentValidationValidator Validator => components.All.OfType<FluentValidationValidator>().Single();
+        public FluentValidationValidator Validator => _components.All.OfType<FluentValidationValidator>().Single();
 
-        public RadzenTemplateForm<T> Form<T>() => components.All.OfType<RadzenTemplateForm<T>>().Single();
+        public RadzenTemplateForm<T> Form<T>() => _components.All.OfType<RadzenTemplateForm<T>>().Single();
 
         public Task<HtmlRootComponent> RenderAsync<T>() where T : IComponent =>
-            renderer.Dispatcher.InvokeAsync(() => renderer.RenderComponentAsync<T>());
+            _renderer.Dispatcher.InvokeAsync(() => _renderer.RenderComponentAsync<T>());
 
-        public Task RunAsync(Func<Task> action) => renderer.Dispatcher.InvokeAsync(action);
+        public Task RunAsync(Func<Task> action) => _renderer.Dispatcher.InvokeAsync(action);
 
         public async ValueTask DisposeAsync()
         {
-            await renderer.DisposeAsync();
-            await services.DisposeAsync();
+            await _renderer.DisposeAsync();
+            await _services.DisposeAsync();
         }
     }
 
@@ -190,3 +198,4 @@ public sealed class ContractsFormValidationTests
             throw new NotSupportedException("Client validation must not call the API.");
     }
 }
+

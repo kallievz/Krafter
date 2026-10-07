@@ -26,7 +26,7 @@ public sealed class CreateRole
                 return Response.BadRequest("Not allowed to modify Permissions for this Role.");
             }
 
-            var role = new ApplicationRole(request.Name, request.Description) { Id = Guid.NewGuid().ToString() };
+            var role = new ApplicationRole(request.Name, request.Description) { Id = Guid.CreateVersion7().ToString() };
 
             IdentityResult result = await roleManager.CreateAsync(role);
             if (!result.Succeeded)
@@ -42,7 +42,6 @@ public sealed class CreateRole
             await db.SaveChangesAsync(cancellationToken);
             return new Response();
         }
-
     }
 
     public sealed class Route : IRouteRegistrar

@@ -1,5 +1,5 @@
 using AditiKraft.Krafter.Contracts.Contracts.Auth;
-using Microsoft.AspNetCore.Http;
+using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Services;
 
 namespace AditiKraft.Krafter.UI.Web.Client.Infrastructure.Auth;
 
@@ -9,7 +9,7 @@ public class AuthenticationService(
     LayoutService layoutService,
     IAuthStorageService localStorage,
     NavigationManager navigationManager,
-    IHttpContextAccessor httpContextAccessor,
+    IRequestContextAccessor requestContextAccessor,
     IFormFactor formFactor,
     ILogger<AuthenticationService> logger
 )
@@ -33,7 +33,7 @@ public class AuthenticationService(
         await apiService.LogoutAsync(CancellationToken.None);
 
         LoginChange?.Invoke("");
-        await HandleNavigationToLogin(true);
+        await HandleNavigationToLoginAsync(true);
     }
 
     public async Task<bool> LoginAsync(TokenRequest model)
@@ -65,7 +65,7 @@ public class AuthenticationService(
         return true;
     }
 
-    private async Task HandleNavigationToLogin(bool forceLoad = false)
+    private async Task HandleNavigationToLoginAsync(bool forceLoad = false)
     {
         await localStorage.ClearCacheAsync();
 
@@ -81,15 +81,10 @@ public class AuthenticationService(
             logger.LogInformation("NavigationManager not available, attempting server-side redirect.");
         }
 
-        if (formFactor.GetFormFactor() is not "WebAssembly")
+        if (formFactor.GetFormFactor() is not "WebAssembly" && requestContextAccessor.TryRedirectToLogin())
         {
-            HttpContext? httpContext = httpContextAccessor.HttpContext;
-            if (httpContext != null && !httpContext.Response.HasStarted)
-            {
-                logger.LogInformation("Performing server-side redirect to login page.");
-                httpContext.Response.Redirect("/login");
-                return;
-            }
+            logger.LogInformation("Performing server-side redirect to login page.");
+            return;
         }
 
         logger.LogWarning("Unable to navigate to login - no navigation context available.");

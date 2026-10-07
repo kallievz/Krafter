@@ -24,7 +24,7 @@
                 @if (themeManager.CurrentActive == ThemeManager.ThemePreference.Light)
                 {
                     <RadzenImage Path="login-with-google-dark.svg"
-                                 Click="@StartGoogleLogin"
+                                 Click="@StartGoogleLoginAsync"
                                  class="google-login-button"
                                  Style="cursor: pointer; transition: transform 0.2s ease-in-out;">
                     </RadzenImage>
@@ -32,7 +32,7 @@
                 else
                 {
                     <RadzenImage Path="login-with-google-light.svg"
-                                 Click="@StartGoogleLogin"
+                                 Click="@StartGoogleLoginAsync"
                                  class="google-login-button"
                                  Style="cursor: pointer; transition: transform 0.2s ease-in-out;">
                     </RadzenImage>
@@ -44,31 +44,43 @@
                 Or
             </RadzenText>
 
-            <RadzenTemplateForm Data="@TokenRequestInput" Submit="@((TokenRequest __) => CreateToken(__))">
-                <FluentValidationValidator Options="@(options => options.IncludeAllRuleSets())"/>
+            <RadzenTemplateForm Data="@TokenRequestInput" Submit="@((TokenRequest request) => CreateTokenAsync(request))">
+                <FluentValidationValidator Options="@(options => options.IncludeAllRuleSets())" />
                 <RadzenStack Gap="0.5rem">
                     <RadzenRow AlignItems="AlignItems.Center">
                         <RadzenColumn Size="12" SizeMD="2">
-                            <RadzenLabel Text="Email" Component="Email"/>
+                            <RadzenLabel Text="TenantId" Component="TenantId" />
                         </RadzenColumn>
                         <RadzenColumn Size="12" SizeMD="10">
-                            <RadzenTextBox Style="width: 100%" @bind-Value="@TokenRequestInput.Email" Name="Email"/>
+                            <RadzenTextBox Style="width: 100%" @bind-Value="@TokenRequestInput.TenantId" Name="TenantId" />
                         </RadzenColumn>
-                        <ValidationMessage For="@(() => TokenRequestInput.Email)"/>
                     </RadzenRow>
                     <RadzenRow AlignItems="AlignItems.Center">
                         <RadzenColumn Size="12" SizeMD="2">
-                            <RadzenLabel Text="Password" Component="Password"/>
+                            <RadzenLabel Text="Email" Component="Email" />
                         </RadzenColumn>
                         <RadzenColumn Size="12" SizeMD="10">
-                            <RadzenPassword Style="width: 100%" @bind-Value="@TokenRequestInput.Password" Name="Password"/>
+                            <RadzenTextBox Style="width: 100%" @bind-Value="@TokenRequestInput.Email" Name="Email" />
                         </RadzenColumn>
-                        <ValidationMessage For="@(() => TokenRequestInput.Password)"/>
+                        <ValidationMessage For="@(() => TokenRequestInput.Email)" />
+                    </RadzenRow>
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="2">
+                            <RadzenLabel Text="Password" Component="Password" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="10">
+                            <RadzenPassword Style="width: 100%" @bind-Value="@TokenRequestInput.Password" Name="Password" />
+                        </RadzenColumn>
+                        <ValidationMessage For="@(() => TokenRequestInput.Password)" />
                     </RadzenRow>
                     <RadzenLink Path="account/forgot-password" Text="Forgot Password?"></RadzenLink>
                 </RadzenStack>
                 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Right" Gap="0.5rem" Class="rz-mt-4 rz-mb-2">
-                    <RadzenButton ButtonType="ButtonType.Submit" IsBusy="isBusy" Size="ButtonSize.Small" Icon="login" Text="Login" />
+                    <RadzenButton ButtonType="ButtonType.Submit" IsBusy="IsBusy" Size="ButtonSize.Small" Icon="login" Text="Login" />
+                </RadzenStack>
+                <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.5rem">
+                    <RadzenText TextStyle="TextStyle.Body2">Don't have an account?</RadzenText>
+                    <RadzenLink Path="/self-register" Text="Self Register"></RadzenLink>
                 </RadzenStack>
             </RadzenTemplateForm>
         </RadzenCard>

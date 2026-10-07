@@ -29,6 +29,3 @@ public class ApplicationUserToken : IdentityUserToken<string>
 {
     // Add any custom properties or methods if needed
 }
-
-
-

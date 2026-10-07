@@ -1,4 +1,4 @@
-﻿namespace AditiKraft.Krafter.UI.Web.Client.Common.Components.Brand;
+namespace AditiKraft.Krafter.UI.Web.Client.Common.Components.Brand;
 
 public partial class LoadingIndicator
 {

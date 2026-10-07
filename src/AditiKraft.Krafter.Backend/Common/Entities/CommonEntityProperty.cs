@@ -50,6 +50,3 @@ public interface IHistory
     public DateTime? UpdatedOn { get; set; }
     public string? UpdatedById { get; set; }
 }
-
-
-

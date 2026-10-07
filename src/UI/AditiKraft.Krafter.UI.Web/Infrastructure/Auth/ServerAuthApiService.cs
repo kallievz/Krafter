@@ -13,7 +13,7 @@ public class ServerAuthApiService(
     HybridCache cache,
     ILogger<ServerAuthApiService> logger) : IAuthApiService
 {
-    private static readonly HybridCacheEntryOptions RefreshCacheOptions = new()
+    private static readonly HybridCacheEntryOptions _refreshCacheOptions = new()
     {
         Expiration = TimeSpan.FromSeconds(5),
         LocalCacheExpiration = TimeSpan.FromSeconds(5),
@@ -25,7 +25,7 @@ public class ServerAuthApiService(
     {
         try
         {
-            return await authApi.CreateTokenAsync(request, cancellation);
+            return await authApi.CreateTokenAsync(request.TenantId, request, cancellation);
         }
         catch (ApiException ex)
         {
@@ -44,6 +44,34 @@ public class ServerAuthApiService(
             {
                 IsError = true,
                 Message = "Failed to create token. Please log in again.",
+                StatusCode = (int)HttpStatusCode.InternalServerError
+            };
+        }
+    }
+
+    public async Task<Response> SelfRegisterAsync(SelfRegisterRequest request, CancellationToken cancellation)
+    {
+        try
+        {
+            return await authApi.SelfRegisterAsync(request.TenantId, request, cancellation);
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError(ex, "Error during server-side self registration");
+            return new Response
+            {
+                IsError = true,
+                Message = "Failed to register user. Please try again.",
+                StatusCode = (int)ex.StatusCode
+            };
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error during server-side self registration");
+            return new Response
+            {
+                IsError = true,
+                Message = "Failed to register user. Please try again.",
                 StatusCode = (int)HttpStatusCode.InternalServerError
             };
         }
@@ -70,7 +98,7 @@ public class ServerAuthApiService(
                 }
 
                 return response;
-            }, RefreshCacheOptions, cancellationToken: cancellation);
+            }, _refreshCacheOptions, cancellationToken: cancellation);
         }
         catch (RefreshRejectedException ex)
         {

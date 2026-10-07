@@ -4,7 +4,7 @@ namespace AditiKraft.Krafter.Contracts.Common.Auth.Permissions;
 
 public static class PermissionCatalog
 {
-    private static readonly PermissionDefinition[] AllPermissions =
+    private static readonly PermissionDefinition[] _allPermissions =
     [
         new("View Users", PermissionAction.View, PermissionResource.Users),
         new("Search Users", PermissionAction.Search, PermissionResource.Users),
@@ -27,14 +27,14 @@ public static class PermissionCatalog
     ];
 
     public static IReadOnlyList<PermissionDefinition> All { get; } =
-        new ReadOnlyCollection<PermissionDefinition>(AllPermissions);
+        new ReadOnlyCollection<PermissionDefinition>(_allPermissions);
 
     public static IReadOnlyList<PermissionDefinition> Root { get; } =
-        new ReadOnlyCollection<PermissionDefinition>(AllPermissions.Where(p => p.IsRoot).ToArray());
+        new ReadOnlyCollection<PermissionDefinition>(_allPermissions.Where(p => p.IsRoot).ToArray());
 
     public static IReadOnlyList<PermissionDefinition> Admin { get; } =
-        new ReadOnlyCollection<PermissionDefinition>(AllPermissions.Where(p => !p.IsRoot).ToArray());
+        new ReadOnlyCollection<PermissionDefinition>(_allPermissions.Where(p => !p.IsRoot).ToArray());
 
     public static IReadOnlyList<PermissionDefinition> Basic { get; } =
-        new ReadOnlyCollection<PermissionDefinition>(AllPermissions.Where(p => p.IsBasic).ToArray());
+        new ReadOnlyCollection<PermissionDefinition>(_allPermissions.Where(p => p.IsBasic).ToArray());
 }

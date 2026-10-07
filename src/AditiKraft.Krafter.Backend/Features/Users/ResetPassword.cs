@@ -1,5 +1,5 @@
-using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
+using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Users;
@@ -30,7 +30,9 @@ public sealed class ResetPassword
             {
                 return new Response
                 {
-                    Message = "An error occurred while resetting password", StatusCode = 400, IsError = true
+                    Message = "An error occurred while resetting password",
+                    StatusCode = 400,
+                    IsError = true
                 };
             }
 
@@ -56,6 +58,3 @@ public sealed class ResetPassword
         }
     }
 }
-
-
-

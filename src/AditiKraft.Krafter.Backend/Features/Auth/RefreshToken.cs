@@ -1,12 +1,12 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using AditiKraft.Krafter.Backend.Web;
-using AditiKraft.Krafter.Contracts.Common.Auth;
 using AditiKraft.Krafter.Backend.Features.Auth.Common;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
+using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Contracts.Common;
+using AditiKraft.Krafter.Contracts.Common.Auth;
 using AditiKraft.Krafter.Contracts.Common.Extensions;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Auth;
@@ -124,6 +124,3 @@ public sealed class RefreshToken
         }
     }
 }
-
-
-

@@ -9,6 +9,7 @@ using AditiKraft.Krafter.Contracts.Common.Auth.Permissions;
 using AditiKraft.Krafter.Contracts.Common.Enums;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Tenants;
+using FluentValidation.Results;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +33,7 @@ public sealed class CreateTenant
             }
 
             request.Id = null;
-            var validation = await new CreateOrUpdateTenantRequestValidator(urls).ValidateAsync(request, cancellationToken);
+            ValidationResult validation = await new CreateOrUpdateTenantRequestValidator(urls).ValidateAsync(request, cancellationToken);
             if (!validation.IsValid)
             {
                 return Response.BadRequest(string.Join(" ", validation.Errors.Select(error => error.ErrorMessage)));
@@ -50,7 +51,7 @@ public sealed class CreateTenant
                 return Response.Conflict("Identifier already exists, please try a different identifier.");
             }
 
-            request.Id = Guid.NewGuid().ToString();
+            request.Id = request.Identifier; // Guid.CreateVersion7().ToString();
             Tenant entity = request.Adapt<Tenant>();
             entity.ValidUpto = request.ValidUpto!.Value;
             entity.CreatedOn = DateTime.UtcNow;
@@ -62,7 +63,7 @@ public sealed class CreateTenant
                 await dbContext.SaveChangesAsync(cancellationToken);
             }
             catch (DbUpdateException exception) when (exception.InnerException is PostgresException
-                   { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: TenantDbContext.TenantIdentifierIndexName })
+            { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: TenantDbContext.TenantIdentifierIndexName })
             {
                 return Response.Conflict("Identifier already exists, please try a different identifier.");
             }
@@ -75,7 +76,7 @@ public sealed class CreateTenant
             tenantSetter.SetTenant(currentTenantDetails);
 
             DataSeedService seedService = scope.ServiceProvider.GetRequiredService<DataSeedService>();
-            await seedService.SeedBasicData(new SeedDataRequest());
+            await seedService.SeedBasicDataAsync(new SeedDataRequest());
 
             return new Response();
         }

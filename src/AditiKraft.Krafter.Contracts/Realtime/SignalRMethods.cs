@@ -6,4 +6,3 @@ public static class SignalRMethods
     public const string SendMessage = nameof(SendMessage);
     public const string ComponentAddedOrRemovedOrRestored = nameof(ComponentAddedOrRemovedOrRestored);
 }
-

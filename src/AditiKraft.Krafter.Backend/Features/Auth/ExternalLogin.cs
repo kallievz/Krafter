@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
-using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Backend.Features.Auth.Common;
 using AditiKraft.Krafter.Backend.Features.Roles.Common;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
+using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Auth;
 using AditiKraft.Krafter.Contracts.Contracts.Roles;
+using Microsoft.AspNetCore.Identity;
 
 namespace AditiKraft.Krafter.Backend.Features.Auth;
 
@@ -137,7 +137,7 @@ public sealed class ExternalAuth
                     EmailConfirmed = userInfo.VerifiedEmail,
                     PhoneNumber = userInfo.Email,
                     UserName = userInfo.Email,
-                    Id = Guid.NewGuid().ToString()
+                    Id = Guid.CreateVersion7().ToString()
                 };
                 if (string.IsNullOrWhiteSpace(user.UserName))
                 {
@@ -180,6 +180,3 @@ public sealed class ExternalAuth
         }
     }
 }
-
-
-

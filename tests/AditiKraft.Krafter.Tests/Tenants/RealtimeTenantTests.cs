@@ -18,12 +18,14 @@ public sealed class RealtimeTenantTests
     [InlineData("api.example.com")]
     [InlineData("blue.example.com")]
     [InlineData("localhost:7291")]
-    public async Task ConnectionAndMessagesUseMiddlewareTenantAcrossHostingModes(string host)
+    public async Task ConnectionAndMessagesUseMiddlewareTenantAcrossHostingModesAsync(string host)
     {
         var tenantService = new CurrentTenantService();
         tenantService.SetTenant(new CurrentTenantDetails
         {
-            Id = "blue-id", Identifier = "blue", TenantLink = "https://blue.example.com"
+            Id = "blue-id",
+            Identifier = "blue",
+            TenantLink = "https://blue.example.com"
         });
         using ServiceProvider services = new ServiceCollection()
             .AddSingleton<ITenantGetterService>(tenantService).BuildServiceProvider();
@@ -36,7 +38,9 @@ public sealed class RealtimeTenantTests
         var clients = new RecordingClients();
         var hub = new RealtimeHub(NullLogger<RealtimeHub>.Instance)
         {
-            Context = new TestHubContext(httpContext), Groups = groups, Clients = clients
+            Context = new TestHubContext(httpContext),
+            Groups = groups,
+            Clients = clients
         };
 
         await hub.OnConnectedAsync();
@@ -49,18 +53,21 @@ public sealed class RealtimeTenantTests
 
         tenantService.SetTenant(new CurrentTenantDetails
         {
-            Id = "red-id", Identifier = "red", TenantLink = "https://red.example.com"
+            Id = "red-id",
+            Identifier = "red",
+            TenantLink = "https://red.example.com"
         });
         await hub.OnDisconnectedAsync(null);
         Assert.Equal("GroupTenant-blue-id", groups.RemovedGroup);
     }
 
     [Fact]
-    public async Task MessagesRequireAnEstablishedTenantGroup()
+    public async Task MessagesRequireAnEstablishedTenantGroupAsync()
     {
         var hub = new RealtimeHub(NullLogger<RealtimeHub>.Instance)
         {
-            Context = new TestHubContext(new DefaultHttpContext()), Clients = new RecordingClients()
+            Context = new TestHubContext(new DefaultHttpContext()),
+            Clients = new RecordingClients()
         };
 
         await Assert.ThrowsAsync<HubException>(() => hub.SendMessageAsync("user", "message"));
@@ -144,3 +151,4 @@ public sealed class RealtimeTenantTests
         }
     }
 }
+

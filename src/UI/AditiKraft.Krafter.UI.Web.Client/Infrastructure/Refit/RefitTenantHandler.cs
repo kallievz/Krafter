@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Linq;
 using AditiKraft.Krafter.UI.Web.Client.Common.Models;
 using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Http;
 
@@ -14,14 +15,21 @@ public class RefitTenantHandler(TenantIdentifier tenantIdentifier, bool isBffCli
             tenantInfo =
                 tenantIdentifier.Get();
 
+        string? explicitTenantIdentifier = request.Headers.TryGetValues("x-tenant-identifier", out IEnumerable<string>? headerValues)
+            ? headerValues.FirstOrDefault()
+            : null;
+        string tenantIdentifierValue = string.IsNullOrWhiteSpace(explicitTenantIdentifier)
+            ? tenantInfo.tenantIdentifier
+            : explicitTenantIdentifier;
+
         // Set static TenantInfo for backward compatibility
-        TenantInfo.Identifier = tenantInfo.tenantIdentifier;
+        TenantInfo.Identifier = tenantIdentifierValue;
         TenantInfo.HostUrl = tenantInfo.backendUrl;
         TenantInfo.MainDomain = tenantInfo.rootDomain;
 
         // Inject tenant header
         request.Headers.Remove("x-tenant-identifier");
-        request.Headers.Add("x-tenant-identifier", tenantInfo.tenantIdentifier);
+        request.Headers.Add("x-tenant-identifier", tenantIdentifierValue);
 
         // Inject culture header
         request.Headers.AcceptLanguage.Clear();

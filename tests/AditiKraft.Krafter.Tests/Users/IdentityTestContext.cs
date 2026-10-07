@@ -20,7 +20,7 @@ internal sealed class IdentityTestContext : IAsyncDisposable
     public IdentityTestContext()
     {
         var services = new ServiceCollection();
-        string databaseName = Guid.NewGuid().ToString();
+        string databaseName = Guid.CreateVersion7().ToString();
         services.AddLogging();
         services.AddSingleton<ICurrentUser, CurrentUser>();
         services.AddSingleton<CurrentTenantService>();
@@ -51,7 +51,7 @@ internal sealed class IdentityTestContext : IAsyncDisposable
 
     public async Task<ApplicationRole> AddRoleAsync(string name)
     {
-        var role = new ApplicationRole(name) { Id = Guid.NewGuid().ToString() };
+        var role = new ApplicationRole(name) { Id = Guid.CreateVersion7().ToString() };
         IdentityResult result = await Roles.CreateAsync(role);
         Assert.True(result.Succeeded, string.Join(", ", result.Errors.Select(error => error.Description)));
         return role;
@@ -61,7 +61,7 @@ internal sealed class IdentityTestContext : IAsyncDisposable
     {
         var user = new ApplicationUser
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = Guid.CreateVersion7().ToString(),
             FirstName = "First",
             LastName = "Last",
             PhoneNumber = "123456",

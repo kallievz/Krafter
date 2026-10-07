@@ -24,7 +24,9 @@ public sealed class RolePermissionService(ApplicationDbContext db, ITenantGetter
 
         db.RoleClaims.AddRange(requested.Select(permission => new ApplicationRoleClaim
         {
-            RoleId = roleId, ClaimType = AppClaimTypes.Permission, ClaimValue = permission
+            RoleId = roleId,
+            ClaimType = AppClaimTypes.Permission,
+            ClaimValue = permission
         }));
     }
 }

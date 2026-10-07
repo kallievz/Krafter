@@ -15,19 +15,21 @@ namespace AditiKraft.Krafter.Tests.Tenants;
 public sealed class TenantEditorTests
 {
     [Fact]
-    public async Task NewTenantKeepsLocalInputForRefitSerialization()
+    public async Task NewTenantKeepsLocalInputForRefitSerializationAsync()
     {
         await using var editor = new Editor();
         await editor.RenderAsync(new TenantDto());
         await editor.RunAsync(async () =>
         {
             await editor.Date.ValueChanged.InvokeAsync(new DateTime(2030, 6, 15, 12, 0, 0));
-            editor.Form.Data.Identifier = "blue";
-            editor.Form.Data.Name = "Blue";
-            editor.Form.Data.AdminEmail = "admin@example.com";
-            editor.Form.Data.IsActive = true;
-            Assert.True(new CreateOrUpdateTenantRequestValidator().Validate(editor.Form.Data).IsValid);
-            await editor.Form.Submit.InvokeAsync(editor.Form.Data);
+            CreateOrUpdateTenantRequest? formData = editor.Form.Data;
+            Assert.NotNull(formData);
+            formData.Identifier = "blue";
+            formData.Name = "Blue";
+            formData.AdminEmail = "admin@example.com";
+            formData.IsActive = true;
+            Assert.True(new CreateOrUpdateTenantRequestValidator().Validate(formData).IsValid);
+            await editor.Form.Submit.InvokeAsync(formData);
         });
 
         CreateOrUpdateTenantRequest saved = Assert.Single(editor.Api.Saved);
@@ -38,7 +40,7 @@ public sealed class TenantEditorTests
     [Theory]
     [InlineData(0, 0)]
     [InlineData(12, 34)]
-    public async Task UnrelatedEditPreservesExistingExpiryExactly(int hour, int minute)
+    public async Task UnrelatedEditPreservesExistingExpiryExactlyAsync(int hour, int minute)
     {
         TenantDto tenant = ExistingTenant();
         tenant.ValidUpto = new DateTime(2030, 6, 15, hour, minute, 0, DateTimeKind.Utc).ToLocalTime();
@@ -46,15 +48,17 @@ public sealed class TenantEditorTests
         await editor.RenderAsync(tenant);
         await editor.RunAsync(async () =>
         {
-            editor.Form.Data.Name = "Changed name";
+            CreateOrUpdateTenantRequest? formData = editor.Form.Data;
+            Assert.NotNull(formData);
+            formData.Name = "Changed name";
             await editor.Date.ValueChanged.InvokeAsync((DateTime?)editor.Date.Value);
-            await editor.Form.Submit.InvokeAsync(editor.Form.Data);
+            await editor.Form.Submit.InvokeAsync(formData);
         });
         Assert.Equal(tenant.ValidUpto, Assert.Single(editor.Api.Saved).ValidUpto);
     }
 
     [Fact]
-    public async Task ExistingExpiryDisplaysInBrowserLocalTime()
+    public async Task ExistingExpiryDisplaysInBrowserLocalTimeAsync()
     {
         TenantDto tenant = ExistingTenant();
         tenant.ValidUpto = new DateTime(2030, 6, 16, 0, 0, 0, DateTimeKind.Utc).ToLocalTime();
@@ -63,13 +67,15 @@ public sealed class TenantEditorTests
         await editor.RunAsync(async () =>
         {
             Assert.Equal(tenant.ValidUpto.ToLocalTime(), editor.Date.Value);
-            await editor.Form.Submit.InvokeAsync(editor.Form.Data);
+            CreateOrUpdateTenantRequest? formData = editor.Form.Data;
+            Assert.NotNull(formData);
+            await editor.Form.Submit.InvokeAsync(formData);
         });
         Assert.Equal(tenant.ValidUpto, Assert.Single(editor.Api.Saved).ValidUpto);
     }
 
     [Fact]
-    public async Task RootTenantKeepsUnlimitedValidity()
+    public async Task RootTenantKeepsUnlimitedValidityAsync()
     {
         TenantDto tenant = ExistingTenant();
         tenant.Id = tenant.Identifier = "root";
@@ -78,23 +84,29 @@ public sealed class TenantEditorTests
         await editor.RenderAsync(tenant);
         await editor.RunAsync(async () =>
         {
-            Assert.True(new CreateOrUpdateTenantRequestValidator().Validate(editor.Form.Data).IsValid);
-            await editor.Form.Submit.InvokeAsync(editor.Form.Data);
+            CreateOrUpdateTenantRequest? formData = editor.Form.Data;
+            Assert.NotNull(formData);
+            Assert.True(new CreateOrUpdateTenantRequestValidator().Validate(formData).IsValid);
+            await editor.Form.Submit.InvokeAsync(formData);
         });
         Assert.Equal(DateTime.MaxValue, Assert.Single(editor.Api.Saved).ValidUpto);
     }
 
     private static TenantDto ExistingTenant() => new()
     {
-        Id = "blue-id", Identifier = "blue", Name = "Blue", AdminEmail = "admin@example.com", IsActive = true,
+        Id = "blue-id",
+        Identifier = "blue",
+        Name = "Blue",
+        AdminEmail = "admin@example.com",
+        IsActive = true,
         ValidUpto = new DateTime(2030, 6, 16, 0, 0, 0, DateTimeKind.Utc)
     };
 
     private sealed class Editor : IAsyncDisposable
     {
-        private readonly ServiceProvider services;
-        private readonly CapturingActivator components;
-        private readonly HtmlRenderer renderer;
+        private readonly ServiceProvider _services;
+        private readonly CapturingActivator _components;
+        private readonly HtmlRenderer _renderer;
         public TenantsApi Api { get; } = new();
 
         public Editor()
@@ -109,24 +121,24 @@ public sealed class TenantEditorTests
             registrations.AddSingleton<ITenantsApi>(Api);
             registrations.AddSingleton<CapturingActivator>();
             registrations.AddSingleton<IComponentActivator>(provider => provider.GetRequiredService<CapturingActivator>());
-            services = registrations.BuildServiceProvider();
-            components = services.GetRequiredService<CapturingActivator>();
-            renderer = new HtmlRenderer(services, services.GetRequiredService<ILoggerFactory>());
+            _services = registrations.BuildServiceProvider();
+            _components = _services.GetRequiredService<CapturingActivator>();
+            _renderer = new HtmlRenderer(_services, _services.GetRequiredService<ILoggerFactory>());
         }
 
-        public RadzenTemplateForm<CreateOrUpdateTenantRequest> Form => components.All.OfType<RadzenTemplateForm<CreateOrUpdateTenantRequest>>().Single();
-        public RadzenDatePicker<DateTime?> Date => components.All.OfType<RadzenDatePicker<DateTime?>>().Single();
+        public RadzenTemplateForm<CreateOrUpdateTenantRequest> Form => _components.All.OfType<RadzenTemplateForm<CreateOrUpdateTenantRequest>>().Single();
+        public RadzenDatePicker<DateTime?> Date => _components.All.OfType<RadzenDatePicker<DateTime?>>().Single();
 
-        public Task RenderAsync(TenantDto tenant) => renderer.Dispatcher.InvokeAsync(async () =>
-            await renderer.RenderComponentAsync<CreateOrUpdateTenant>(ParameterView.FromDictionary(
+        public Task RenderAsync(TenantDto tenant) => _renderer.Dispatcher.InvokeAsync(async () =>
+            await _renderer.RenderComponentAsync<CreateOrUpdateTenant>(ParameterView.FromDictionary(
                 new Dictionary<string, object?> { [nameof(CreateOrUpdateTenant.TenantInput)] = tenant })));
 
-        public Task RunAsync(Func<Task> action) => renderer.Dispatcher.InvokeAsync(action);
+        public Task RunAsync(Func<Task> action) => _renderer.Dispatcher.InvokeAsync(action);
 
         public async ValueTask DisposeAsync()
         {
-            await renderer.DisposeAsync();
-            await services.DisposeAsync();
+            await _renderer.DisposeAsync();
+            await _services.DisposeAsync();
         }
     }
 
@@ -171,3 +183,4 @@ public sealed class TenantEditorTests
         public Task<Response> SeedDataAsync(SeedDataRequest request, CancellationToken cancellationToken = default) => throw new NotSupportedException();
     }
 }
+

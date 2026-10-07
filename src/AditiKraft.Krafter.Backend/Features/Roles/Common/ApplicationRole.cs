@@ -31,6 +31,3 @@ public class ApplicationRole : IdentityRole<string>, ICommonAuthEntityProperty
     public string TenantId { get; set; } = null!;
     public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } = new HashSet<ApplicationUserRole>();
 }
-
-
-

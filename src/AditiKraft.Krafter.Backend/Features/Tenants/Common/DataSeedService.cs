@@ -24,7 +24,7 @@ public class DataSeedService(
     RoleManager<ApplicationRole> roleManager,
     UserManager<ApplicationUser> userManager) : IScopedHandler
 {
-    public async Task<Response> SeedBasicData(SeedDataRequest request)
+    public async Task<Response> SeedBasicDataAsync(SeedDataRequest _)
     {
         CurrentTenantDetails currentTenantResponse = tenantGetterService.Tenant;
 
@@ -33,12 +33,12 @@ public class DataSeedService(
         {
             var role = new ApplicationRole(RoleConstants.Basic, RoleConstants.Basic)
             {
-                Id = Guid.NewGuid().ToString()
+                Id = Guid.CreateVersion7().ToString()
             };
             IdentityResult result = await roleManager.CreateAsync(role);
             var role1 = new ApplicationRole(RoleConstants.Admin, RoleConstants.Admin)
             {
-                Id = Guid.NewGuid().ToString()
+                Id = Guid.CreateVersion7().ToString()
             };
             IdentityResult result1 = await roleManager.CreateAsync(role1);
         }
@@ -127,7 +127,7 @@ public class DataSeedService(
             {
                 rootUser = new ApplicationUser
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = Guid.CreateVersion7().ToString(),
                     FirstName = "Admin",
                     LastName = "User",
                     Email = tenantGetterService.Tenant.AdminEmail,
@@ -135,7 +135,6 @@ public class DataSeedService(
                     IsActive = true,
                     IsOwner = true
                 };
-                password = PasswordGenerator.GeneratePassword();
             }
 
             IdentityResult res = await userManager.CreateAsync(rootUser, password);
@@ -181,7 +180,7 @@ public class DataSeedService(
                                       "We recommend changing your password after your first login for security reasons.<br><br>" +
                                       "Best Regards,<br>" +
                                       "The Krafter Team"
-                    }, nameof(Jobs.SendEmailJob), CancellationToken.None);
+                    }, nameof(Jobs.SendEmailJobAsync), CancellationToken.None);
                 }
             }
         }

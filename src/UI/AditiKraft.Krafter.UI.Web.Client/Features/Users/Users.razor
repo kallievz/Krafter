@@ -8,15 +8,15 @@
     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem"
                  JustifyContent="JustifyContent.End" class="mt-1 mb-2">
         <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary" Icon="add_circle_outline" Text="User"
-                      Click="@AddUser" />
+                      Click="@AddUserAsync" />
     </RadzenStack>
 </AuthorizeView>
 
 
-<RadzenDataGrid Responsive="true" ShowCellDataAsTooltip="LocalAppState.ShowCellDataAsTooltip" @ref="grid"
-                Density="LocalAppState.Density" AllowColumnResize="LocalAppState.AllowColumnResize" IsLoading="@IsLoading"
-                Count="@(response?.Data?.TotalCount ?? 0)" LoadData="@LoadData" AllowSorting="true" Data="@response?.Data?.Items"
-                AllowFiltering="true" AllowPaging="true" PageSize="@requestInput.MaxResultCount"
+<RadzenDataGrid Responsive="true" ShowCellDataAsTooltip="LocalAppState.ShowCellDataAsTooltip"
+                Density="LocalAppState.Density" AllowColumnResize="LocalAppState.AllowColumnResize" IsLoading="@_isLoading"
+                Count="@(_response?.Data?.TotalCount ?? 0)" LoadData="@LoadDataAsync" AllowSorting="true" Data="@_response?.Data?.Items"
+                AllowFiltering="true" AllowPaging="true" PageSize="@_requestInput.MaxResultCount"
                 PagerHorizontalAlign="HorizontalAlign.Center">
     <Columns>
         <RadzenDataGridColumn Property="Id" Title="ID" />
@@ -44,7 +44,7 @@
                               TextAlign="TextAlign.Right" Frozen="true" Width="9.28vw" FrozenPosition="FrozenColumnPosition.Right">
             <Template Context="data">
                 <RadzenSplitButton ButtonStyle="ButtonStyle.Light" Shade="Shade.Lighter" Variant="Variant.Flat"
-                                   AlwaysOpenPopup="true" Click="@(args => ActionClicked(args, data))" Text="Actions"
+                                   AlwaysOpenPopup="true" Click="@(args => ActionClickedAsync(args, data))" Text="Actions"
                                    Icon="settings_applications" Style="margin-right: 4px">
                     <ChildContent>
 

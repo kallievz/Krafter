@@ -21,18 +21,15 @@ public partial class MainLayout(
 {
     [CascadingParameter] public bool IsMobileDevice { get; set; }
 
-
-    private RadzenSidebar sidebar0 = default!;
-    private RadzenBody body0 = default!;
     private RadzenButton _wcagColorsInfo = default!;
     private RadzenButton _rtlInfo = default!;
     private bool _sidebarExpanded = true;
     private bool _configSidebarExpanded = false;
     private bool _rendered;
 
-    private IEnumerable<Menu> menus = new List<Menu>();
+    private IEnumerable<Menu> _menus = new List<Menu>();
 
-    private ICollection<string>? cachedPermissionsAsync = new List<string>();
+    private ICollection<string>? _cachedPermissions = new List<string>();
     public Response<string>? AppInfo { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -46,32 +43,21 @@ public partial class MainLayout(
     protected override async Task OnInitializedAsync()
     {
         AppInfo = await api.CallAsync(() => appInfoApi.GetAppInfoAsync(), showErrorNotification: false);
-        cachedPermissionsAsync = await authStorageService.GetCachedPermissionsAsync();
-        if (cachedPermissionsAsync is null)
-        {
-            cachedPermissionsAsync = new List<string>();
-        }
-
-        menus = menuService.Menus;
+        _cachedPermissions = await authStorageService.GetCachedPermissionsAsync() ?? new List<string>();
+        _menus = menuService.Menus;
         layoutService.HeadingChanged += HeadingChanged;
         authenticationService.LoginChange += async name =>
         {
-            cachedPermissionsAsync = await authStorageService.GetCachedPermissionsAsync();
-            if (cachedPermissionsAsync is null)
-            {
-                cachedPermissionsAsync = new List<string>();
-            }
-
-            menus = menuService.Menus;
+            _cachedPermissions = await authStorageService.GetCachedPermissionsAsync() ?? new List<string>();
+            _menus = menuService.Menus;
         };
     }
 
     private void FilterPanelMenu(ChangeEventArgs args)
     {
         string? term = args.Value?.ToString();
-        menus = string.IsNullOrEmpty(term) ? menuService.Menus : menuService.Filter(term);
+        _menus = string.IsNullOrEmpty(term) ? menuService.Menus : menuService.Filter(term);
     }
-
 
     private void HeadingChanged(object? sender, EventArgs e) => InvokeAsync(StateHasChanged);
 
@@ -82,7 +68,7 @@ public partial class MainLayout(
         IEnumerable<string> childPermission =
             category.Children?.Select(c => c.Permission) ?? Enumerable.Empty<string>();
 
-        return childPermission.Intersect(cachedPermissionsAsync ?? Enumerable.Empty<string>()).Any();
+        return childPermission.Intersect(_cachedPermissions ?? Enumerable.Empty<string>()).Any();
     }
 
     private bool HasPermission(Menu category)
@@ -93,6 +79,6 @@ public partial class MainLayout(
             return true;
         }
 
-        return cachedPermissionsAsync?.Contains(category.Permission) == true;
+        return _cachedPermissions?.Contains(category.Permission) == true;
     }
 }

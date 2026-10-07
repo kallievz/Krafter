@@ -32,7 +32,7 @@ public sealed class TenantUrlRoutingTests
     [InlineData("https://blue.app.example.com", "http://[::1]:5001", "blue", "http://[::1]:5001")]
     [InlineData("https://blue.unrelated.com", "https://api.example.com", "root", "https://api.example.com")]
     [InlineData("https://blue.app.example.com.attacker.com", "https://api.example.com", "root", "https://api.example.com")]
-    public async Task BrowserRoutesUseHostingModeAndConfiguredRootDomain(
+    public async Task BrowserRoutesUseHostingModeAndConfiguredRootDomainAsync(
         string currentOrigin, string? apiOrigin, string expectedTenant, string expectedApiOrigin)
     {
         var urls = new AppUrls
@@ -43,7 +43,7 @@ public sealed class TenantUrlRoutingTests
         };
         using ServiceProvider provider = CreateProvider(currentOrigin, server: false);
         var identifier = new TenantIdentifier(provider, urls);
-        var result = identifier.Get();
+        (string tenantIdentifier, string backendUrl, string rootDomain, string clientBaseAddress, bool isServerSide) result = identifier.Get();
 
         Assert.False(result.isServerSide);
         Assert.Equal(expectedTenant, result.tenantIdentifier);
@@ -60,7 +60,7 @@ public sealed class TenantUrlRoutingTests
     [InlineData("https://blue.app.example.com", null, "http://localhost:5001", "blue", "http://localhost:5001")]
     [InlineData("https://blue.app.example.com", null, null, "blue", "https://app.example.com")]
     [InlineData("http://192.168.1.10:5002", "http://192.168.1.10:5001", null, "root", "http://192.168.1.10:5001")]
-    public async Task ServerRoutesKeepConnectionAddressAndForwardTenantHeader(
+    public async Task ServerRoutesKeepConnectionAddressAndForwardTenantHeaderAsync(
         string currentOrigin, string? apiOrigin, string? serverOrigin, string expectedTenant, string expectedApiOrigin)
     {
         var urls = new AppUrls
@@ -71,7 +71,7 @@ public sealed class TenantUrlRoutingTests
         };
         using ServiceProvider provider = CreateProvider(currentOrigin, server: true);
         var identifier = new TenantIdentifier(provider, urls);
-        var result = identifier.Get();
+        (string tenantIdentifier, string backendUrl, string rootDomain, string clientBaseAddress, bool isServerSide) result = identifier.Get();
 
         Assert.True(result.isServerSide);
         Assert.Equal(expectedTenant, result.tenantIdentifier);
@@ -90,19 +90,19 @@ public sealed class TenantUrlRoutingTests
     [InlineData("[::1]:5001", "blue", "blue")]
     [InlineData("blue.unrelated.com", null, "root")]
     [InlineData("blue.api.example.com.attacker.com", null, "root")]
-    public async Task BackendUsesConfiguredTenantDomainsBeforeHeader(string host, string? header, string expectedTenant)
+    public async Task BackendUsesConfiguredTenantDomainsBeforeHeaderAsync(string host, string? header, string expectedTenant)
     {
         await AssertBackendTenantAsync("https://app.example.com", host, header, expectedTenant);
     }
 
     [Fact]
-    public async Task ApiRootBelowUiRootStillUsesTenantHeader()
+    public async Task ApiRootBelowUiRootStillUsesTenantHeaderAsync()
     {
         await AssertBackendTenantAsync("https://example.com", "api.example.com", "blue", "blue");
     }
 
     [Fact]
-    public async Task InternalServerHostUnderRootDomainPreservesActualRequestTenant()
+    public async Task InternalServerHostUnderRootDomainPreservesActualRequestTenantAsync()
     {
         const string serverOrigin = "https://api-internal.example.com";
         var urls = new AppUrls
@@ -123,7 +123,7 @@ public sealed class TenantUrlRoutingTests
     [InlineData("https://krafter.getkrafter.dev", "root")]
     [InlineData("https://blue.getkrafter.dev", "blue")]
     [InlineData("https://new-tenant.getkrafter.dev", "new-tenant")]
-    public async Task SiblingTenantRoutesUseSharedApiAndPreserveTenant(string origin, string expectedTenant)
+    public async Task SiblingTenantRoutesUseSharedApiAndPreserveTenantAsync(string origin, string expectedTenant)
     {
         var urls = new AppUrls
         {
@@ -259,3 +259,4 @@ public sealed class TenantUrlRoutingTests
         }
     }
 }
+

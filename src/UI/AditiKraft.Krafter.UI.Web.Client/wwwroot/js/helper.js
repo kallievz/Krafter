@@ -26,12 +26,12 @@ window.listenForSystemThemeChanges = function (dotNetReference) {
     const initialTheme = mediaQuery.matches ? 'dark' : 'light';
 
     // Pass the detected system theme to Blazor
-    dotNetReference.invokeMethodAsync('OnSystemThemeChanged', initialTheme);
+    dotNetReference.invokeMethodAsync('OnSystemThemeChangedAsync', initialTheme);
 
     // Set up listener for changes
     mediaQuery.addEventListener('change', (e) => {
         const newTheme = e.matches ? 'dark' : 'light';
-        dotNetReference.invokeMethodAsync('OnSystemThemeChanged', newTheme);
+        dotNetReference.invokeMethodAsync('OnSystemThemeChangedAsync', newTheme);
     });
 };
 

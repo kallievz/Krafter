@@ -38,7 +38,7 @@ public sealed class UserMutationService(
 
         var user = new ApplicationUser
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = Guid.CreateVersion7().ToString(),
             FirstName = request.FirstName,
             LastName = request.LastName,
             Email = request.Email,
@@ -171,6 +171,6 @@ public sealed class UserMutationService(
                            $"Regards,<br/>{tenantGetterService.Tenant.Name} Team";
         await jobService.EnqueueAsync(
             new SendEmailRequestInput { Email = user.Email, Subject = "Account Created", HtmlMessage = emailBody },
-            nameof(Jobs.SendEmailJob), cancellationToken);
+            nameof(Jobs.SendEmailJobAsync), cancellationToken);
     }
 }

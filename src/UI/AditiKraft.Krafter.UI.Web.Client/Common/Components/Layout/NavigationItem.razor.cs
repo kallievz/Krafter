@@ -23,4 +23,3 @@ public partial class NavigationItem()
         return string.IsNullOrEmpty(Example.Path) ? null : Example.Path;
     }
 }
-

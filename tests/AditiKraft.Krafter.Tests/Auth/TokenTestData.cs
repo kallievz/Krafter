@@ -14,7 +14,7 @@ internal static class TokenTestData
             expires: expiry);
         return new TokenResponse(
             new JwtSecurityTokenHandler().WriteToken(token),
-            $"refresh-{userId}-{Guid.NewGuid()}",
+            $"refresh-{userId}-{Guid.CreateVersion7()}",
             DateTime.UtcNow.AddDays(1),
             expiry,
             []);

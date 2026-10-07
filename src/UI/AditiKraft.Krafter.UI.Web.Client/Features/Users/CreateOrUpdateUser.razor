@@ -1,5 +1,5 @@
 @using AditiKraft.Krafter.UI.Web.Client.Features.Roles.Common
-<RadzenTemplateForm Data="@CreateUserRequest" Submit="@((CreateUserRequest __) => Submit(__))">
+<RadzenTemplateForm Data="@_createUserRequest" Submit="@((CreateUserRequest __) => SubmitAsync(__))">
     <FluentValidationValidator Options="@(options => options.IncludeAllRuleSets())" />
     <RadzenStack>
 
@@ -9,9 +9,9 @@
                 <RadzenLabel Text="First Name" Component="FirstName" />
             </RadzenColumn>
             <RadzenColumn Size="12" SizeMD="10">
-                <RadzenTextBox Style="width: 100%" @bind-Value="@CreateUserRequest.FirstName" Name="FirstName" />
+                <RadzenTextBox Style="width: 100%" @bind-Value="@_createUserRequest.FirstName" Name="FirstName" />
             </RadzenColumn>
-            <ValidationMessage For="@(() => CreateUserRequest.FirstName)" />
+            <ValidationMessage For="@(() => _createUserRequest.FirstName)" />
         </RadzenRow>
 
 
@@ -20,9 +20,9 @@
                 <RadzenLabel Text="Last Name" Component="LastName" />
             </RadzenColumn>
             <RadzenColumn Size="12" SizeMD="10">
-                <RadzenTextBox Style="width: 100%" @bind-Value="@CreateUserRequest.LastName" Name="LastName" />
+                <RadzenTextBox Style="width: 100%" @bind-Value="@_createUserRequest.LastName" Name="LastName" />
             </RadzenColumn>
-            <ValidationMessage For="@(() => CreateUserRequest.LastName)" />
+            <ValidationMessage For="@(() => _createUserRequest.LastName)" />
         </RadzenRow>
 
 
@@ -31,9 +31,9 @@
                 <RadzenLabel Text="Phone Number" Component="PhoneNumber" />
             </RadzenColumn>
             <RadzenColumn Size="12" SizeMD="10">
-                <RadzenTextBox Style="width: 100%" @bind-Value="@CreateUserRequest.PhoneNumber" Name="PhoneNumber" />
+                <RadzenTextBox Style="width: 100%" @bind-Value="@_createUserRequest.PhoneNumber" Name="PhoneNumber" />
             </RadzenColumn>
-            <ValidationMessage For="@(() => CreateUserRequest.PhoneNumber)" />
+            <ValidationMessage For="@(() => _createUserRequest.PhoneNumber)" />
         </RadzenRow>
 
         @if (!string.IsNullOrWhiteSpace(UserInput.Id))
@@ -43,10 +43,10 @@
                     <RadzenLabel Text="Roles" Component="Roles" />
                 </RadzenColumn>
                 <RadzenColumn Size="12" SizeMD="10">
-                    <MultiSelectRoleDropDownDataGrid @bind-Value="@CreateUserRequest.Roles">
+                    <MultiSelectRoleDropDownDataGrid @bind-Value="@_createUserRequest.Roles">
                     </MultiSelectRoleDropDownDataGrid>
                 </RadzenColumn>
-                <ValidationMessage For="@(() => CreateUserRequest.Roles)" />
+                <ValidationMessage For="@(() => _createUserRequest.Roles)" />
             </RadzenRow>
         }
 
@@ -56,9 +56,9 @@
                 <RadzenLabel Text="Email" Component="Email" />
             </RadzenColumn>
             <RadzenColumn Size="12" SizeMD="10">
-                <RadzenTextBox Style="width: 100%" @bind-Value="@CreateUserRequest.Email" Name="Email" />
+                <RadzenTextBox Style="width: 100%" @bind-Value="@_createUserRequest.Email" Name="Email" />
             </RadzenColumn>
-            <ValidationMessage For="@(() => CreateUserRequest.Email)" />
+            <ValidationMessage For="@(() => _createUserRequest.Email)" />
         </RadzenRow>
 
 
@@ -66,7 +66,7 @@
 
     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.5rem"
                  Class="rz-mt-4 rz-mb-2">
-        <RadzenButton ButtonType="ButtonType.Submit" IsBusy="isBusy" Size="ButtonSize.Small" Icon="save" Text="Save" />
+        <RadzenButton ButtonType="ButtonType.Submit" IsBusy="_isBusy" Size="ButtonSize.Small" Icon="save" Text="Save" />
         <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Icon="cancel"
                       Text="Cancel" Click="@Cancel" />
     </RadzenStack>

@@ -1,9 +1,4 @@
-using System.Security.Claims;
 using AditiKraft.Krafter.Contracts.Common;
-using AditiKraft.Krafter.Contracts.Common.Auth;
-using AditiKraft.Krafter.Contracts.Common.Models;
-using AditiKraft.Krafter.UI.Web.Client.Common.Constants;
-using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace AditiKraft.Krafter.UI.Web.Infrastructure.Auth;
@@ -30,9 +25,9 @@ public enum BlazorHostingMode
 /// Handles cookie-based token reading, proactive token refresh, permission claim enrichment,
 /// and hosting-mode-aware challenge/forbidden responses.
 /// </summary>
-public class BlazorJwtBearerEvents(BlazorHostingMode hostingMode) : JwtBearerEvents
+public class BlazorJwtBearerEvents(BlazorHostingMode _hostingMode) : JwtBearerEvents
 {
-    private static readonly string[] AuthEndpointSegments =
+    private static readonly string[] _authEndpointSegments =
     [
         $"/{ApiRoutes.ApiPrefix}/{ApiRoutes.Tokens}/{RouteSegment.Refresh}",
         $"/{ApiRoutes.ApiPrefix}/{ApiRoutes.Tokens}",
@@ -142,7 +137,7 @@ public class BlazorJwtBearerEvents(BlazorHostingMode hostingMode) : JwtBearerEve
             return Task.CompletedTask;
         }
 
-        if (hostingMode == BlazorHostingMode.SingleHost && IsApiRequest(context.Request))
+        if (_hostingMode == BlazorHostingMode.SingleHost && IsApiRequest(context.Request))
         {
             context.Response.StatusCode = 401;
             context.Response.ContentType = "application/json";
@@ -165,7 +160,7 @@ public class BlazorJwtBearerEvents(BlazorHostingMode hostingMode) : JwtBearerEve
             return Task.CompletedTask;
         }
 
-        if (hostingMode == BlazorHostingMode.SingleHost && IsApiRequest(context.Request))
+        if (_hostingMode == BlazorHostingMode.SingleHost && IsApiRequest(context.Request))
         {
             context.Response.StatusCode = 403;
             context.Response.ContentType = "application/json";
@@ -177,7 +172,7 @@ public class BlazorJwtBearerEvents(BlazorHostingMode hostingMode) : JwtBearerEve
     }
 
     private static bool IsAuthEndpoint(PathString path) =>
-        AuthEndpointSegments.Any(segment => path.StartsWithSegments(segment));
+        _authEndpointSegments.Any(segment => path.StartsWithSegments(segment));
 
     private static bool IsApiRequest(HttpRequest request) =>
         request.Path.StartsWithSegments($"/{ApiRoutes.ApiPrefix}") ||

@@ -9,17 +9,17 @@ public partial class CreateOrUpdateTenant(
     ITenantsApi tenantsApi) : ComponentBase
 {
     [Parameter] public TenantDto? TenantInput { get; set; } = new();
-    private CreateOrUpdateTenantRequest CreateRequest = new();
-    private bool isBusy;
-    private string? dateError;
+    private CreateOrUpdateTenantRequest _createRequest = new();
+    private bool _isBusy;
+    private string? _dateError;
     private bool IsRoot => TenantInput?.Id == DefaultTenantConstants.Identifier;
 
     protected override void OnInitialized()
     {
-        CreateRequest = TenantInput?.Adapt<CreateOrUpdateTenantRequest>() ?? new();
-        if (string.IsNullOrWhiteSpace(CreateRequest.Id))
+        _createRequest = TenantInput?.Adapt<CreateOrUpdateTenantRequest>() ?? new();
+        if (string.IsNullOrWhiteSpace(_createRequest.Id))
         {
-            CreateRequest.ValidUpto = null;
+            _createRequest.ValidUpto = null;
         }
     }
 
@@ -30,30 +30,30 @@ public partial class CreateOrUpdateTenant(
             return;
         }
 
-        dateError = null;
+        _dateError = null;
         // Keep the original Local value, including its daylight-saving offset, when unchanged.
-        if (value == CreateRequest.ValidUpto)
+        if (value == _createRequest.ValidUpto)
         {
             return;
         }
 
         if (value is { } local && (TimeZoneInfo.Local.IsInvalidTime(local) || TimeZoneInfo.Local.IsAmbiguousTime(local)))
         {
-            CreateRequest.ValidUpto = null;
-            dateError = "This time is skipped or repeated when the clocks change. Choose another time.";
+            _createRequest.ValidUpto = null;
+            _dateError = "This time is skipped or repeated when the clocks change. Choose another time.";
             return;
         }
-        CreateRequest.ValidUpto = value;
+        _createRequest.ValidUpto = value;
     }
 
     private async Task SubmitAsync(CreateOrUpdateTenantRequest input)
     {
-        if (isBusy || dateError is not null)
+        if (_isBusy || _dateError is not null)
         {
             return;
         }
 
-        isBusy = true;
+        _isBusy = true;
         try
         {
             Response result = string.IsNullOrWhiteSpace(input.Id)
@@ -66,7 +66,7 @@ public partial class CreateOrUpdateTenant(
         }
         finally
         {
-            isBusy = false;
+            _isBusy = false;
         }
     }
 

@@ -8,7 +8,4 @@ public interface IUserService
 
     public Task<Response<bool>> HasPermissionAsync(string userId, string permission,
         CancellationToken cancellationToken = default);
-
 }
-
-

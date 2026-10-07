@@ -54,6 +54,3 @@ public static class ModelBuilderExtensions
         }
     }
 }
-
-
-

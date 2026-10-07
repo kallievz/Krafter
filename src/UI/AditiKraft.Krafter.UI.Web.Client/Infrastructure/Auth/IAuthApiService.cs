@@ -6,6 +6,8 @@ public interface IAuthApiService
 {
     public Task<Response<TokenResponse>> CreateTokenAsync(TokenRequest request, CancellationToken cancellation);
 
+    public Task<Response> SelfRegisterAsync(SelfRegisterRequest request, CancellationToken cancellation);
+
     public Task<Response<TokenResponse>> RefreshTokenAsync(RefreshTokenRequest request, CancellationToken cancellation);
 
     public Task<Response<TokenResponse>> ExternalAuthAsync(TokenRequest request, CancellationToken cancellation);

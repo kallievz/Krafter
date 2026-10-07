@@ -17,6 +17,3 @@ public class ApplicationRoleClaim : IdentityRoleClaim<string>, ICommonAuthEntity
 
     public string TenantId { get; set; } = null!;
 }
-
-
-

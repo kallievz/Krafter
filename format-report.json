@@ -1,0 +1,3080 @@
+[
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "bbeeb77b-2105-4a07-b6c6-56ba869cf048"
+      },
+      "Id": "d938ee6d-17e0-44d6-9244-67b04945c550"
+    },
+    "FileName": "Build.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\build\\Build.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 34,
+        "CharNumber": 26,
+        "DiagnosticId": "IDE0052",
+        "FormatDescription": "warning IDE0052: Private member \u0027Build.MajorVersion\u0027 can be removed as the value assigned to it is never read"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "bbeeb77b-2105-4a07-b6c6-56ba869cf048"
+      },
+      "Id": "d938ee6d-17e0-44d6-9244-67b04945c550"
+    },
+    "FileName": "Build.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\build\\Build.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 35,
+        "CharNumber": 26,
+        "DiagnosticId": "IDE0052",
+        "FormatDescription": "warning IDE0052: Private member \u0027Build.MinorVersion\u0027 can be removed as the value assigned to it is never read"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "bbeeb77b-2105-4a07-b6c6-56ba869cf048"
+      },
+      "Id": "d938ee6d-17e0-44d6-9244-67b04945c550"
+    },
+    "FileName": "Build.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\build\\Build.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 36,
+        "CharNumber": 26,
+        "DiagnosticId": "IDE0052",
+        "FormatDescription": "warning IDE0052: Private member \u0027Build.PatchVersion\u0027 can be removed as the value assigned to it is never read"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "02884487-ca6c-44cc-af4f-f7b548384381"
+      },
+      "Id": "10d67631-c6c4-42f4-be6b-c5cd380c817d"
+    },
+    "FileName": "PasswordGenerator.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\AditiKraft.Krafter.Backend\\Common\\PasswordGenerator.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 7,
+        "CharNumber": 36,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "02884487-ca6c-44cc-af4f-f7b548384381"
+      },
+      "Id": "834570f0-f7b8-47ee-9951-f2b0ac9328ce"
+    },
+    "FileName": "TokenService.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\AditiKraft.Krafter.Backend\\Features\\Auth\\Common\\TokenService.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 27,
+        "CharNumber": 39,
+        "DiagnosticId": "IDE0052",
+        "FormatDescription": "error IDE0052: Private member \u0027TokenService._securitySettings\u0027 can be removed as the value assigned to it is never read"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "02884487-ca6c-44cc-af4f-f7b548384381"
+      },
+      "Id": "b16f3254-a83c-439c-8d03-92c0a831cdc0"
+    },
+    "FileName": "Login.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\AditiKraft.Krafter.Backend\\Features\\Auth\\Login.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 25,
+        "CharNumber": 38,
+        "DiagnosticId": "IDE0052",
+        "FormatDescription": "error IDE0052: Private member \u0027Login.Handler._jwtSettings\u0027 can be removed as the value assigned to it is never read"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "02884487-ca6c-44cc-af4f-f7b548384381"
+      },
+      "Id": "b16f3254-a83c-439c-8d03-92c0a831cdc0"
+    },
+    "FileName": "Login.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\AditiKraft.Krafter.Backend\\Features\\Auth\\Login.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 29,
+        "CharNumber": 31,
+        "DiagnosticId": "IDE0060",
+        "FormatDescription": "error IDE0060: Remove unused parameter \u0027cancellationToken\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "02884487-ca6c-44cc-af4f-f7b548384381"
+      },
+      "Id": "76c86b6e-7bbf-4981-af17-9647373d66c3"
+    },
+    "FileName": "AuthenticationMiddlewareExtensions.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\AditiKraft.Krafter.Backend\\Web\\Middleware\\AuthenticationMiddlewareExtensions.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 8,
+        "CharNumber": 103,
+        "DiagnosticId": "IDE0060",
+        "FormatDescription": "error IDE0060: Remove unused parameter \u0027config\u0027 if it is not part of a shipped public API"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "02884487-ca6c-44cc-af4f-f7b548384381"
+      },
+      "Id": "cf94710a-2e99-4126-8412-87ad5cee6d67"
+    },
+    "FileName": "DataSeedService.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\AditiKraft.Krafter.Backend\\Features\\Tenants\\Common\\DataSeedService.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 27,
+        "CharNumber": 68,
+        "DiagnosticId": "IDE0060",
+        "FormatDescription": "error IDE0060: Remove unused parameter \u0027request\u0027 if it is not part of a shipped public API"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "5f2a42ab-87bc-4dff-ac64-a9f89690b5b0"
+      },
+      "Id": "6f19b2e8-0010-450f-bdc5-4bf2e004050f"
+    },
+    "FileName": "PermissionCatalog.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\AditiKraft.Krafter.Contracts\\Common\\Auth\\Permissions\\PermissionCatalog.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 7,
+        "CharNumber": 52,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "cbce0349-d6a6-4cd8-947e-4ab56ef373a1"
+    },
+    "FileName": "Logo.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Common\\Components\\Brand\\Logo.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 9,
+        "CharNumber": 20,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "cbce0349-d6a6-4cd8-947e-4ab56ef373a1"
+    },
+    "FileName": "Logo.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Common\\Components\\Brand\\Logo.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 98,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "e64b0192-ac1d-41c5-af00-0d3e53aeaf86"
+    },
+    "FileName": "CreateOrUpdateTenant.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Tenants\\CreateOrUpdateTenant.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 13,
+        "CharNumber": 18,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "e64b0192-ac1d-41c5-af00-0d3e53aeaf86"
+    },
+    "FileName": "CreateOrUpdateTenant.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Tenants\\CreateOrUpdateTenant.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 14,
+        "CharNumber": 21,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "e64b0192-ac1d-41c5-af00-0d3e53aeaf86"
+    },
+    "FileName": "CreateOrUpdateTenant.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Tenants\\CreateOrUpdateTenant.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 12,
+        "CharNumber": 41,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "d3afe3d7-fc8e-4474-939c-45ba145c4a2f"
+    },
+    "FileName": "CreateOrUpdateRole.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\CreateOrUpdateRole.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 28,
+        "CharNumber": 46,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "d3afe3d7-fc8e-4474-939c-45ba145c4a2f"
+    },
+    "FileName": "CreateOrUpdateRole.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\CreateOrUpdateRole.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 30,
+        "CharNumber": 18,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "d3afe3d7-fc8e-4474-939c-45ba145c4a2f"
+    },
+    "FileName": "CreateOrUpdateRole.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\CreateOrUpdateRole.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 31,
+        "CharNumber": 18,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "d3afe3d7-fc8e-4474-939c-45ba145c4a2f"
+    },
+    "FileName": "CreateOrUpdateRole.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\CreateOrUpdateRole.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 32,
+        "CharNumber": 18,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "d3afe3d7-fc8e-4474-939c-45ba145c4a2f"
+    },
+    "FileName": "CreateOrUpdateRole.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\CreateOrUpdateRole.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 33,
+        "CharNumber": 18,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "d3afe3d7-fc8e-4474-939c-45ba145c4a2f"
+    },
+    "FileName": "CreateOrUpdateRole.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\CreateOrUpdateRole.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 23,
+        "CharNumber": 39,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "d3afe3d7-fc8e-4474-939c-45ba145c4a2f"
+    },
+    "FileName": "CreateOrUpdateRole.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\CreateOrUpdateRole.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 24,
+        "CharNumber": 39,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "8e740438-6fe5-4782-99b6-10a6d47ea836"
+    },
+    "FileName": "ApiCallService.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Infrastructure\\Services\\ApiCallService.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 9,
+        "CharNumber": 51,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "aca73515-5b53-4f90-bb93-68b0a0711641"
+    },
+    "FileName": "SingleSelectRoleDropDownDataGrid.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\Common\\SingleSelectRoleDropDownDataGrid.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 10,
+        "CharNumber": 18,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "aca73515-5b53-4f90-bb93-68b0a0711641"
+    },
+    "FileName": "SingleSelectRoleDropDownDataGrid.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\Common\\SingleSelectRoleDropDownDataGrid.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 11,
+        "CharNumber": 35,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "aca73515-5b53-4f90-bb93-68b0a0711641"
+    },
+    "FileName": "SingleSelectRoleDropDownDataGrid.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\Common\\SingleSelectRoleDropDownDataGrid.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 9,
+        "CharNumber": 52,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "aca73515-5b53-4f90-bb93-68b0a0711641"
+    },
+    "FileName": "SingleSelectRoleDropDownDataGrid.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\Common\\SingleSelectRoleDropDownDataGrid.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 8,
+        "CharNumber": 44,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "6fee0a65-3fd3-4bf7-9674-13dee758c33e"
+    },
+    "FileName": "MenuService.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Infrastructure\\Services\\MenuService.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 9,
+        "CharNumber": 29,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "9a8992de-3af9-42c5-9843-d9eabaec1ce2"
+    },
+    "FileName": "Notifications.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Common\\Components\\Layout\\Notifications.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 9,
+        "CharNumber": 25,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "9a8992de-3af9-42c5-9843-d9eabaec1ce2"
+    },
+    "FileName": "Notifications.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Common\\Components\\Layout\\Notifications.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 8,
+        "CharNumber": 26,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "f63131d5-2f7a-4ae2-9f45-f77f4247ffa0"
+    },
+    "FileName": "Roles.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\Roles.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 13,
+        "CharNumber": 18,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "f63131d5-2f7a-4ae2-9f45-f77f4247ffa0"
+    },
+    "FileName": "Roles.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\Roles.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 27,
+        "CharNumber": 52,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "f63131d5-2f7a-4ae2-9f45-f77f4247ffa0"
+    },
+    "FileName": "Roles.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\Roles.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 12,
+        "CharNumber": 37,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "f63131d5-2f7a-4ae2-9f45-f77f4247ffa0"
+    },
+    "FileName": "Roles.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\Roles.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 43,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "f63131d5-2f7a-4ae2-9f45-f77f4247ffa0"
+    },
+    "FileName": "Roles.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\Roles.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 54,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "f63131d5-2f7a-4ae2-9f45-f77f4247ffa0"
+    },
+    "FileName": "Roles.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\Roles.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 65,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "f63131d5-2f7a-4ae2-9f45-f77f4247ffa0"
+    },
+    "FileName": "Roles.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\Roles.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 85,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "f63131d5-2f7a-4ae2-9f45-f77f4247ffa0"
+    },
+    "FileName": "Roles.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\Roles.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 96,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "f63131d5-2f7a-4ae2-9f45-f77f4247ffa0"
+    },
+    "FileName": "Roles.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Roles\\Roles.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 12,
+        "CharNumber": 37,
+        "DiagnosticId": "IDE0052",
+        "FormatDescription": "error IDE0052: Private member \u0027Roles.grid\u0027 can be removed as the value assigned to it is never read"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "944a37eb-7421-4e60-9d66-e8cb51169bdb"
+    },
+    "FileName": "Tenants.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Tenants\\Tenants.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 16,
+        "CharNumber": 39,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "944a37eb-7421-4e60-9d66-e8cb51169bdb"
+    },
+    "FileName": "Tenants.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Tenants\\Tenants.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 17,
+        "CharNumber": 18,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "944a37eb-7421-4e60-9d66-e8cb51169bdb"
+    },
+    "FileName": "Tenants.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Tenants\\Tenants.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 20,
+        "CharNumber": 54,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "944a37eb-7421-4e60-9d66-e8cb51169bdb"
+    },
+    "FileName": "Tenants.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Tenants\\Tenants.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 48,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "944a37eb-7421-4e60-9d66-e8cb51169bdb"
+    },
+    "FileName": "Tenants.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Tenants\\Tenants.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 59,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "944a37eb-7421-4e60-9d66-e8cb51169bdb"
+    },
+    "FileName": "Tenants.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Tenants\\Tenants.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 70,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "944a37eb-7421-4e60-9d66-e8cb51169bdb"
+    },
+    "FileName": "Tenants.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Tenants\\Tenants.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 90,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "944a37eb-7421-4e60-9d66-e8cb51169bdb"
+    },
+    "FileName": "Tenants.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Tenants\\Tenants.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 101,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "944a37eb-7421-4e60-9d66-e8cb51169bdb"
+    },
+    "FileName": "Tenants.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Tenants\\Tenants.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 16,
+        "CharNumber": 39,
+        "DiagnosticId": "IDE0052",
+        "FormatDescription": "error IDE0052: Private member \u0027Tenants.grid\u0027 can be removed as the value assigned to it is never read"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "5070721d-f6d1-4ea6-87cb-a354471ad99e"
+    },
+    "FileName": "RefitAuthHandler.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Infrastructure\\Auth\\RefitAuthHandler.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 13,
+        "CharNumber": 38,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "ba169666-e4be-446c-8afa-c9320a443cf4"
+    },
+    "FileName": "CreateOrUpdateUser.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\CreateOrUpdateUser.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 14,
+        "CharNumber": 31,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "ba169666-e4be-446c-8afa-c9320a443cf4"
+    },
+    "FileName": "CreateOrUpdateUser.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\CreateOrUpdateUser.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 13,
+        "CharNumber": 31,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "ba169666-e4be-446c-8afa-c9320a443cf4"
+    },
+    "FileName": "CreateOrUpdateUser.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\CreateOrUpdateUser.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 16,
+        "CharNumber": 18,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "ba169666-e4be-446c-8afa-c9320a443cf4"
+    },
+    "FileName": "CreateOrUpdateUser.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\CreateOrUpdateUser.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 43,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "6bec9c93-61e0-43ec-a6ef-5cf2ed93028c"
+    },
+    "FileName": "Users.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Users.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 13,
+        "CharNumber": 37,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "6bec9c93-61e0-43ec-a6ef-5cf2ed93028c"
+    },
+    "FileName": "Users.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Users.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 14,
+        "CharNumber": 38,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "6bec9c93-61e0-43ec-a6ef-5cf2ed93028c"
+    },
+    "FileName": "Users.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Users.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 16,
+        "CharNumber": 52,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "6bec9c93-61e0-43ec-a6ef-5cf2ed93028c"
+    },
+    "FileName": "Users.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Users.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 18,
+        "CharNumber": 18,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "6bec9c93-61e0-43ec-a6ef-5cf2ed93028c"
+    },
+    "FileName": "Users.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Users.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 27,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "6bec9c93-61e0-43ec-a6ef-5cf2ed93028c"
+    },
+    "FileName": "Users.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Users.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 51,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "6bec9c93-61e0-43ec-a6ef-5cf2ed93028c"
+    },
+    "FileName": "Users.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Users.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 62,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "6bec9c93-61e0-43ec-a6ef-5cf2ed93028c"
+    },
+    "FileName": "Users.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Users.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 73,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "6bec9c93-61e0-43ec-a6ef-5cf2ed93028c"
+    },
+    "FileName": "Users.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Users.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 93,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "6bec9c93-61e0-43ec-a6ef-5cf2ed93028c"
+    },
+    "FileName": "Users.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Users.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 13,
+        "CharNumber": 37,
+        "DiagnosticId": "IDE0052",
+        "FormatDescription": "error IDE0052: Private member \u0027Users.grid\u0027 can be removed as the value assigned to it is never read"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "e7a8f212-d9a6-4358-a1e5-4bbff71b0f77"
+    },
+    "FileName": "SingleSelectUserDropDownDataGrid.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Common\\SingleSelectUserDropDownDataGrid.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 10,
+        "CharNumber": 18,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "e7a8f212-d9a6-4358-a1e5-4bbff71b0f77"
+    },
+    "FileName": "SingleSelectUserDropDownDataGrid.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Common\\SingleSelectUserDropDownDataGrid.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 9,
+        "CharNumber": 17,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "e7a8f212-d9a6-4358-a1e5-4bbff71b0f77"
+    },
+    "FileName": "SingleSelectUserDropDownDataGrid.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Common\\SingleSelectUserDropDownDataGrid.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 11,
+        "CharNumber": 36,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "e7a8f212-d9a6-4358-a1e5-4bbff71b0f77"
+    },
+    "FileName": "SingleSelectUserDropDownDataGrid.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Common\\SingleSelectUserDropDownDataGrid.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 8,
+        "CharNumber": 44,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "e7a8f212-d9a6-4358-a1e5-4bbff71b0f77"
+    },
+    "FileName": "SingleSelectUserDropDownDataGrid.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Common\\SingleSelectUserDropDownDataGrid.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 21,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "e7a8f212-d9a6-4358-a1e5-4bbff71b0f77"
+    },
+    "FileName": "SingleSelectUserDropDownDataGrid.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\Common\\SingleSelectUserDropDownDataGrid.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 61,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "16bfaa27-1746-4d30-9b0d-f46457b991f3"
+    },
+    "FileName": "MainLayout.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Common\\Components\\Layout\\MainLayout.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 32,
+        "CharNumber": 31,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "16bfaa27-1746-4d30-9b0d-f46457b991f3"
+    },
+    "FileName": "MainLayout.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Common\\Components\\Layout\\MainLayout.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 24,
+        "CharNumber": 27,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "16bfaa27-1746-4d30-9b0d-f46457b991f3"
+    },
+    "FileName": "MainLayout.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Common\\Components\\Layout\\MainLayout.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 34,
+        "CharNumber": 34,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "16bfaa27-1746-4d30-9b0d-f46457b991f3"
+    },
+    "FileName": "MainLayout.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Common\\Components\\Layout\\MainLayout.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 25,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "16bfaa27-1746-4d30-9b0d-f46457b991f3"
+    },
+    "FileName": "MainLayout.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Common\\Components\\Layout\\MainLayout.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 24,
+        "CharNumber": 27,
+        "DiagnosticId": "IDE0052",
+        "FormatDescription": "error IDE0052: Private member \u0027MainLayout.sidebar0\u0027 can be removed as the value assigned to it is never read"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "16bfaa27-1746-4d30-9b0d-f46457b991f3"
+    },
+    "FileName": "MainLayout.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Common\\Components\\Layout\\MainLayout.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 25,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE0052",
+        "FormatDescription": "error IDE0052: Private member \u0027MainLayout.body0\u0027 can be removed as the value assigned to it is never read"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "348cdccb-0f4e-479e-b581-7d9b0b27265b"
+    },
+    "FileName": "AuthenticationService.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Infrastructure\\Auth\\AuthenticationService.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 68,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "734cffd5-5b9e-4185-895d-1d0a5d82ef33"
+    },
+    "FileName": "ThemeManager.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Infrastructure\\Services\\ThemeManager.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 19,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "734cffd5-5b9e-4185-895d-1d0a5d82ef33"
+    },
+    "FileName": "ThemeManager.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Infrastructure\\Services\\ThemeManager.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 56,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "734cffd5-5b9e-4185-895d-1d0a5d82ef33"
+    },
+    "FileName": "ThemeManager.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Infrastructure\\Services\\ThemeManager.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 124,
+        "CharNumber": 32,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "d07b809f-691c-46a5-ae61-bdc3ac5768c3"
+    },
+    "FileName": "ChangePassword.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\ChangePassword.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 16,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "da523f78-e568-4837-bd98-7d634f5cdfcb"
+    },
+    "FileName": "ResetPassword.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\ResetPassword.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 16,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "f66bab49-acc3-4bff-a306-4499a95e5a20"
+      },
+      "Id": "365a4acb-848f-4be1-a4b5-59ef2c9365be"
+    },
+    "FileName": "ForgotPassword.razor.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web.Client\\Features\\Users\\ForgotPassword.razor.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 9,
+        "CharNumber": 24,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7d28da28-f32c-49b6-a4ba-8889d817e019"
+      },
+      "Id": "c0903240-8235-4d13-acb2-1d8402bb13fe"
+    },
+    "FileName": "AuthCookieMiddleware.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web\\Infrastructure\\Auth\\AuthCookieMiddleware.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 25,
+        "CharNumber": 68,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7d28da28-f32c-49b6-a4ba-8889d817e019"
+      },
+      "Id": "c0903240-8235-4d13-acb2-1d8402bb13fe"
+    },
+    "FileName": "AuthCookieMiddleware.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web\\Infrastructure\\Auth\\AuthCookieMiddleware.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 18,
+        "CharNumber": 45,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7d28da28-f32c-49b6-a4ba-8889d817e019"
+      },
+      "Id": "a90b62d5-2dfd-4809-92ab-83312671bef9"
+    },
+    "FileName": "BlazorJwtBearerEvents.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web\\Infrastructure\\Auth\\BlazorJwtBearerEvents.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 30,
+        "CharNumber": 38,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7d28da28-f32c-49b6-a4ba-8889d817e019"
+      },
+      "Id": "bdeb908e-cc44-42e9-9839-a942d9ead3f1"
+    },
+    "FileName": "ServerAuthApiService.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\src\\UI\\AditiKraft.Krafter.UI.Web\\Infrastructure\\Auth\\ServerAuthApiService.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 16,
+        "CharNumber": 53,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "error IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "fa11128d-c315-4925-8e39-9be5ca9fe1d8"
+    },
+    "FileName": "TenantCreationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantCreationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 21,
+        "CharNumber": 37,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "fa11128d-c315-4925-8e39-9be5ca9fe1d8"
+    },
+    "FileName": "TenantCreationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantCreationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 30,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "fa11128d-c315-4925-8e39-9be5ca9fe1d8"
+    },
+    "FileName": "TenantCreationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantCreationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 108,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "fa11128d-c315-4925-8e39-9be5ca9fe1d8"
+    },
+    "FileName": "TenantCreationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantCreationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 134,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "fa11128d-c315-4925-8e39-9be5ca9fe1d8"
+    },
+    "FileName": "TenantCreationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantCreationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 148,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "fa11128d-c315-4925-8e39-9be5ca9fe1d8"
+    },
+    "FileName": "TenantCreationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantCreationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 168,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "fa11128d-c315-4925-8e39-9be5ca9fe1d8"
+    },
+    "FileName": "TenantCreationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantCreationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 184,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "fa11128d-c315-4925-8e39-9be5ca9fe1d8"
+    },
+    "FileName": "TenantCreationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantCreationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 208,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "a2d883bd-c963-4fca-85bc-48d2ab9adeef"
+    },
+    "FileName": "RefitRefreshCoordinationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\RefitRefreshCoordinationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 21,
+        "CharNumber": 38,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "a2d883bd-c963-4fca-85bc-48d2ab9adeef"
+    },
+    "FileName": "RefitRefreshCoordinationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\RefitRefreshCoordinationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 24,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "10704714-6f7e-4d08-af5e-06fe6391564f"
+    },
+    "FileName": "ServerRefreshCoordinationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\ServerRefreshCoordinationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 22,
+        "CharNumber": 38,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "10704714-6f7e-4d08-af5e-06fe6391564f"
+    },
+    "FileName": "ServerRefreshCoordinationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\ServerRefreshCoordinationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 25,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "10704714-6f7e-4d08-af5e-06fe6391564f"
+    },
+    "FileName": "ServerRefreshCoordinationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\ServerRefreshCoordinationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 84,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "10704714-6f7e-4d08-af5e-06fe6391564f"
+    },
+    "FileName": "ServerRefreshCoordinationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\ServerRefreshCoordinationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 128,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "10704714-6f7e-4d08-af5e-06fe6391564f"
+    },
+    "FileName": "ServerRefreshCoordinationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\ServerRefreshCoordinationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 154,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "8920571c-3832-4888-b629-b5fb1a338b0e"
+    },
+    "FileName": "AuthTokenServiceTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\AuthTokenServiceTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 9,
+        "CharNumber": 38,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "8920571c-3832-4888-b629-b5fb1a338b0e"
+    },
+    "FileName": "AuthTokenServiceTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\AuthTokenServiceTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 12,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "8920571c-3832-4888-b629-b5fb1a338b0e"
+    },
+    "FileName": "AuthTokenServiceTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\AuthTokenServiceTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 42,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "8920571c-3832-4888-b629-b5fb1a338b0e"
+    },
+    "FileName": "AuthTokenServiceTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\AuthTokenServiceTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 77,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "8920571c-3832-4888-b629-b5fb1a338b0e"
+    },
+    "FileName": "AuthTokenServiceTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\AuthTokenServiceTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 103,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "8920571c-3832-4888-b629-b5fb1a338b0e"
+    },
+    "FileName": "AuthTokenServiceTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\AuthTokenServiceTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 123,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "8920571c-3832-4888-b629-b5fb1a338b0e"
+    },
+    "FileName": "AuthTokenServiceTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\AuthTokenServiceTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 137,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "8920571c-3832-4888-b629-b5fb1a338b0e"
+    },
+    "FileName": "AuthTokenServiceTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\AuthTokenServiceTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 172,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "8920571c-3832-4888-b629-b5fb1a338b0e"
+    },
+    "FileName": "AuthTokenServiceTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\AuthTokenServiceTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 185,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "8920571c-3832-4888-b629-b5fb1a338b0e"
+    },
+    "FileName": "AuthTokenServiceTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\AuthTokenServiceTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 198,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "9f27d5ca-2d13-40e7-8b09-93ba85212fe8"
+    },
+    "FileName": "RoleEditorTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Roles\\RoleEditorTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 151,
+        "CharNumber": 39,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "9f27d5ca-2d13-40e7-8b09-93ba85212fe8"
+    },
+    "FileName": "RoleEditorTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Roles\\RoleEditorTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 149,
+        "CharNumber": 42,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "9f27d5ca-2d13-40e7-8b09-93ba85212fe8"
+    },
+    "FileName": "RoleEditorTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Roles\\RoleEditorTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 150,
+        "CharNumber": 45,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "9f27d5ca-2d13-40e7-8b09-93ba85212fe8"
+    },
+    "FileName": "RoleEditorTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Roles\\RoleEditorTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 23,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "9f27d5ca-2d13-40e7-8b09-93ba85212fe8"
+    },
+    "FileName": "RoleEditorTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Roles\\RoleEditorTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 67,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "9f27d5ca-2d13-40e7-8b09-93ba85212fe8"
+    },
+    "FileName": "RoleEditorTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Roles\\RoleEditorTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 100,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "9f27d5ca-2d13-40e7-8b09-93ba85212fe8"
+    },
+    "FileName": "RoleEditorTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Roles\\RoleEditorTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 124,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "eb653116-c929-4e71-ab48-aab2e424b02f"
+    },
+    "FileName": "TenantEditorTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantEditorTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 109,
+        "CharNumber": 39,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "eb653116-c929-4e71-ab48-aab2e424b02f"
+    },
+    "FileName": "TenantEditorTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantEditorTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 107,
+        "CharNumber": 42,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "eb653116-c929-4e71-ab48-aab2e424b02f"
+    },
+    "FileName": "TenantEditorTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantEditorTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 108,
+        "CharNumber": 45,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "eb653116-c929-4e71-ab48-aab2e424b02f"
+    },
+    "FileName": "TenantEditorTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantEditorTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 18,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "eb653116-c929-4e71-ab48-aab2e424b02f"
+    },
+    "FileName": "TenantEditorTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantEditorTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 43,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "eb653116-c929-4e71-ab48-aab2e424b02f"
+    },
+    "FileName": "TenantEditorTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantEditorTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 61,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "eb653116-c929-4e71-ab48-aab2e424b02f"
+    },
+    "FileName": "TenantEditorTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantEditorTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 78,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "29728e69-8e66-4d01-87bd-7ec49821f576"
+    },
+    "FileName": "ContractsFormValidationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Validation\\ContractsFormValidationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 121,
+        "CharNumber": 45,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "29728e69-8e66-4d01-87bd-7ec49821f576"
+    },
+    "FileName": "ContractsFormValidationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Validation\\ContractsFormValidationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 122,
+        "CharNumber": 39,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "29728e69-8e66-4d01-87bd-7ec49821f576"
+    },
+    "FileName": "ContractsFormValidationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Validation\\ContractsFormValidationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 120,
+        "CharNumber": 42,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing prefix: \u0027_\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "29728e69-8e66-4d01-87bd-7ec49821f576"
+    },
+    "FileName": "ContractsFormValidationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Validation\\ContractsFormValidationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 26,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "29728e69-8e66-4d01-87bd-7ec49821f576"
+    },
+    "FileName": "ContractsFormValidationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Validation\\ContractsFormValidationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 56,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "29728e69-8e66-4d01-87bd-7ec49821f576"
+    },
+    "FileName": "ContractsFormValidationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Validation\\ContractsFormValidationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 95,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "b0bb7303-0342-4765-a339-755186f1eec2"
+    },
+    "FileName": "OpenApiConfigurationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Configuration\\OpenApiConfigurationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 12,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "92b6db22-e140-41ec-8573-b96302a51374"
+    },
+    "FileName": "PermissionAuthorizationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Authorization\\PermissionAuthorizationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 55,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "92b6db22-e140-41ec-8573-b96302a51374"
+    },
+    "FileName": "PermissionAuthorizationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Authorization\\PermissionAuthorizationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 69,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "92b6db22-e140-41ec-8573-b96302a51374"
+    },
+    "FileName": "PermissionAuthorizationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Authorization\\PermissionAuthorizationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 22,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "92b6db22-e140-41ec-8573-b96302a51374"
+    },
+    "FileName": "PermissionAuthorizationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Authorization\\PermissionAuthorizationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 84,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "92b6db22-e140-41ec-8573-b96302a51374"
+    },
+    "FileName": "PermissionAuthorizationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Authorization\\PermissionAuthorizationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 98,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "92b6db22-e140-41ec-8573-b96302a51374"
+    },
+    "FileName": "PermissionAuthorizationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Authorization\\PermissionAuthorizationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 40,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "c6cdf054-0908-4dfa-a473-7b4e2a799c90"
+    },
+    "FileName": "TenantUrlRoutingTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Configuration\\TenantUrlRoutingTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 35,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "c6cdf054-0908-4dfa-a473-7b4e2a799c90"
+    },
+    "FileName": "TenantUrlRoutingTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Configuration\\TenantUrlRoutingTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 63,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "c6cdf054-0908-4dfa-a473-7b4e2a799c90"
+    },
+    "FileName": "TenantUrlRoutingTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Configuration\\TenantUrlRoutingTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 93,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "c6cdf054-0908-4dfa-a473-7b4e2a799c90"
+    },
+    "FileName": "TenantUrlRoutingTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Configuration\\TenantUrlRoutingTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 99,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "c6cdf054-0908-4dfa-a473-7b4e2a799c90"
+    },
+    "FileName": "TenantUrlRoutingTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Configuration\\TenantUrlRoutingTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 105,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "c6cdf054-0908-4dfa-a473-7b4e2a799c90"
+    },
+    "FileName": "TenantUrlRoutingTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Configuration\\TenantUrlRoutingTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 126,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "5eca08e2-f4e5-4e9e-8698-5956991b4e7e"
+    },
+    "FileName": "TenantUpdateEndpointTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantUpdateEndpointTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 22,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "5eca08e2-f4e5-4e9e-8698-5956991b4e7e"
+    },
+    "FileName": "TenantUpdateEndpointTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantUpdateEndpointTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 56,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "5eca08e2-f4e5-4e9e-8698-5956991b4e7e"
+    },
+    "FileName": "TenantUpdateEndpointTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantUpdateEndpointTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 82,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "9a7ad4ab-1cca-45fc-a4c0-e28e00269a4d"
+    },
+    "FileName": "CorsConfigurationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Configuration\\CorsConfigurationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 128,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "f4f2ab8e-6bff-4d43-87f8-fd449906fad2"
+    },
+    "FileName": "RefitDateTimeTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\RefitDateTimeTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 14,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "f4f2ab8e-6bff-4d43-87f8-fd449906fad2"
+    },
+    "FileName": "RefitDateTimeTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\RefitDateTimeTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 36,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "f4f2ab8e-6bff-4d43-87f8-fd449906fad2"
+    },
+    "FileName": "RefitDateTimeTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\RefitDateTimeTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 50,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "f4f2ab8e-6bff-4d43-87f8-fd449906fad2"
+    },
+    "FileName": "RefitDateTimeTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\RefitDateTimeTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 61,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "ed46cb36-3dd8-4b1d-be42-3a05e7a37742"
+    },
+    "FileName": "RolePermissionTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Roles\\RolePermissionTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 16,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "ed46cb36-3dd8-4b1d-be42-3a05e7a37742"
+    },
+    "FileName": "RolePermissionTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Roles\\RolePermissionTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 40,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "ed46cb36-3dd8-4b1d-be42-3a05e7a37742"
+    },
+    "FileName": "RolePermissionTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Roles\\RolePermissionTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 62,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "ed46cb36-3dd8-4b1d-be42-3a05e7a37742"
+    },
+    "FileName": "RolePermissionTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Roles\\RolePermissionTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 82,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "ed46cb36-3dd8-4b1d-be42-3a05e7a37742"
+    },
+    "FileName": "RolePermissionTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Roles\\RolePermissionTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 113,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "9008dc20-1a9e-466a-9bac-6be25b92dcd7"
+    },
+    "FileName": "UserMutationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Users\\UserMutationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 15,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "9008dc20-1a9e-466a-9bac-6be25b92dcd7"
+    },
+    "FileName": "UserMutationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Users\\UserMutationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 42,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "9008dc20-1a9e-466a-9bac-6be25b92dcd7"
+    },
+    "FileName": "UserMutationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Users\\UserMutationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 85,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "9008dc20-1a9e-466a-9bac-6be25b92dcd7"
+    },
+    "FileName": "UserMutationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Users\\UserMutationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 111,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "9008dc20-1a9e-466a-9bac-6be25b92dcd7"
+    },
+    "FileName": "UserMutationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Users\\UserMutationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 138,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "34aa098c-942b-4622-95db-a6776ffdd460"
+    },
+    "FileName": "RealtimeTenantTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\RealtimeTenantTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 21,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "34aa098c-942b-4622-95db-a6776ffdd460"
+    },
+    "FileName": "RealtimeTenantTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\RealtimeTenantTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 65,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "07a7a4ad-bbc7-47a5-a3b8-7db83a418e3d"
+    },
+    "FileName": "PersistenceTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Persistence\\PersistenceTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 49,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "07a7a4ad-bbc7-47a5-a3b8-7db83a418e3d"
+    },
+    "FileName": "PersistenceTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Persistence\\PersistenceTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 64,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "a417e0f1-13a5-4e37-8384-178410b5cbd2"
+    },
+    "FileName": "AuthStorageServiceServerTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Auth\\AuthStorageServiceServerTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 16,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "e2b77f9e-dee5-4c60-a7e8-7c2089643569"
+    },
+    "FileName": "UiUrlConfigurationTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Configuration\\UiUrlConfigurationTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 98,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "bc28edba-66d0-497e-aaee-effef8f8db43"
+    },
+    "FileName": "TenantSelectionTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantSelectionTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 68,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "bc28edba-66d0-497e-aaee-effef8f8db43"
+    },
+    "FileName": "TenantSelectionTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantSelectionTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 25,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  },
+  {
+    "DocumentId": {
+      "ProjectId": {
+        "Id": "7ec7bbef-a66c-4f2a-b805-d757d7d37247"
+      },
+      "Id": "bc28edba-66d0-497e-aaee-effef8f8db43"
+    },
+    "FileName": "TenantSelectionTests.cs",
+    "FilePath": "C:\\source\\playground\\Krafter\\tests\\AditiKraft.Krafter.Tests\\Tenants\\TenantSelectionTests.cs",
+    "FileChanges": [
+      {
+        "LineNumber": 75,
+        "CharNumber": 23,
+        "DiagnosticId": "IDE1006",
+        "FormatDescription": "warning IDE1006: Naming rule violation: Missing suffix: \u0027Async\u0027"
+      }
+    ]
+  }
+]

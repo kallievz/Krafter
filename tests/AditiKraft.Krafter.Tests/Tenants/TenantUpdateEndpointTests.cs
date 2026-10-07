@@ -19,14 +19,17 @@ public sealed class TenantUpdateEndpointTests
     [InlineData("root", null, HttpStatusCode.OK)]
     [InlineData("root", "wrong-body-id", HttpStatusCode.OK)]
     [InlineData("blue-id", "root", HttpStatusCode.BadRequest)]
-    public async Task UpdateValidationUsesRouteIdInsteadOfBodyId(string routeId, string? bodyId,
+    public async Task UpdateValidationUsesRouteIdInsteadOfBodyIdAsync(string routeId, string? bodyId,
         HttpStatusCode expectedStatus)
     {
         await using WebApplication app = await CreateAppAsync();
         var request = new Dictionary<string, object?>
         {
-            ["identifier"] = "root", ["name"] = "Updated root", ["adminEmail"] = "admin@example.com",
-            ["isActive"] = true, ["validUpto"] = new DateTime(2030, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            ["identifier"] = "root",
+            ["name"] = "Updated root",
+            ["adminEmail"] = "admin@example.com",
+            ["isActive"] = true,
+            ["validUpto"] = new DateTime(2030, 1, 1, 0, 0, 0, DateTimeKind.Utc)
         };
         if (bodyId is not null)
         {
@@ -50,14 +53,17 @@ public sealed class TenantUpdateEndpointTests
     [InlineData("2030-06-15T14:30:00", HttpStatusCode.BadRequest)]
     [InlineData("2030-06-15T00:00:00Z", HttpStatusCode.OK)]
     [InlineData("2030-06-15T18:15:00Z", HttpStatusCode.OK)]
-    public async Task UpdateRequiresUtcAndPreservesExactExpiry(string validUntil, HttpStatusCode expectedStatus)
+    public async Task UpdateRequiresUtcAndPreservesExactExpiryAsync(string validUntil, HttpStatusCode expectedStatus)
     {
         await using WebApplication app = await CreateAppAsync();
         using var client = new HttpClient { BaseAddress = new Uri(Assert.Single(app.Urls)) };
         using HttpResponseMessage response = await client.PutAsJsonAsync($"/{ApiRoutes.Tenants}/blue-id", new
         {
-            Identifier = "blue", Name = "Blue tenant", AdminEmail = "admin@example.com",
-            IsActive = true, ValidUpto = validUntil
+            Identifier = "blue",
+            Name = "Blue tenant",
+            AdminEmail = "admin@example.com",
+            IsActive = true,
+            ValidUpto = validUntil
         });
 
         Assert.Equal(expectedStatus, response.StatusCode);
@@ -73,14 +79,17 @@ public sealed class TenantUpdateEndpointTests
     }
 
     [Fact]
-    public async Task UpdateRejectsRootValidityChange()
+    public async Task UpdateRejectsRootValidityChangeAsync()
     {
         await using WebApplication app = await CreateAppAsync();
         using var client = new HttpClient { BaseAddress = new Uri(Assert.Single(app.Urls)) };
         using HttpResponseMessage response = await client.PutAsJsonAsync($"/{ApiRoutes.Tenants}/root", new
         {
-            Identifier = "root", Name = "Root tenant", AdminEmail = "admin@example.com",
-            IsActive = true, ValidUpto = "2030-06-15T00:00:00Z"
+            Identifier = "root",
+            Name = "Root tenant",
+            AdminEmail = "admin@example.com",
+            IsActive = true,
+            ValidUpto = "2030-06-15T00:00:00Z"
         });
 
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
@@ -93,7 +102,7 @@ public sealed class TenantUpdateEndpointTests
     private static async Task<WebApplication> CreateAppAsync()
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder();
-        string databaseName = Guid.NewGuid().ToString();
+        string databaseName = Guid.CreateVersion7().ToString();
         builder.Services.AddDbContext<TenantDbContext>(options => options.UseInMemoryDatabase(databaseName));
         builder.Services.AddSingleton(new AppUrls
         {
@@ -119,13 +128,21 @@ public sealed class TenantUpdateEndpointTests
             db.Tenants.AddRange(
                 new Tenant
                 {
-                    Id = "root", Identifier = "root", Name = "Root tenant", AdminEmail = "admin@example.com",
-                    IsActive = true, ValidUpto = validUntil
+                    Id = "root",
+                    Identifier = "root",
+                    Name = "Root tenant",
+                    AdminEmail = "admin@example.com",
+                    IsActive = true,
+                    ValidUpto = validUntil
                 },
                 new Tenant
                 {
-                    Id = "blue-id", Identifier = "blue", Name = "Blue tenant", AdminEmail = "admin@example.com",
-                    IsActive = true, ValidUpto = validUntil
+                    Id = "blue-id",
+                    Identifier = "blue",
+                    Name = "Blue tenant",
+                    AdminEmail = "admin@example.com",
+                    IsActive = true,
+                    ValidUpto = validUntil
                 });
             await db.SaveChangesAsync();
         }
@@ -133,3 +150,4 @@ public sealed class TenantUpdateEndpointTests
         return app;
     }
 }
+

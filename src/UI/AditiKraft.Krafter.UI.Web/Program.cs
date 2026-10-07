@@ -1,12 +1,12 @@
 using AditiKraft.Krafter.Aspire.ServiceDefaults;
 using AditiKraft.Krafter.Contracts.Common;
+using AditiKraft.Krafter.UI.Web.Client.Features.Auth;
 using AditiKraft.Krafter.UI.Web.Components;
 using AditiKraft.Krafter.UI.Web.Infrastructure.Auth;
 using AditiKraft.Krafter.UI.Web.Infrastructure.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
@@ -81,6 +81,13 @@ static void MapAuthTokenEndpoints(WebApplication app)
         {
             Response<TokenResponse> tokenResponse = await apiService.ExternalAuthAsync(request, CancellationToken.None);
             return Results.Json(tokenResponse, statusCode: tokenResponse.StatusCode);
+        });
+
+    app.MapPost($"/{ApiRoutes.ApiPrefix}/{ApiRoutes.Tokens}/self-register",
+        async ([FromBody] SelfRegisterRequest request, IAuthApiService apiService) =>
+        {
+            Response response = await apiService.SelfRegisterAsync(request, CancellationToken.None);
+            return Results.Json(response, statusCode: response.StatusCode);
         });
 
     app.MapPost($"/{ApiRoutes.ApiPrefix}/{ApiRoutes.Tokens}/{RouteSegment.Logout}", async (IAuthApiService apiService) =>

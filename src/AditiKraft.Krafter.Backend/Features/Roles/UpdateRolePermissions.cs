@@ -1,6 +1,6 @@
-using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Backend.Features.Roles.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
+using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Backend.Web.Authorization;
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Auth.Permissions;
@@ -33,7 +33,9 @@ public sealed class UpdateRolePermissions
             {
                 return new Response
                 {
-                    IsError = true, StatusCode = 403, Message = "Not allowed to modify Permissions for this Role."
+                    IsError = true,
+                    StatusCode = 403,
+                    Message = "Not allowed to modify Permissions for this Role."
                 };
             }
 
@@ -64,6 +66,3 @@ public sealed class UpdateRolePermissions
         }
     }
 }
-
-
-

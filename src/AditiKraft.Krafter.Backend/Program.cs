@@ -1,7 +1,7 @@
-using AditiKraft.Krafter.Contracts.Common;
+using AditiKraft.Krafter.Aspire.ServiceDefaults;
 using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Backend.Web.Configuration;
-using AditiKraft.Krafter.Aspire.ServiceDefaults;
+using AditiKraft.Krafter.Contracts.Common;
 using Microsoft.AspNetCore.HttpOverrides;
 
 namespace AditiKraft.Krafter.Backend;
@@ -43,7 +43,7 @@ public static class Program
         app.UseSwaggerConfiguration();
         app.UseHttpsRedirection();
 
-        app.UseBackendMiddleware(builder.Configuration);
+        app.UseBackendMiddleware();
 
         // Backend endpoints (VSA routes, SignalR hub, background jobs dashboard)
         app.MapBackendEndpoints();
@@ -51,6 +51,3 @@ public static class Program
         app.Run();
     }
 }
-
-
-

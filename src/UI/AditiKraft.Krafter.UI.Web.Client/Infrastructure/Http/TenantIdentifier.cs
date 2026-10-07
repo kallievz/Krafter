@@ -1,6 +1,7 @@
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Enums;
-using Microsoft.AspNetCore.Http;
+using AditiKraft.Krafter.UI.Web.Client.Common.Models;
+using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Services;
 
 namespace AditiKraft.Krafter.UI.Web.Client.Infrastructure.Http;
 
@@ -19,7 +20,11 @@ public class TenantIdentifier(IServiceProvider serviceProvider, AppUrls urls)
         string? subdomain = TenantSettings.TenancyMode == TenancyMode.Multi
             ? urls.GetUiTenantIdentifier(uiUri.Host)
             : null;
-        string tenantIdentifier = subdomain ?? DefaultTenantConstants.Identifier;
+        string tenantIdentifier = !string.IsNullOrWhiteSpace(subdomain)
+            ? subdomain
+            : string.IsNullOrWhiteSpace(TenantInfo.Identifier)
+                ? DefaultTenantConstants.Identifier
+                : TenantInfo.Identifier;
         string clientBaseAddress = uiUri.GetLeftPart(UriPartial.Authority);
         Uri apiUri;
 
@@ -41,17 +46,51 @@ public class TenantIdentifier(IServiceProvider serviceProvider, AppUrls urls)
     {
         if (formFactor == "Web")
         {
-            HttpRequest request = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext?.Request
-                ?? throw new InvalidOperationException("The current HTTP request is required to resolve tenant URLs.");
-            return new Uri($"{request.Scheme}://{request.Host}");
+            IRequestContextAccessor? requestContextAccessor = serviceProvider.GetService<IRequestContextAccessor>();
+            Uri? requestUri = requestContextAccessor?.GetRequestBaseUri();
+            if (requestUri is not null)
+            {
+                return requestUri;
+            }
+
+            Uri? fallbackBaseUri = TryGetNavigationBaseUri();
+            if (fallbackBaseUri is not null)
+            {
+                return fallbackBaseUri;
+            }
+
+            return urls.GetRootUiUri();
         }
 
         if (formFactor == "WebAssembly")
         {
-            return new Uri(serviceProvider.GetRequiredService<NavigationManager>().BaseUri);
+            Uri? webAssemblyBaseUri = TryGetNavigationBaseUri();
+            if (webAssemblyBaseUri is not null)
+            {
+                return webAssemblyBaseUri;
+            }
+
+            return urls.GetRootUiUri();
         }
 
         return urls.GetRootUiUri();
     }
 
+    private Uri? TryGetNavigationBaseUri()
+    {
+        NavigationManager? navigationManager = serviceProvider.GetService<NavigationManager>();
+        if (navigationManager is null)
+        {
+            return null;
+        }
+
+        try
+        {
+            return Uri.TryCreate(navigationManager.BaseUri, UriKind.Absolute, out Uri? baseUri) ? baseUri : null;
+        }
+        catch (InvalidOperationException)
+        {
+            return null;
+        }
+    }
 }

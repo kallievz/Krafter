@@ -5,7 +5,6 @@ using System.Text;
 using AditiKraft.Krafter.Backend.Common;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
-using AditiKraft.Krafter.Backend.Web.Configuration;
 using AditiKraft.Krafter.Contracts.Common.Auth;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Auth;
@@ -20,13 +19,10 @@ public class TokenService(
     UserManager<ApplicationUser> userManager,
     ApplicationDbContext applicationDbContext,
     IUserService userService,
-    IOptions<JwtSettings> jwtSettings,
-    IOptions<SecuritySettings> securitySettings)
+    IOptions<JwtSettings> jwtSettings)
     : ITokenService, IScopedService
 {
-    private readonly SecuritySettings _securitySettings = securitySettings.Value;
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
-
 
     public async Task<Response<TokenResponse>> GenerateTokensAndUpdateUser(string userId, string ipAddress)
     {
@@ -104,7 +100,6 @@ public class TokenService(
         var tokenHandler = new JwtSecurityTokenHandler();
         return tokenHandler.WriteToken(token);
     }
-
 
     private SigningCredentials GetSigningCredentials()
     {

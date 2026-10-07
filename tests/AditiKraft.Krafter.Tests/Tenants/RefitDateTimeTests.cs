@@ -11,7 +11,7 @@ public sealed class RefitDateTimeTests
     [InlineData(DateTimeKind.Unspecified)]
     [InlineData(DateTimeKind.Local)]
     [InlineData(DateTimeKind.Utc)]
-    public async Task RefitSendsUtcAndReadsLocalWithoutChangingInput(DateTimeKind kind)
+    public async Task RefitSendsUtcAndReadsLocalWithoutChangingInputAsync(DateTimeKind kind)
     {
         DateTime input = new(2030, 6, 15, 12, 34, 56, kind);
         var handler = new EchoHandler();
@@ -33,7 +33,7 @@ public sealed class RefitDateTimeTests
     }
 
     [Fact]
-    public async Task NullAndUnlimitedExpirySurviveRefitRoundTrip()
+    public async Task NullAndUnlimitedExpirySurviveRefitRoundTripAsync()
     {
         using var http = new HttpClient(new EchoHandler()) { BaseAddress = new Uri("https://example.test") };
         IDateApi api = CreateApi(http, localizeResponses: true);
@@ -47,7 +47,7 @@ public sealed class RefitDateTimeTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public async Task ResponseOffsetsPreserveTheInstantAndServerReadsStayUtc(bool localizeResponses)
+    public async Task ResponseOffsetsPreserveTheInstantAndServerReadsStayUtcAsync(bool localizeResponses)
     {
         var handler = new EchoHandler { ResponseBody = "{\"Timestamp\":\"2030-06-15T12:00:00+05:45\"}" };
         using var http = new HttpClient(handler) { BaseAddress = new Uri("https://example.test") };
@@ -58,7 +58,7 @@ public sealed class RefitDateTimeTests
     }
 
     [Fact]
-    public async Task ResponseWithoutOffsetIsTreatedAsUtc()
+    public async Task ResponseWithoutOffsetIsTreatedAsUtcAsync()
     {
         var handler = new EchoHandler { ResponseBody = "{\"Timestamp\":\"2030-06-15T12:00:00\"}" };
         using var http = new HttpClient(handler) { BaseAddress = new Uri("https://example.test") };
@@ -77,7 +77,7 @@ public sealed class RefitDateTimeTests
     public interface IDateApi
     {
         [Post("/dates")]
-        Task<DatePayload> RoundTripAsync([Body] DatePayload request);
+        public Task<DatePayload> RoundTripAsync([Body] DatePayload request);
     }
 
     public sealed class DatePayload
@@ -101,3 +101,4 @@ public sealed class RefitDateTimeTests
         }
     }
 }
+

@@ -64,19 +64,25 @@ public class UserService(
         }
 
         IList<string> userRoles = await userManager.GetRolesAsync(user);
-        var permissions = new List<string>();
-        foreach (ApplicationRole role in await roleManager.Roles.AsNoTracking()
-                     .Where(r => userRoles.Contains(r.Name!) && r.IsDeleted == false)
-                     .ToListAsync(cancellationToken))
+        List<string> roleIds = await roleManager.Roles.AsNoTracking()
+            .Where(r => r.Name != null && userRoles.Contains(r.Name) && r.IsDeleted == false)
+            .Select(r => r.Id)
+            .ToListAsync(cancellationToken);
+
+        if (roleIds.Count == 0)
         {
-            permissions.AddRange(await db.RoleClaims.AsNoTracking()
-                .Where(rc =>
-                    rc.RoleId == role.Id && rc.ClaimType == AppClaimTypes.Permission && rc.IsDeleted == false)
-                .Select(rc => rc.ClaimValue!)
-                .ToListAsync(cancellationToken));
+            return Response<List<string>>.Success([]);
         }
 
-        return Response<List<string>>.Success(permissions.Distinct().ToList());
+        List<string> permissions = await db.RoleClaims.AsNoTracking()
+            .Where(rc => rc.ClaimType == AppClaimTypes.Permission &&
+                         rc.IsDeleted == false &&
+                         roleIds.Contains(rc.RoleId))
+            .Select(rc => rc.ClaimValue!)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+
+        return Response<List<string>>.Success(permissions);
     }
 
     public async Task<Response<bool>> HasPermissionAsync(string userId, string permission,
@@ -90,5 +96,4 @@ public class UserService(
 
         return Response<bool>.Success(permissions?.Data?.Contains(permission) ?? false);
     }
-
 }

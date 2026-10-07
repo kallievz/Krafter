@@ -1,4 +1,4 @@
-﻿namespace AditiKraft.Krafter.Contracts.Common.Models;
+namespace AditiKraft.Krafter.Contracts.Common.Models;
 
 public class PaginationResponse<T>(List<T> items, int count, int skipCount, int maxResultCount)
 {

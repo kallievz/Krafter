@@ -1,5 +1,5 @@
-using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Backend.Features.Tenants.Common;
+using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Tenants;
@@ -18,13 +18,10 @@ public sealed class SeedBasicData
                 ([FromBody] SeedDataRequest request,
                     [FromServices] DataSeedService tenantSeedService) =>
                 {
-                    Response res = await tenantSeedService.SeedBasicData(request);
+                    Response res = await tenantSeedService.SeedBasicDataAsync(request);
                     return Results.Json(res, statusCode: res.StatusCode);
                 })
                 .Produces<Response>();
         }
     }
 }
-
-
-

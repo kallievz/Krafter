@@ -1,4 +1,4 @@
-﻿namespace AditiKraft.Krafter.Backend.Features;
+namespace AditiKraft.Krafter.Backend.Features;
 
 public interface IScopedHandler
 {

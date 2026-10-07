@@ -20,30 +20,30 @@ public partial class CreateOrUpdateRole(
     }
 
     [Parameter] public RoleDto UserDetails { get; set; } = new();
-    private CreateOrUpdateRoleRequest CreateUserRequest = new();
-    private CreateOrUpdateRoleRequest OriginalCreateUserRequest = new();
+    private CreateOrUpdateRoleRequest _createUserRequest = new();
+    private CreateOrUpdateRoleRequest _originalCreateUserRequest = new();
 
     public List<PermissionDefinition> AllRoles { get; set; } = default!;
 
-    private IEnumerable<GroupPermissionData> GroupedData = new List<GroupPermissionData>();
+    private IEnumerable<GroupPermissionData> _groupedData = new List<GroupPermissionData>();
 
-    private bool isBusy = false;
-    private bool permissionsLoaded;
-    private bool isLoadingPermissions;
-    private bool permissionLoadFailed;
+    private bool _isBusy = false;
+    private bool _permissionsLoaded;
+    private bool _isLoadingPermissions;
+    private bool _permissionLoadFailed;
 
-    private bool CanSave => !isBusy &&
-        (string.IsNullOrWhiteSpace(UserDetails.Id) || permissionsLoaded);
+    private bool CanSave => !_isBusy &&
+        (string.IsNullOrWhiteSpace(UserDetails.Id) || _permissionsLoaded);
 
     protected override async Task OnInitializedAsync()
     {
         if (UserDetails is not null)
         {
-            CreateUserRequest = UserDetails.Adapt<CreateOrUpdateRoleRequest>();
-            OriginalCreateUserRequest = UserDetails.Adapt<CreateOrUpdateRoleRequest>();
+            _createUserRequest = UserDetails.Adapt<CreateOrUpdateRoleRequest>();
+            _originalCreateUserRequest = UserDetails.Adapt<CreateOrUpdateRoleRequest>();
             if (!string.IsNullOrWhiteSpace(UserDetails.Id))
             {
-                GroupedData = PermissionCatalog.All.GroupBy(c => c.Resource)
+                _groupedData = PermissionCatalog.All.GroupBy(c => c.Resource)
                     .SelectMany(i => new GroupPermissionData[] { new() { Resource = i.Key } }
                         .Concat(i.Select(o =>
                             new GroupPermissionData
@@ -61,9 +61,9 @@ public partial class CreateOrUpdateRole(
 
     private async Task LoadPermissionsAsync()
     {
-        permissionsLoaded = false;
-        permissionLoadFailed = false;
-        isLoadingPermissions = true;
+        _permissionsLoaded = false;
+        _permissionLoadFailed = false;
+        _isLoadingPermissions = true;
         try
         {
             Response<RoleDto> response = await api.CallAsync(
@@ -71,17 +71,17 @@ public partial class CreateOrUpdateRole(
                 showErrorNotification: true);
             if (response is not { IsError: false, Data.Permissions: not null })
             {
-                permissionLoadFailed = true;
+                _permissionLoadFailed = true;
                 return;
             }
 
-            CreateUserRequest.Permissions = [.. response.Data.Permissions];
-            OriginalCreateUserRequest.Permissions = [.. response.Data.Permissions];
-            permissionsLoaded = true;
+            _createUserRequest.Permissions = [.. response.Data.Permissions];
+            _originalCreateUserRequest.Permissions = [.. response.Data.Permissions];
+            _permissionsLoaded = true;
         }
         finally
         {
-            isLoadingPermissions = false;
+            _isLoadingPermissions = false;
         }
     }
 
@@ -92,7 +92,7 @@ public partial class CreateOrUpdateRole(
             return;
         }
 
-        isBusy = true;
+        _isBusy = true;
         try
         {
             Response result;
@@ -116,7 +116,7 @@ public partial class CreateOrUpdateRole(
         }
         finally
         {
-            isBusy = false;
+            _isBusy = false;
         }
     }
 

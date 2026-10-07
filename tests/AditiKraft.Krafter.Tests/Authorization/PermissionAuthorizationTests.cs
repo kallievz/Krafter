@@ -7,7 +7,6 @@ using AditiKraft.Krafter.Contracts.Common.Auth;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace AditiKraft.Krafter.Tests.Authorization;
 
@@ -20,13 +19,13 @@ public sealed class PermissionAuthorizationTests
     [InlineData("tenant-a", "root-user", false)]
     [InlineData("tenant-a", "bob", false)]
     [InlineData("root", "root-user", true)]
-    public async Task DatabaseCheckUsesTheCurrentTenant(string tenantId, string userId, bool allowed)
+    public async Task DatabaseCheckUsesTheCurrentTenantAsync(string tenantId, string userId, bool allowed)
     {
         var probes = new ConcurrentBag<PermissionUserService>();
         await using ServiceProvider provider = CreateProvider(probes);
         await using AsyncServiceScope requestScope = provider.CreateAsyncScope();
         SetTenant(requestScope, tenantId);
-        var context = CreateContext(userId);
+        AuthorizationHandlerContext context = CreateContext(userId);
 
         await requestScope.ServiceProvider.GetRequiredService<IAuthorizationHandler>().HandleAsync(context);
 
@@ -38,13 +37,13 @@ public sealed class PermissionAuthorizationTests
     }
 
     [Fact]
-    public async Task MissingUserDoesNotQueryPermissions()
+    public async Task MissingUserDoesNotQueryPermissionsAsync()
     {
         var probes = new ConcurrentBag<PermissionUserService>();
         await using ServiceProvider provider = CreateProvider(probes);
         await using AsyncServiceScope requestScope = provider.CreateAsyncScope();
         SetTenant(requestScope, "tenant-a");
-        var context = CreateContext(null);
+        AuthorizationHandlerContext context = CreateContext(null);
 
         await requestScope.ServiceProvider.GetRequiredService<IAuthorizationHandler>().HandleAsync(context);
 
@@ -53,12 +52,12 @@ public sealed class PermissionAuthorizationTests
     }
 
     [Fact]
-    public async Task UninitializedTenantDoesNotFallBackToRootPermissions()
+    public async Task UninitializedTenantDoesNotFallBackToRootPermissionsAsync()
     {
         var probes = new ConcurrentBag<PermissionUserService>();
         await using ServiceProvider provider = CreateProvider(probes);
         await using AsyncServiceScope requestScope = provider.CreateAsyncScope();
-        var context = CreateContext("root-user");
+        AuthorizationHandlerContext context = CreateContext("root-user");
 
         await requestScope.ServiceProvider.GetRequiredService<IAuthorizationHandler>().HandleAsync(context);
 
@@ -67,13 +66,13 @@ public sealed class PermissionAuthorizationTests
     }
 
     [Fact]
-    public async Task MissingTenantIdDoesNotQueryPermissions()
+    public async Task MissingTenantIdDoesNotQueryPermissionsAsync()
     {
         var probes = new ConcurrentBag<PermissionUserService>();
         await using ServiceProvider provider = CreateProvider(probes);
         await using AsyncServiceScope requestScope = provider.CreateAsyncScope();
         SetTenant(requestScope, null);
-        var context = CreateContext("alice");
+        AuthorizationHandlerContext context = CreateContext("alice");
 
         await requestScope.ServiceProvider.GetRequiredService<IAuthorizationHandler>().HandleAsync(context);
 
@@ -82,12 +81,12 @@ public sealed class PermissionAuthorizationTests
     }
 
     [Fact]
-    public async Task PermissionClaimAvoidsDatabaseLookup()
+    public async Task PermissionClaimAvoidsDatabaseLookupAsync()
     {
         var probes = new ConcurrentBag<PermissionUserService>();
         await using ServiceProvider provider = CreateProvider(probes);
         await using AsyncServiceScope requestScope = provider.CreateAsyncScope();
-        var context = CreateContext("alice", withPermissionClaim: true);
+        AuthorizationHandlerContext context = CreateContext("alice", withPermissionClaim: true);
 
         await requestScope.ServiceProvider.GetRequiredService<IAuthorizationHandler>().HandleAsync(context);
 
@@ -96,7 +95,7 @@ public sealed class PermissionAuthorizationTests
     }
 
     [Fact]
-    public async Task ConcurrentChecksUseIndependentScopesForTheCurrentTenant()
+    public async Task ConcurrentChecksUseIndependentScopesForTheCurrentTenantAsync()
     {
         var probes = new ConcurrentBag<PermissionUserService>();
         var bothStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -113,8 +112,8 @@ public sealed class PermissionAuthorizationTests
         await using AsyncServiceScope requestScope = provider.CreateAsyncScope();
         SetTenant(requestScope, "tenant-a");
         IAuthorizationHandler handler = requestScope.ServiceProvider.GetRequiredService<IAuthorizationHandler>();
-        var first = CreateContext("alice");
-        var second = CreateContext("alice");
+        AuthorizationHandlerContext first = CreateContext("alice");
+        AuthorizationHandlerContext second = CreateContext("alice");
 
         await Task.WhenAll(handler.HandleAsync(first), handler.HandleAsync(second));
 
@@ -198,3 +197,4 @@ public sealed class PermissionAuthorizationTests
         public void Dispose() => IsDisposed = true;
     }
 }
+

@@ -10,41 +10,41 @@ public partial class CreateOrUpdateUser(
 {
     [Parameter] public UserDto UserInput { get; set; } = new();
 
-    private CreateUserRequest CreateUserRequest = new();
-    private CreateUserRequest OriginalCreateUserRequest = new();
+    private CreateUserRequest _createUserRequest = new();
+    private CreateUserRequest _originalCreateUserRequest = new();
     public Response<List<UserRoleDto>>? UserRoles { get; set; }
-    private bool isBusy = false;
+    private bool _isBusy = false;
 
     protected override async Task OnInitializedAsync()
     {
         if (UserInput is not null)
         {
-            CreateUserRequest = UserInput.Adapt<CreateUserRequest>();
-            OriginalCreateUserRequest = UserInput.Adapt<CreateUserRequest>();
-            if (CreateUserRequest.Roles is null)
+            _createUserRequest = UserInput.Adapt<CreateUserRequest>();
+            _originalCreateUserRequest = UserInput.Adapt<CreateUserRequest>();
+            if (_createUserRequest.Roles is null)
             {
-                CreateUserRequest.Roles = new List<string>();
-                OriginalCreateUserRequest.Roles = new List<string>();
+                _createUserRequest.Roles = new List<string>();
+                _originalCreateUserRequest.Roles = new List<string>();
             }
 
             if (!string.IsNullOrWhiteSpace(UserInput.Id))
             {
                 UserRoles = await api.CallAsync(() => usersApi.GetUserRolesAsync(UserInput.Id),
                     showErrorNotification: true);
-                CreateUserRequest.Roles = UserRoles?
+                _createUserRequest.Roles = UserRoles?
                     .Data?
                     .Where(c => !string.IsNullOrEmpty(c.RoleId))
                     .Select(c => c.RoleId!).ToList() ?? new List<string>();
-                OriginalCreateUserRequest.Roles = CreateUserRequest.Roles;
+                _originalCreateUserRequest.Roles = _createUserRequest.Roles;
             }
         }
     }
 
-    private async void Submit(CreateUserRequest input)
+    private async Task SubmitAsync(CreateUserRequest input)
     {
         if (UserInput is not null)
         {
-            isBusy = true;
+            _isBusy = true;
             Response result;
             if (string.IsNullOrWhiteSpace(input.Id))
             {
@@ -58,7 +58,7 @@ public partial class CreateOrUpdateUser(
                     () => usersApi.UpdateUserAsync(input.Id, input),
                     successMessage: "User updated successfully");
             }
-            isBusy = false;
+            _isBusy = false;
             StateHasChanged();
             if (result is { IsError: false })
             {

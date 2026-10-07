@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace AditiKraft.Krafter.Contracts.Common.Models;
 

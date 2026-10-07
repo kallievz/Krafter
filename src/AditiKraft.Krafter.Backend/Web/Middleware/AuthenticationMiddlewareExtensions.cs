@@ -5,7 +5,7 @@ public static class AuthenticationMiddlewareExtensions
     public static IApplicationBuilder UseCurrentUser(this IApplicationBuilder app) =>
         app.UseMiddleware<CurrentUserMiddleware>();
 
-    public static IApplicationBuilder AuthMiddleware(this IApplicationBuilder builder, IConfiguration config)
+    public static IApplicationBuilder AuthMiddleware(this IApplicationBuilder builder)
     {
         return builder
             .UseAuthentication()

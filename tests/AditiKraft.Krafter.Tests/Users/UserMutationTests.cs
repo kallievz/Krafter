@@ -1,6 +1,8 @@
+using AditiKraft.Krafter.Backend.Features.Roles.Common;
 using AditiKraft.Krafter.Backend.Features.Tenants.Common;
 using AditiKraft.Krafter.Backend.Features.Users;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
+using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Roles;
 using AditiKraft.Krafter.Contracts.Contracts.Users;
 using Microsoft.EntityFrameworkCore;
@@ -10,36 +12,39 @@ namespace AditiKraft.Krafter.Tests.Users;
 public sealed class UserMutationTests
 {
     [Fact]
-    public async Task CreateAssignsBasicOnceAndQueuesEmailAfterSavingRoles()
+    public async Task CreateAssignsBasicOnceAndQueuesEmailAfterSavingRolesAsync()
     {
         await using var context = new IdentityTestContext();
-        var basic = await context.AddRoleAsync(RoleConstants.Basic);
+        ApplicationRole basic = await context.AddRoleAsync(RoleConstants.Basic);
         var request = new CreateUserRequest
         {
-            FirstName = "New", LastName = "User", Email = "new@example.com", Roles = [basic.Id, basic.Id]
+            FirstName = "New",
+            LastName = "User",
+            Email = "new@example.com",
+            Roles = [basic.Id, basic.Id]
         };
 
-        var result = await new CreateUser.Handler(context.Mutations).CreateAsync(request, CancellationToken.None);
+        Response result = await new CreateUser.Handler(context.Mutations).CreateAsync(request, CancellationToken.None);
 
         Assert.False(result.IsError, result.Message);
         context.Db.ChangeTracker.Clear();
-        var user = await context.Db.Users.SingleAsync();
+        ApplicationUser user = await context.Db.Users.SingleAsync();
         Assert.Equal("new@example.com", user.UserName);
         Assert.True(await context.Users.CheckPasswordAsync(user,
             ExtractPassword(Assert.Single(context.Jobs.Emails).HtmlMessage)));
-        var assignment = await context.Db.UserRoles.SingleAsync();
+        ApplicationUserRole assignment = await context.Db.UserRoles.SingleAsync();
         Assert.Equal(user.Id, assignment.UserId);
         Assert.Equal(basic.Id, assignment.RoleId);
         Assert.Equal("tenant-a", assignment.TenantId);
     }
 
     [Fact]
-    public async Task UpdateProfileUsesSharedSaveAndRestoresRoleAssignments()
+    public async Task UpdateProfileUsesSharedSaveAndRestoresRoleAssignmentsAsync()
     {
         await using var context = new IdentityTestContext();
-        var basic = await context.AddRoleAsync(RoleConstants.Basic);
-        var editor = await context.AddRoleAsync("Editor");
-        var user = await context.AddUserAsync();
+        ApplicationRole basic = await context.AddRoleAsync(RoleConstants.Basic);
+        ApplicationRole editor = await context.AddRoleAsync("Editor");
+        ApplicationUser user = await context.AddUserAsync();
         context.Db.UserRoles.AddRange(
             new ApplicationUserRole { UserId = user.Id, RoleId = basic.Id },
             new ApplicationUserRole { UserId = user.Id, RoleId = editor.Id, IsDeleted = true });
@@ -50,9 +55,12 @@ public sealed class UserMutationTests
         await context.TenantDb.SaveChangesAsync();
         string? passwordHash = user.PasswordHash;
 
-        var result = await new UpdateUser.Handler(context.Mutations).UpdateAsync(user.Id, new CreateUserRequest
+        Response result = await new UpdateUser.Handler(context.Mutations).UpdateAsync(user.Id, new CreateUserRequest
         {
-            FirstName = "Changed", LastName = "Name", PhoneNumber = null, Email = "changed@example.com",
+            FirstName = "Changed",
+            LastName = "Name",
+            PhoneNumber = null,
+            Email = "changed@example.com",
             Roles = [editor.Id, editor.Id]
         }, CancellationToken.None);
 
@@ -64,7 +72,7 @@ public sealed class UserMutationTests
         Assert.Null(user.PhoneNumber);
         Assert.Equal("CHANGED@EXAMPLE.COM", user.NormalizedEmail);
         Assert.Equal(passwordHash, user.PasswordHash);
-        var assignments = await context.Db.UserRoles.IgnoreQueryFilters().ToListAsync();
+        List<ApplicationUserRole> assignments = await context.Db.UserRoles.IgnoreQueryFilters().ToListAsync();
         Assert.Equal(2, assignments.Count);
         Assert.True(assignments.Single(role => role.RoleId == basic.Id).IsDeleted);
         Assert.False(assignments.Single(role => role.RoleId == editor.Id).IsDeleted);
@@ -74,16 +82,16 @@ public sealed class UserMutationTests
     }
 
     [Fact]
-    public async Task TenantEmailUpdatePreservesProfilePasswordAndRoles()
+    public async Task TenantEmailUpdatePreservesProfilePasswordAndRolesAsync()
     {
         await using var context = new IdentityTestContext();
-        var admin = await context.AddRoleAsync(RoleConstants.Admin);
-        var user = await context.AddUserAsync();
+        ApplicationRole admin = await context.AddRoleAsync(RoleConstants.Admin);
+        ApplicationUser user = await context.AddUserAsync();
         context.Db.UserRoles.Add(new ApplicationUserRole { UserId = user.Id, RoleId = admin.Id });
         await context.Db.SaveChangesAsync();
         string? passwordHash = user.PasswordHash;
 
-        var result = await context.Mutations.UpdateEmailAsync(user.Id, "admin.changed@example.com", CancellationToken.None);
+        Response result = await context.Mutations.UpdateEmailAsync(user.Id, "admin.changed@example.com", CancellationToken.None);
 
         Assert.False(result.IsError, result.Message);
         context.Db.ChangeTracker.Clear();
@@ -100,18 +108,21 @@ public sealed class UserMutationTests
     }
 
     [Fact]
-    public async Task ForeignTenantRoleIsRejectedBeforeUserChangesAreSaved()
+    public async Task ForeignTenantRoleIsRejectedBeforeUserChangesAreSavedAsync()
     {
         await using var context = new IdentityTestContext();
-        var user = await context.AddUserAsync();
+        ApplicationUser user = await context.AddUserAsync();
         context.SetTenant("tenant-b");
-        var foreignRole = await context.AddRoleAsync("Foreign");
+        ApplicationRole foreignRole = await context.AddRoleAsync("Foreign");
         context.SetTenant("tenant-a");
         context.Db.ChangeTracker.Clear();
 
-        var result = await context.Mutations.UpdateAsync(user.Id, new CreateUserRequest
+        Response result = await context.Mutations.UpdateAsync(user.Id, new CreateUserRequest
         {
-            FirstName = "Changed", LastName = "Name", Email = "changed@example.com", Roles = [foreignRole.Id]
+            FirstName = "Changed",
+            LastName = "Name",
+            Email = "changed@example.com",
+            Roles = [foreignRole.Id]
         }, CancellationToken.None);
 
         Assert.True(result.IsError);
@@ -124,13 +135,13 @@ public sealed class UserMutationTests
     }
 
     [Fact]
-    public async Task FailedEmailUpdateReturnsIdentityErrorsAndDoesNotSaveNewEmail()
+    public async Task FailedEmailUpdateReturnsIdentityErrorsAndDoesNotSaveNewEmailAsync()
     {
         await using var context = new IdentityTestContext();
-        var user = await context.AddUserAsync();
+        ApplicationUser user = await context.AddUserAsync();
         await context.AddUserAsync("taken@example.com");
 
-        var result = await context.Mutations.UpdateEmailAsync(user.Id, "taken@example.com", CancellationToken.None);
+        Response result = await context.Mutations.UpdateEmailAsync(user.Id, "taken@example.com", CancellationToken.None);
 
         Assert.True(result.IsError);
         Assert.Equal(400, result.StatusCode);
@@ -146,3 +157,4 @@ public sealed class UserMutationTests
         return htmlMessage[offset..htmlMessage.IndexOf("<br/>", offset, StringComparison.Ordinal)];
     }
 }
+

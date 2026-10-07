@@ -20,7 +20,7 @@ public partial class Login(
 
     [CascadingParameter] public bool IsMobileDevice { get; set; }
 
-    public bool isBusy { get; set; }
+    public bool IsBusy { get; set; }
     public TokenRequest TokenRequestInput { get; set; } = new();
     private bool _shouldRedirect;
 
@@ -61,15 +61,15 @@ public partial class Login(
         }
     }
 
-    private async Task CreateToken(TokenRequest loginArgs)
+    private async Task CreateTokenAsync(TokenRequest loginArgs)
     {
         if (string.IsNullOrEmpty(ReturnUrl))
         {
-            var uri = new Uri(navigationManager.Uri);
+            Uri uri = new(navigationManager.Uri);
             ReturnUrl = uri.PathAndQuery;
         }
 
-        isBusy = true;
+        IsBusy = true;
         bool isSuccess = await authenticationService.LoginAsync(loginArgs);
         if (isSuccess)
         {
@@ -84,14 +84,14 @@ public partial class Login(
             }
         }
 
-        isBusy = false;
+        IsBusy = false;
     }
 
-    private void StartGoogleLogin()
+    private Task StartGoogleLoginAsync()
     {
         if (string.IsNullOrEmpty(ReturnUrl))
         {
-            var uri = new Uri(navigationManager.Uri);
+            Uri uri = new(navigationManager.Uri);
             ReturnUrl = uri.PathAndQuery;
         }
 
@@ -116,5 +116,6 @@ public partial class Login(
                          $"access_type=offline";
 
         navigationManager.NavigateTo(authUrl, true);
+        return Task.CompletedTask;
     }
 }

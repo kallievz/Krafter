@@ -1,14 +1,14 @@
 using System;
 using System.Linq;
-using Fallout.Common;
-using Fallout.Common.IO;
-using Fallout.Solutions;
-using Fallout.Common.Utilities.Collections;
 using System.Net.Http;
+using Fallout.Common;
 using Fallout.Common.CI.GitHubActions;
 using Fallout.Common.Git;
+using Fallout.Common.IO;
 using Fallout.Common.Tools.Docker;
 using Fallout.Common.Tools.DotNet;
+using Fallout.Common.Utilities.Collections;
+using Fallout.Solutions;
 
 internal class Build : FalloutBuild
 {
@@ -18,7 +18,7 @@ internal class Build : FalloutBuild
     private readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
     [Solution] private readonly Solution Solution;
-    private readonly string RepositoryUrl = "https://github.com/AditiKraft/Krafter";
+
     private AbsolutePath SourceDirectory => RootDirectory / "src";
 
     private AbsolutePath BuildInfoPath =>
@@ -31,10 +31,7 @@ internal class Build : FalloutBuild
         SourceDirectory / "UI" / "AditiKraft.Krafter.UI.Web" / "AditiKraft.Krafter.UI.Web.csproj";
 
     private AbsolutePath TemplateProjectPath => RootDirectory / "AditiKraft.Krafter.Templates.csproj";
-    private readonly int MajorVersion = DateTime.UtcNow.Year;
-    private readonly int MinorVersion = DateTime.UtcNow.Month;
-    private readonly int PatchVersion = DateTime.UtcNow.Day;
-    private string VersionMode = "dev-pre-release";
+    private readonly string VersionMode = "dev-pre-release";
     private const string User = "aditikraft";
     private string DockerTag = "";
     private string BranchName = "";
@@ -44,7 +41,6 @@ internal class Build : FalloutBuild
     [Parameter("NuGet API Key for publishing templates")] private readonly string NuGetPAT;
     [Parameter("Deployment Webhook Url")] private readonly string DeploymentWebhookUrl;
     [Parameter("Template version (default: 0.0.20)")] private readonly string TemplateVersion = "0.0.20";
-    private GitHubActions GitHubActions => GitHubActions.Instance;
 
     private Target SetBuildInfo => _ => _
         .Executes(() =>
@@ -54,7 +50,6 @@ internal class Build : FalloutBuild
             text = text.Replace("#Build", VersionMode);
             System.IO.File.WriteAllText(BuildInfoPath, text);
         });
-
 
     private Target Clean => _ => _
         .Before(Restore)
@@ -75,22 +70,6 @@ internal class Build : FalloutBuild
             DotNetTasks.DotNetRestore(s => s
                 .SetProjectFile(Solution));
         });
-
-    private Target Compile => _ => _
-        .DependsOn(Restore)
-        .Executes(() =>
-        {
-            DotNetTasks.DotNetBuild(s => s
-                .SetProjectFile(BackendProjectPath)
-                .SetConfiguration(Configuration)
-                .EnableNoRestore());
-
-            DotNetTasks.DotNetBuild(s => s
-                .SetProjectFile(UiProjectPath)
-                .SetConfiguration(Configuration)
-                .EnableNoRestore());
-        });
-
 
     private Target LoginIntoDockerHub => _ => _
         .Executes(() =>
@@ -156,7 +135,6 @@ internal class Build : FalloutBuild
                 }
             }
         });
-
 
     private Target DetermineBranchAndDockerTag => _ => _
         .Executes(() =>

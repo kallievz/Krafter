@@ -20,7 +20,7 @@ public sealed class RoleEditorTests
     [InlineData("missing-role")]
     [InlineData("null-permissions")]
     [InlineData("network-error")]
-    public async Task FailedPermissionLoadBlocksSaveUntilRetrySucceeds(string failure)
+    public async Task FailedPermissionLoadBlocksSaveUntilRetrySucceedsAsync(string failure)
     {
         var api = new RolesApi
         {
@@ -41,8 +41,10 @@ public sealed class RoleEditorTests
             Assert.True(editor.Button("Save").Disabled);
             Assert.True(editor.Permissions.Disabled);
             Assert.Contains("Could not load role permissions", root.ToHtmlString());
-            editor.Form.Data.Description = "Changed description";
-            await editor.Form.Submit.InvokeAsync(editor.Form.Data);
+            CreateOrUpdateRoleRequest? formData = editor.Form.Data;
+            Assert.NotNull(formData);
+            formData.Description = "Changed description";
+            await editor.Form.Submit.InvokeAsync(formData);
             Assert.Empty(api.Updates);
 
             api.Load = () => Task.FromResult(Permissions("Permissions.Users.View"));
@@ -50,8 +52,10 @@ public sealed class RoleEditorTests
             Assert.False(editor.Button("Save").Disabled);
             Assert.False(editor.Permissions.Disabled);
             Assert.DoesNotContain("Could not load role permissions", root.ToHtmlString());
-            Assert.Equal("Changed description", editor.Form.Data.Description);
-            await editor.Form.Submit.InvokeAsync(editor.Form.Data);
+            CreateOrUpdateRoleRequest? reloadedFormData = editor.Form.Data;
+            Assert.NotNull(reloadedFormData);
+            Assert.Equal("Changed description", reloadedFormData.Description);
+            await editor.Form.Submit.InvokeAsync(reloadedFormData);
         });
 
         CreateOrUpdateRoleRequest update = Assert.Single(api.Updates);
@@ -60,7 +64,7 @@ public sealed class RoleEditorTests
     }
 
     [Fact]
-    public async Task PermissionLoadInProgressBlocksSubmission()
+    public async Task PermissionLoadInProgressBlocksSubmissionAsync()
     {
         var completion = new TaskCompletionSource<Response<RoleDto>>(TaskCreationOptions.RunContinuationsAsynchronously);
         var api = new RolesApi { Load = () => completion.Task };
@@ -93,7 +97,7 @@ public sealed class RoleEditorTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task SuccessfulLoadAllowsEmptyPermissionSelection(bool initiallyEmpty)
+    public async Task SuccessfulLoadAllowsEmptyPermissionSelectionAsync(bool initiallyEmpty)
     {
         var api = new RolesApi
         {
@@ -107,15 +111,17 @@ public sealed class RoleEditorTests
         {
             Assert.False(editor.Button("Save").Disabled);
             Assert.False(editor.Permissions.Disabled);
-            editor.Form.Data.Permissions = [];
-            await editor.Form.Submit.InvokeAsync(editor.Form.Data);
+            CreateOrUpdateRoleRequest? formData = editor.Form.Data;
+            Assert.NotNull(formData);
+            formData.Permissions = [];
+            await editor.Form.Submit.InvokeAsync(formData);
         });
 
         Assert.Empty(Assert.Single(api.Updates).Permissions);
     }
 
     [Fact]
-    public async Task NewRoleCanBeSavedWithoutLoadingPermissions()
+    public async Task NewRoleCanBeSavedWithoutLoadingPermissionsAsync()
     {
         var api = new RolesApi();
         await using var editor = new Editor(api);
@@ -140,9 +146,9 @@ public sealed class RoleEditorTests
 
     private sealed class Editor : IAsyncDisposable
     {
-        private readonly ServiceProvider services;
-        private readonly CapturingActivator components;
-        private readonly HtmlRenderer renderer;
+        private readonly ServiceProvider _services;
+        private readonly CapturingActivator _components;
+        private readonly HtmlRenderer _renderer;
 
         public Editor(RolesApi api)
         {
@@ -156,29 +162,29 @@ public sealed class RoleEditorTests
             registrations.AddSingleton<IRolesApi>(api);
             registrations.AddSingleton<CapturingActivator>();
             registrations.AddSingleton<IComponentActivator>(provider => provider.GetRequiredService<CapturingActivator>());
-            services = registrations.BuildServiceProvider();
-            components = services.GetRequiredService<CapturingActivator>();
-            renderer = new HtmlRenderer(services, services.GetRequiredService<ILoggerFactory>());
+            _services = registrations.BuildServiceProvider();
+            _components = _services.GetRequiredService<CapturingActivator>();
+            _renderer = new HtmlRenderer(_services, _services.GetRequiredService<ILoggerFactory>());
         }
 
         public RadzenTemplateForm<CreateOrUpdateRoleRequest> Form =>
-            components.All.OfType<RadzenTemplateForm<CreateOrUpdateRoleRequest>>().Single();
+            _components.All.OfType<RadzenTemplateForm<CreateOrUpdateRoleRequest>>().Single();
 
         public RadzenDropDown<List<string>> Permissions =>
-            components.All.OfType<RadzenDropDown<List<string>>>().Single();
+            _components.All.OfType<RadzenDropDown<List<string>>>().Single();
 
-        public RadzenButton Button(string text) => components.All.OfType<RadzenButton>().Single(button => button.Text == text);
+        public RadzenButton Button(string text) => _components.All.OfType<RadzenButton>().Single(button => button.Text == text);
 
-        public Task<HtmlRootComponent> RenderAsync(RoleDto role) => renderer.Dispatcher.InvokeAsync(() =>
-            renderer.BeginRenderingComponent<CreateOrUpdateRole>(ParameterView.FromDictionary(
+        public Task<HtmlRootComponent> RenderAsync(RoleDto role) => _renderer.Dispatcher.InvokeAsync(() =>
+            _renderer.BeginRenderingComponent<CreateOrUpdateRole>(ParameterView.FromDictionary(
                 new Dictionary<string, object?> { [nameof(CreateOrUpdateRole.UserDetails)] = role })));
 
-        public Task RunAsync(Func<Task> action) => renderer.Dispatcher.InvokeAsync(action);
+        public Task RunAsync(Func<Task> action) => _renderer.Dispatcher.InvokeAsync(action);
 
         public async ValueTask DisposeAsync()
         {
-            await renderer.DisposeAsync();
-            await services.DisposeAsync();
+            await _renderer.DisposeAsync();
+            await _services.DisposeAsync();
         }
     }
 
@@ -246,3 +252,4 @@ public sealed class RoleEditorTests
             CancellationToken cancellationToken = default) => throw new NotSupportedException();
     }
 }
+

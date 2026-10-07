@@ -19,5 +19,3 @@ public class Tenant
     public string? TablesToCopy { get; set; }
     //does sql server allow storing list of string in one column
 }
-
-

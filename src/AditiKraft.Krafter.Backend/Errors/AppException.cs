@@ -20,4 +20,3 @@ public class UnauthorizedException(string message) : AppException(message, null,
 public class NotFoundException(string message) : AppException(message, null, HttpStatusCode.NotFound);
 
 public class ConflictException(string message) : AppException(message, null, HttpStatusCode.Conflict);
-

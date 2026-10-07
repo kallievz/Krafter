@@ -89,6 +89,3 @@ public static class MustHavePermissionExtension
         return builder.RequireAuthorization(policyName);
     }
 }
-
-
-

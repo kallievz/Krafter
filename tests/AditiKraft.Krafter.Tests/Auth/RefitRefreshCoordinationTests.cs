@@ -18,10 +18,10 @@ namespace AditiKraft.Krafter.Tests.Auth;
 
 public sealed class RefitRefreshCoordinationTests
 {
-    private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(10);
+    private static readonly TimeSpan _timeout = TimeSpan.FromSeconds(10);
 
     [Fact]
-    public async Task FeatureClientsAndRootServiceShareBrowserRefreshCoordination()
+    public async Task FeatureClientsAndRootServiceShareBrowserRefreshCoordinationAsync()
     {
         TokenResponse freshTokens = TokenTestData.Create();
         var storage = new TokenStorage(TokenTestData.Create(expired: true));
@@ -54,9 +54,9 @@ public sealed class RefitRefreshCoordinationTests
         AuthTokenService rootTokens = provider.GetRequiredService<AuthTokenService>();
 
         Task usersRequest = users.GetUsersAsync(new GetRequestInput());
-        await api.Started.Task.WaitAsync(Timeout);
+        await api.Started.Task.WaitAsync(_timeout);
         Task rolesRequest = roles.GetRolesAsync(new GetRequestInput());
-        await observations.BothClientsStarted.Task.WaitAsync(Timeout);
+        await observations.BothClientsStarted.Task.WaitAsync(_timeout);
         Task<bool> rootRefresh = rootTokens.RefreshAsync();
 
         try
@@ -70,7 +70,7 @@ public sealed class RefitRefreshCoordinationTests
             api.AllowRefresh.TrySetResult();
         }
 
-        await Task.WhenAll(usersRequest, rolesRequest, rootRefresh).WaitAsync(Timeout);
+        await Task.WhenAll(usersRequest, rolesRequest, rootRefresh).WaitAsync(_timeout);
         Assert.True(await rootRefresh);
         Assert.Equal(1, api.RefreshCount);
         Assert.Equal(2, sentTokens.Count);
@@ -97,7 +97,8 @@ public sealed class RefitRefreshCoordinationTests
         AuthTokenService tokens,
         RefreshObservations observations) : IAuthenticationService
     {
-        public event Action<string?>? LoginChange { add { } remove { } }
+        public event Action<string?>? LoginChange
+        { add { } remove { } }
 
         public Task<bool> RefreshAsync()
         {
@@ -106,6 +107,7 @@ public sealed class RefitRefreshCoordinationTests
         }
 
         public Task<bool> LoginAsync(TokenRequest model) => throw new NotSupportedException();
+
         public Task LogoutAsync(string methodName) => throw new NotSupportedException();
     }
 
@@ -139,13 +141,18 @@ public sealed class RefitRefreshCoordinationTests
         {
             Interlocked.Increment(ref _refreshCount);
             Started.TrySetResult();
-            await AllowRefresh.Task.WaitAsync(Timeout, cancellation);
+            await AllowRefresh.Task.WaitAsync(_timeout, cancellation);
             return Response<TokenResponse>.Success(refreshed);
         }
 
         public Task<Response<TokenResponse>> CreateTokenAsync(TokenRequest request, CancellationToken cancellation) => throw new NotSupportedException();
+
         public Task<Response<TokenResponse>> ExternalAuthAsync(TokenRequest request, CancellationToken cancellation) => throw new NotSupportedException();
+
+        public Task<Response> SelfRegisterAsync(SelfRegisterRequest request, CancellationToken cancellation) => throw new NotSupportedException();
+
         public Task<Response<TokenResponse>> GetCurrentTokenAsync(CancellationToken cancellation) => throw new NotSupportedException();
+
         public Task LogoutAsync(CancellationToken cancellation) => throw new NotSupportedException();
     }
 
@@ -160,10 +167,16 @@ public sealed class RefitRefreshCoordinationTests
         }
 
         public ValueTask<string?> GetCachedAuthTokenAsync() => ValueTask.FromResult<string?>(Tokens.Token);
+
         public ValueTask<string?> GetCachedRefreshTokenAsync() => ValueTask.FromResult<string?>(Tokens.RefreshToken);
+
         public ValueTask<ICollection<string>?> GetCachedPermissionsAsync() => ValueTask.FromResult<ICollection<string>?>(Tokens.Permissions);
+
         public ValueTask<DateTime> GetAuthTokenExpiryDate() => ValueTask.FromResult(Tokens.TokenExpiryTime);
+
         public ValueTask<DateTime> GetRefreshTokenExpiryDate() => ValueTask.FromResult(Tokens.RefreshTokenExpiryTime);
+
         public Task ClearCacheAsync() => throw new NotSupportedException();
     }
 }
+

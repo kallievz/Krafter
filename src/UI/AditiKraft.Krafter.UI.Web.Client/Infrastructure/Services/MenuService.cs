@@ -6,7 +6,7 @@ namespace AditiKraft.Krafter.UI.Web.Client.Infrastructure.Services;
 
 public class MenuService
 {
-    private Menu[] allMenus = new[]
+    private readonly Menu[] _allMenus = new[]
     {
         new Menu
         {
@@ -60,14 +60,14 @@ public class MenuService
 
     public IEnumerable<Menu> Menus =>
         TenantSettings.TenancyMode == TenancyMode.Single
-            ? allMenus.Where(menu => menu.Path != ApiRoutes.Tenants)
-            : allMenus;
+            ? _allMenus.Where(menu => menu.Path != ApiRoutes.Tenants)
+            : _allMenus;
 
     public IEnumerable<Menu> Filter(string term)
     {
         if (string.IsNullOrEmpty(term))
         {
-            return allMenus;
+            return _allMenus;
         }
 
         bool Contains(string value) => value != null && value.Contains(term, StringComparison.OrdinalIgnoreCase);
@@ -116,4 +116,3 @@ public class MenuService
     public string DescriptionFor(Menu menu) => menu?.Description ??
                                                "The Radzen Blazor component library provides more than 70 UI controls for building rich ASP.NET Core web applications.";
 }
-

@@ -41,44 +41,44 @@
     --kr-font-sans: 'Inter', system-ui, sans-serif;
 }
 
-/* Radzen changes this link when the saved or system theme changes. */
-:root:has(#radzen-theme-link[href*="dark"]) {
-    color-scheme: dark;
-    --kr-primary-border: #F08E78;
-    --kr-link: #F08E78;
-    --kr-link-hover: #F4AB99;
-    --kr-link-active: #F7C5B8;
-    --kr-link-visited: #D7ADA4;
-    --kr-selected: #3C2823;
-    --kr-on-selected: #F4AB99;
-    --kr-bg: #202020;
-    --kr-surface: #292929;
-    --kr-elevated: #333333;
-    --kr-subtle: #333333;
-    --kr-hover: #3A3A3A;
-    --kr-text: #F7F4ED;
-    --kr-text-secondary: #CCCAC4;
-    --kr-muted: #B8B5AE;
-    --kr-disabled: #807D77;
-    --kr-border: #4A4A48;
-    --kr-border-strong: #96938C;
-    --kr-focus: #F08E78;
-    --kr-overlay: rgba(16, 16, 16, 0.72);
-    --kr-success: #A3D6AE;
-    --kr-success-soft: #223B2B;
-    --kr-success-strong: #C1E6C7;
-    --kr-warning: #E8C078;
-    --kr-warning-soft: #403322;
-    --kr-warning-strong: #F1D39D;
-    --kr-error: #F0A4B4;
-    --kr-error-soft: #432A33;
-    --kr-error-strong: #F5C0CB;
-    --kr-info: #A6C7DF;
-    --kr-info-soft: #263640;
-    --kr-info-strong: #C3DBEA;
-    --kr-shadow-sm: 0 1px 2px rgba(16, 16, 16, 0.24);
-    --kr-shadow-raised: 0 12px 32px rgba(16, 16, 16, 0.30);
-}
+    /* Radzen changes this link when the saved or system theme changes. */
+    :root:has(#radzen-theme-link[href*="dark"]) {
+        color-scheme: dark;
+        --kr-primary-border: #F08E78;
+        --kr-link: #F08E78;
+        --kr-link-hover: #F4AB99;
+        --kr-link-active: #F7C5B8;
+        --kr-link-visited: #D7ADA4;
+        --kr-selected: #3C2823;
+        --kr-on-selected: #F4AB99;
+        --kr-bg: #202020;
+        --kr-surface: #292929;
+        --kr-elevated: #333333;
+        --kr-subtle: #333333;
+        --kr-hover: #3A3A3A;
+        --kr-text: #F7F4ED;
+        --kr-text-secondary: #CCCAC4;
+        --kr-muted: #B8B5AE;
+        --kr-disabled: #807D77;
+        --kr-border: #4A4A48;
+        --kr-border-strong: #96938C;
+        --kr-focus: #F08E78;
+        --kr-overlay: rgba(16, 16, 16, 0.72);
+        --kr-success: #A3D6AE;
+        --kr-success-soft: #223B2B;
+        --kr-success-strong: #C1E6C7;
+        --kr-warning: #E8C078;
+        --kr-warning-soft: #403322;
+        --kr-warning-strong: #F1D39D;
+        --kr-error: #F0A4B4;
+        --kr-error-soft: #432A33;
+        --kr-error-strong: #F5C0CB;
+        --kr-info: #A6C7DF;
+        --kr-info-soft: #263640;
+        --kr-info-strong: #C3DBEA;
+        --kr-shadow-sm: 0 1px 2px rgba(16, 16, 16, 0.24);
+        --kr-shadow-raised: 0 12px 32px rgba(16, 16, 16, 0.30);
+    }
 
 /* Map the brand to Radzen's existing component API. */
 :root {
@@ -350,26 +350,26 @@
     --rz-panel-menu-item-3rd-level-active-background-color: var(--kr-selected);
 }
 
-/* Radzen's dark base scale conflicts with the shared semantic palette. */
-:root:has(#radzen-theme-link[href*="dark"]) {
-    --kr-grid-border: #4A4A48;
-    --rz-grid-cell-border: 1px solid var(--kr-grid-border);
-    --rz-grid-right-cell-border: var(--rz-grid-cell-border);
-    --rz-grid-bottom-cell-border: var(--rz-grid-cell-border);
-    --rz-grid-header-cell-border: var(--rz-grid-cell-border);
-    --rz-grid-header-cell-border-bottom: var(--rz-grid-cell-border);
-    --rz-grid-frozen-cell-border: var(--rz-grid-cell-border);
-    --rz-grid-data-border-shadow: 0 1px 0 0 var(--kr-grid-border), 0 -1px 0 0 var(--kr-grid-border);
-    --rz-grid-header-background-color: var(--kr-hover);
-    --rz-grid-header-sorted-background-color: var(--rz-grid-header-background-color);
-    --rz-grid-filter-color: var(--kr-text-secondary);
-    --rz-grid-sort-icon-color: var(--kr-link);
-    --rz-grid-header-filter-icon-active-color: var(--kr-link);
-    --rz-grid-filter-background-color: var(--kr-elevated);
-    --rz-grid-filter-buttons-background-color: var(--kr-elevated);
-    --rz-grid-clear-filter-button-background-color: var(--kr-hover);
-    --rz-grid-clear-filter-button-color: var(--kr-text);
-}
+    /* Radzen's dark base scale conflicts with the shared semantic palette. */
+    :root:has(#radzen-theme-link[href*="dark"]) {
+        --kr-grid-border: #4A4A48;
+        --rz-grid-cell-border: 1px solid var(--kr-grid-border);
+        --rz-grid-right-cell-border: var(--rz-grid-cell-border);
+        --rz-grid-bottom-cell-border: var(--rz-grid-cell-border);
+        --rz-grid-header-cell-border: var(--rz-grid-cell-border);
+        --rz-grid-header-cell-border-bottom: var(--rz-grid-cell-border);
+        --rz-grid-frozen-cell-border: var(--rz-grid-cell-border);
+        --rz-grid-data-border-shadow: 0 1px 0 0 var(--kr-grid-border), 0 -1px 0 0 var(--kr-grid-border);
+        --rz-grid-header-background-color: var(--kr-hover);
+        --rz-grid-header-sorted-background-color: var(--rz-grid-header-background-color);
+        --rz-grid-filter-color: var(--kr-text-secondary);
+        --rz-grid-sort-icon-color: var(--kr-link);
+        --rz-grid-header-filter-icon-active-color: var(--kr-link);
+        --rz-grid-filter-background-color: var(--kr-elevated);
+        --rz-grid-filter-buttons-background-color: var(--kr-elevated);
+        --rz-grid-clear-filter-button-background-color: var(--kr-hover);
+        --rz-grid-clear-filter-button-color: var(--kr-text);
+    }
 
 html,
 body {
@@ -413,15 +413,15 @@ a,
     color: var(--kr-link);
 }
 
-a:hover,
-.btn-link:hover {
-    color: var(--kr-link-hover);
-}
+    a:hover,
+    .btn-link:hover {
+        color: var(--kr-link-hover);
+    }
 
-a:active,
-.btn-link:active {
-    color: var(--kr-link-active);
-}
+    a:active,
+    .btn-link:active {
+        color: var(--kr-link-active);
+    }
 
 article a:visited,
 .rz-html a:visited,
@@ -501,18 +501,18 @@ h1:focus {
     border-radius: 4px;
 }
 
-.form-control:focus {
-    background: var(--kr-surface);
-    color: var(--kr-text);
-    border-color: var(--kr-focus);
-    outline: 2px solid var(--kr-focus);
-    outline-offset: 2px;
-    box-shadow: none;
-}
+    .form-control:focus {
+        background: var(--kr-surface);
+        color: var(--kr-text);
+        border-color: var(--kr-focus);
+        outline: 2px solid var(--kr-focus);
+        outline-offset: 2px;
+        box-shadow: none;
+    }
 
-.form-control::placeholder {
-    color: var(--kr-muted);
-}
+    .form-control::placeholder {
+        color: var(--kr-muted);
+    }
 
 .valid.modified:not([type=checkbox]) {
     border-color: var(--kr-success);
@@ -544,10 +544,10 @@ h1:focus {
     min-width: 0;
 }
 
-.rz-body>.rz-row:not(.kr-auth-panel) {
-    max-width: 1440px;
-    margin-inline: auto;
-}
+    .rz-body > .rz-row:not(.kr-auth-panel) {
+        max-width: 1440px;
+        margin-inline: auto;
+    }
 
 .rz-datatable thead th {
     font-weight: 600;
@@ -634,19 +634,19 @@ h1:focus {
     box-shadow: var(--kr-shadow-sm);
 }
 
-.kr-auth-panel .rz-card {
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    padding: 20px;
-    height: 100%;
-}
+    .kr-auth-panel .rz-card {
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 20px;
+        height: 100%;
+    }
 
-.kr-auth-panel .kr-auth-intro {
-    background: var(--kr-subtle);
-    text-align: start;
-    border-inline-start: 4px solid var(--kr-primary);
-}
+    .kr-auth-panel .kr-auth-intro {
+        background: var(--kr-subtle);
+        text-align: start;
+        border-inline-start: 4px solid var(--kr-primary);
+    }
 
 .kr-auth-intro .rz-text-h3 {
     color: var(--kr-text);
@@ -671,22 +671,21 @@ h1:focus {
     border-radius: 6px;
 }
 
-.blazor-error-boundary::after {
-    content: "An error has occurred.";
-}
+    .blazor-error-boundary::after {
+        content: "An error has occurred.";
+    }
 
 @media (max-width: 768px) {
     .kr-auth-panel {
         margin-block: 16px;
     }
 
-    .kr-auth-panel .rz-card {
-        padding: 24px;
-    }
+        .kr-auth-panel .rz-card {
+            padding: 24px;
+        }
 }
 
 @media (prefers-reduced-motion: reduce) {
-
     *,
     *::before,
     *::after {
@@ -698,7 +697,6 @@ h1:focus {
 }
 
 @media print {
-
     .rz-sidebar,
     .rz-header,
     .rz-footer,

@@ -29,28 +29,28 @@ public static class RefitServiceExtensions
 
         // Register IAuthApi pointing to BFF (for cookie-based token management)
         // URL is rewritten by RefitTenantHandler to clientBaseAddress
-        services.AddRefitClient<IAuthApi>(refitSettings)
+        services.AddRefitGeneratedClient<IAuthApi>(refitSettings)
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(placeholderUrl))
             .AddHttpMessageHandler(sp => new RefitTenantHandler(sp.GetRequiredService<TenantIdentifier>(), true));
 
         // Register authenticated API clients pointing to AditiKraft.Krafter.Backend directly
         // URL is rewritten by RefitTenantHandler to tenant-specific backendUrl
-        services.AddRefitClient<IUsersApi>(refitSettings)
+        services.AddRefitGeneratedClient<IUsersApi>(refitSettings)
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(placeholderUrl))
             .AddHttpMessageHandler(sp => new RefitTenantHandler(sp.GetRequiredService<TenantIdentifier>(), false))
             .AddHttpMessageHandler<RefitAuthHandler>();
 
-        services.AddRefitClient<IRolesApi>(refitSettings)
+        services.AddRefitGeneratedClient<IRolesApi>(refitSettings)
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(placeholderUrl))
             .AddHttpMessageHandler(sp => new RefitTenantHandler(sp.GetRequiredService<TenantIdentifier>(), false))
             .AddHttpMessageHandler<RefitAuthHandler>();
 
-        services.AddRefitClient<ITenantsApi>(refitSettings)
+        services.AddRefitGeneratedClient<ITenantsApi>(refitSettings)
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(placeholderUrl))
             .AddHttpMessageHandler(sp => new RefitTenantHandler(sp.GetRequiredService<TenantIdentifier>(), false))
             .AddHttpMessageHandler<RefitAuthHandler>();
 
-        services.AddRefitClient<IAppInfoApi>(refitSettings)
+        services.AddRefitGeneratedClient<IAppInfoApi>(refitSettings)
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(placeholderUrl))
             .AddHttpMessageHandler(sp => new RefitTenantHandler(sp.GetRequiredService<TenantIdentifier>(), false));
 

@@ -1,4 +1,4 @@
-﻿namespace AditiKraft.Krafter.UI.Web.Client.Common.Components.Brand;
+namespace AditiKraft.Krafter.UI.Web.Client.Common.Components.Brand;
 
 public partial class Logo(ThemeManager themeManager) : IDisposable
 {
@@ -6,13 +6,13 @@ public partial class Logo(ThemeManager themeManager) : IDisposable
 
     [Parameter] public LogoOrientation Orientation { get; set; } = LogoOrientation.Horizontal;
 
-    private string currentLogo = string.Empty;
+    private string _currentLogo = string.Empty;
 
     protected override void OnInitialized()
     {
         // Current = this;
 
-        themeManager.ThemeChangeRequested += OnThemeChanged;
+        themeManager.ThemeChangeRequested += OnThemeChangedAsync;
     }
 
     public string GetAlt()
@@ -61,48 +61,47 @@ public partial class Logo(ThemeManager themeManager) : IDisposable
             res = "light";
         }
 
-
         if (Size == LogoSize.ExtraSmall)
         {
-            currentLogo =
+            _currentLogo =
                 $"brand/logos/{orientationDirection}/logo-{orientationDirection}-xs-{res}.svg";
         }
         else if (Size == LogoSize.Small)
         {
-            currentLogo =
+            _currentLogo =
                 $"brand/logos/{orientationDirection}/logo-{orientationDirection}-s-{res}.svg";
         }
         else if (Size == LogoSize.Medium)
         {
-            currentLogo =
+            _currentLogo =
                 $"brand/logos/{orientationDirection}/logo-{orientationDirection}-m-{res}.svg";
         }
         else if (Size == LogoSize.Large)
         {
-            currentLogo =
+            _currentLogo =
                 $"brand/logos/{orientationDirection}/logo-{orientationDirection}-l-{res}.svg";
         }
         else if (Size == LogoSize.ExtraLarge)
         {
-            currentLogo =
+            _currentLogo =
                 $"brand/logos/{orientationDirection}/logo-{orientationDirection}-xl-{res}.svg";
         }
         else
         {
-            currentLogo =
+            _currentLogo =
                 $"brand/logos/{orientationDirection}/logo-{orientationDirection}-m-{res}.svg";
         }
 
-        return currentLogo;
+        return _currentLogo;
     }
 
-    private async Task OnThemeChanged(string preference)
+    private async Task OnThemeChangedAsync(string preference)
     {
         GetSource();
         await InvokeAsync(StateHasChanged);
     }
 
-    public void Dispose() => themeManager.ThemeChangeRequested -= OnThemeChanged;
+    public void Dispose() => themeManager.ThemeChangeRequested -= OnThemeChangedAsync;
 }
 
 public enum LogoSize

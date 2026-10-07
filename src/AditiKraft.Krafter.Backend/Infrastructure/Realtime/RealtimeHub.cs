@@ -22,11 +22,7 @@ public class RealtimeHub(ILogger<RealtimeHub> logger) : Hub
 
     public override async Task OnConnectedAsync()
     {
-        HttpContext? httpContext = Context.GetHttpContext();
-        if (httpContext is null)
-        {
-            throw new HubException(AuthenticationFailedMessage);
-        }
+        HttpContext? httpContext = Context.GetHttpContext() ?? throw new HubException(AuthenticationFailedMessage);
 
         // Hub instances have their own scope. Use the HTTP scope populated by tenant middleware.
         CurrentTenantDetails tenant = httpContext.RequestServices

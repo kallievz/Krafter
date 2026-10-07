@@ -15,7 +15,7 @@ public class ClientAuthApiService(
     {
         try
         {
-            Response<TokenResponse> response = await authApi.CreateTokenAsync(request, cancellationToken);
+            Response<TokenResponse> response = await authApi.CreateTokenAsync(request.TenantId, request, cancellationToken);
             return response;
         }
         catch (ApiException ex)
@@ -35,6 +35,35 @@ public class ClientAuthApiService(
             {
                 IsError = true,
                 Message = "Failed to create token. Please log in again.",
+                StatusCode = (int)HttpStatusCode.InternalServerError
+            };
+        }
+    }
+
+    public async Task<Response> SelfRegisterAsync(SelfRegisterRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            Response response = await authApi.SelfRegisterAsync(request.TenantId, request, cancellationToken);
+            return response;
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError(ex, "Error during client-side self registration");
+            return new Response
+            {
+                IsError = true,
+                Message = "Failed to register user. Please try again.",
+                StatusCode = (int)ex.StatusCode
+            };
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error during client-side self registration");
+            return new Response
+            {
+                IsError = true,
+                Message = "Failed to register user. Please try again.",
                 StatusCode = (int)HttpStatusCode.InternalServerError
             };
         }

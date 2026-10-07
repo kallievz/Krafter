@@ -6,10 +6,10 @@ namespace AditiKraft.Krafter.Tests.Auth;
 
 public sealed class AuthTokenServiceTests
 {
-    private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(10);
+    private static readonly TimeSpan _timeout = TimeSpan.FromSeconds(10);
 
     [Fact]
-    public async Task ConcurrentRefreshWaitsForStorageAndUsesTheSavedToken()
+    public async Task ConcurrentRefreshWaitsForStorageAndUsesTheSavedTokenAsync()
     {
         var saving = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var allowSave = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -18,7 +18,7 @@ public sealed class AuthTokenServiceTests
             BeforeSave = async () =>
             {
                 saving.SetResult();
-                await allowSave.Task.WaitAsync(Timeout);
+                await allowSave.Task.WaitAsync(_timeout);
             }
         };
         TokenResponse refreshed = TokenTestData.Create();
@@ -27,26 +27,26 @@ public sealed class AuthTokenServiceTests
         var service = new AuthTokenService(api, storage, coordinator);
 
         Task<bool> first = service.RefreshAsync();
-        await saving.Task.WaitAsync(Timeout);
+        await saving.Task.WaitAsync(_timeout);
         Task<bool> second = service.RefreshAsync();
         Assert.False(first.IsCompleted);
         Assert.False(second.IsCompleted);
         allowSave.SetResult();
 
-        Assert.All(await Task.WhenAll(first, second).WaitAsync(Timeout), result => Assert.True(result));
+        Assert.All(await Task.WhenAll(first, second).WaitAsync(_timeout), result => Assert.True(result));
         Assert.Equal(1, api.RefreshCount);
         Assert.Equal(refreshed, storage.Tokens);
     }
 
     [Fact]
-    public async Task SeparateUsersCanRefreshAtTheSameTime()
+    public async Task SeparateUsersCanRefreshAtTheSameTimeAsync()
     {
         var allowRefresh = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var firstApi = new AuthApi
         {
             Refresh = async _ =>
             {
-                await allowRefresh.Task.WaitAsync(Timeout);
+                await allowRefresh.Task.WaitAsync(_timeout);
                 return Response<TokenResponse>.Success(TokenTestData.Create("alice"));
             }
         };
@@ -62,19 +62,19 @@ public sealed class AuthTokenServiceTests
         Task<bool> firstRefresh = first.RefreshAsync();
         try
         {
-            Assert.True(await second.RefreshAsync().WaitAsync(Timeout));
+            Assert.True(await second.RefreshAsync().WaitAsync(_timeout));
             Assert.False(firstRefresh.IsCompleted);
             Assert.Equal(1, secondApi.RefreshCount);
         }
         finally
         {
             allowRefresh.SetResult();
-            await firstRefresh.WaitAsync(Timeout);
+            await firstRefresh.WaitAsync(_timeout);
         }
     }
 
     [Fact]
-    public async Task ChangingUsersDoesNotSuppressTheNextRefresh()
+    public async Task ChangingUsersDoesNotSuppressTheNextRefreshAsync()
     {
         var storage = new TokenStorage(TokenTestData.Create("alice", expired: true));
         var requests = new List<RefreshTokenRequest>();
@@ -100,7 +100,7 @@ public sealed class AuthTokenServiceTests
     }
 
     [Fact]
-    public async Task FailedResponseDoesNotSaveTokensAndAllowsRetry()
+    public async Task FailedResponseDoesNotSaveTokensAndAllowsRetryAsync()
     {
         TokenResponse original = TokenTestData.Create(expired: true);
         var storage = new TokenStorage(original);
@@ -120,7 +120,7 @@ public sealed class AuthTokenServiceTests
     }
 
     [Fact]
-    public async Task RefreshExceptionDoesNotPreventRetry()
+    public async Task RefreshExceptionDoesNotPreventRetryAsync()
     {
         var storage = new TokenStorage(TokenTestData.Create(expired: true));
         var api = new AuthApi { Refresh = _ => throw new HttpRequestException("Connection failed") };
@@ -130,18 +130,18 @@ public sealed class AuthTokenServiceTests
         await Assert.ThrowsAsync<HttpRequestException>(() => service.RefreshAsync());
 
         api.Refresh = _ => Task.FromResult(Response<TokenResponse>.Success(TokenTestData.Create()));
-        Assert.True(await service.RefreshAsync().WaitAsync(Timeout));
+        Assert.True(await service.RefreshAsync().WaitAsync(_timeout));
     }
 
     [Fact]
-    public async Task CancellingAWaitingCallerDoesNotBlockLaterCalls()
+    public async Task CancellingAWaitingCallerDoesNotBlockLaterCallsAsync()
     {
         var allowRefresh = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var api = new AuthApi
         {
             Refresh = async _ =>
             {
-                await allowRefresh.Task.WaitAsync(Timeout);
+                await allowRefresh.Task.WaitAsync(_timeout);
                 return Response<TokenResponse>.Success(TokenTestData.Create());
             }
         };
@@ -154,8 +154,8 @@ public sealed class AuthTokenServiceTests
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => cancelled);
         allowRefresh.SetResult();
-        Assert.True(await first.WaitAsync(Timeout));
-        Assert.True(await service.RefreshAsync().WaitAsync(Timeout));
+        Assert.True(await first.WaitAsync(_timeout));
+        Assert.True(await service.RefreshAsync().WaitAsync(_timeout));
         Assert.Equal(1, api.RefreshCount);
     }
 
@@ -169,7 +169,7 @@ public sealed class AuthTokenServiceTests
     }
 
     [Fact]
-    public async Task ValidTokenDoesNotCallTheRefreshEndpoint()
+    public async Task ValidTokenDoesNotCallTheRefreshEndpointAsync()
     {
         var api = new AuthApi();
         using var coordinator = new TokenRefreshCoordinator();
@@ -182,7 +182,7 @@ public sealed class AuthTokenServiceTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public async Task MissingCredentialsCannotRefresh(bool missingAccessToken)
+    public async Task MissingCredentialsCannotRefreshAsync(bool missingAccessToken)
     {
         TokenResponse tokens = TokenTestData.Create(expired: true);
         tokens = missingAccessToken ? tokens with { Token = "" } : tokens with { RefreshToken = "" };
@@ -195,7 +195,7 @@ public sealed class AuthTokenServiceTests
     }
 
     [Fact]
-    public async Task SynchronizingAnExpiredTokenDoesNotCountAsARefresh()
+    public async Task SynchronizingAnExpiredTokenDoesNotCountAsARefreshAsync()
     {
         TokenResponse expired = TokenTestData.Create(expired: true);
         TokenResponse refreshed = TokenTestData.Create();
@@ -240,9 +240,13 @@ public sealed class AuthTokenServiceTests
         }
 
         public ValueTask<string?> GetCachedAuthTokenAsync() => ValueTask.FromResult(Tokens?.Token);
+
         public ValueTask<string?> GetCachedRefreshTokenAsync() => ValueTask.FromResult(Tokens?.RefreshToken);
+
         public ValueTask<DateTime> GetAuthTokenExpiryDate() => ValueTask.FromResult(Tokens?.TokenExpiryTime ?? default);
+
         public ValueTask<DateTime> GetRefreshTokenExpiryDate() => ValueTask.FromResult(Tokens?.RefreshTokenExpiryTime ?? default);
+
         public ValueTask<ICollection<string>?> GetCachedPermissionsAsync() => ValueTask.FromResult<ICollection<string>?>(Tokens?.Permissions);
     }
 
@@ -259,8 +263,14 @@ public sealed class AuthTokenServiceTests
         }
 
         public Task<Response<TokenResponse>> GetCurrentTokenAsync(CancellationToken cancellation) => Current();
+
         public Task<Response<TokenResponse>> CreateTokenAsync(TokenRequest request, CancellationToken cancellation) => throw new NotSupportedException();
+
         public Task<Response<TokenResponse>> ExternalAuthAsync(TokenRequest request, CancellationToken cancellation) => throw new NotSupportedException();
+
+        public Task<Response> SelfRegisterAsync(SelfRegisterRequest request, CancellationToken cancellation) => throw new NotSupportedException();
+
         public Task LogoutAsync(CancellationToken cancellation) => throw new NotSupportedException();
     }
 }
+

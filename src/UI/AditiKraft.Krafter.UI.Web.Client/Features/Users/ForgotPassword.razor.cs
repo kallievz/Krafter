@@ -1,4 +1,3 @@
-
 namespace AditiKraft.Krafter.UI.Web.Client.Features.Users;
 
 public partial class ForgotPassword(ApiCallService api, IUsersApi usersApi) : ComponentBase
@@ -7,7 +6,7 @@ public partial class ForgotPassword(ApiCallService api, IUsersApi usersApi) : Co
     public bool IsBusy { get; set; }
     public bool MailSent { get; set; }
 
-    private async Task SendForgotPasswordMail(ForgotPasswordRequest requestInput)
+    private async Task SendForgotPasswordMailAsync(ForgotPasswordRequest requestInput)
     {
         IsBusy = true;
         Response response = await api.CallAsync(() => usersApi.ForgotPasswordAsync(requestInput));

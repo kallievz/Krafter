@@ -1,22 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using TickerQ.EntityFrameworkCore.Configurations;
+using TickerQ.EntityFrameworkCore.DbContextFactory;
+using TickerQ.Utilities.Entities;
 
 namespace AditiKraft.Krafter.Backend.Infrastructure.Jobs;
 
-public class BackgroundJobsContext : DbContext
+public class BackgroundJobsContext : TickerQDbContext<TimeTickerEntity, CronTickerEntity>
 {
     public BackgroundJobsContext(DbContextOptions<BackgroundJobsContext> options)
         : base(options)
     {
-    }
-
-    protected override void OnModelCreating(ModelBuilder builder)
-    {
-        base.OnModelCreating(builder);
-
-        // Apply TickerQ entity configurations explicitly
-        builder.ApplyConfiguration(new TimeTickerConfigurations());
-        builder.ApplyConfiguration(new CronTickerConfigurations());
-        builder.ApplyConfiguration(new CronTickerOccurrenceConfigurations());
     }
 }

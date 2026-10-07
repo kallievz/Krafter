@@ -46,6 +46,7 @@
 
     private DotNetObjectReference<Routes>? objRef;
     private string _themeCssFile = string.Empty;
+    private bool _seedDataRequested;
 
     private string NotFoundIllustration =>
         themeManager.CurrentActive == ThemeManager.ThemePreference.Dark ? "404-dark.svg" : "404.svg";
@@ -82,6 +83,12 @@
                 // Initialize theme based on stored preference
                 // await themeManager.InitializeThemeAsync();
 
+                if (!_seedDataRequested)
+                {
+                    _seedDataRequested = true;
+                    await tenantsApi.SeedDataAsync(new SeedDataRequest(), CancellationToken.None);
+                }
+
                 StateHasChanged();
             }
         }
@@ -89,15 +96,13 @@
         {
             Console.WriteLine($"Error in OnAfterRenderAsync: {ex}");
         }
-
-        await tenantsApi.SeedDataAsync(new SeedDataRequest(), CancellationToken.None);
     }
 
     [JSInvokable]
-    public async Task OnSystemThemeChanged(string systemTheme)
+    public async Task OnSystemThemeChangedAsync(string systemTheme)
     {
         // Delegate to the theme manager
-        await themeManager.OnSystemThemeChanged(systemTheme);
+        await themeManager.OnSystemThemeChangedAsync(systemTheme);
         await InvokeAsync(StateHasChanged);
     }
 

@@ -1,31 +1,28 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AditiKraft.Krafter.Backend.Migrations
+namespace AditiKraft.Krafter.Backend.Migrations;
+
+/// <inheritdoc />
+public partial class RemoveRoleNameIndex : Migration
 {
     /// <inheritdoc />
-    public partial class RemoveRoleNameIndex : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropIndex(
-                "RoleNameIndex",
-                "ApplicationRole");
+        migrationBuilder.DropIndex(
+            "RoleNameIndex",
+            "ApplicationRole");
+    }
 
-        }
-
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.CreateIndex(
-                "RoleNameIndex",
-                "ApplicationRole",
-                "NormalizedName",
-                unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
-
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.CreateIndex(
+            "RoleNameIndex",
+            "ApplicationRole",
+            "NormalizedName",
+            unique: true,
+            filter: "[NormalizedName] IS NOT NULL");
     }
 }

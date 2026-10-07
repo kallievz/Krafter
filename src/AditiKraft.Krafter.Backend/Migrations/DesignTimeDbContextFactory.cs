@@ -60,4 +60,3 @@ public class DesignTimeBackgroundJobsContextDbContextFactory : IDesignTimeDbCont
         return new BackgroundJobsContext(optionsBuilder.Options);
     }
 }
-

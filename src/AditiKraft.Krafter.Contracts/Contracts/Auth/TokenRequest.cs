@@ -8,6 +8,7 @@ public class TokenRequest
     public string Password { get; set; } = string.Empty;
     public bool IsExternalLogin { get; set; } = false;
     public string? Code { get; set; }
+    public string? TenantId { get; set; }
 }
 
 public class TokenRequestValidator : AbstractValidator<TokenRequest>

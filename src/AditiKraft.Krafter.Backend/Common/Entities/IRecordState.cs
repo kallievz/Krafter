@@ -7,4 +7,3 @@ public interface IRecordState
     public RecordState RecordState { get; set; }
     public string? RecordStateRemarks { get; set; }
 }
-

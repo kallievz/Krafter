@@ -10,7 +10,7 @@ public class RefitAuthHandler(
     ILogger<RefitAuthHandler> logger) : DelegatingHandler
 {
     // Public endpoints that must NOT trigger a refresh or require an auth token
-    private static readonly string[] PublicPaths =
+    private static readonly string[] _publicPaths =
     [
         $"/{ApiRoutes.ApiPrefix}/{ApiRoutes.Tokens}",
         $"/{ApiRoutes.ApiPrefix}/{ApiRoutes.ExternalAuth}",
@@ -91,7 +91,7 @@ public class RefitAuthHandler(
         }
 
         string normalized = path.Trim().ToLowerInvariant();
-        return PublicPaths.Any(p =>
+        return _publicPaths.Any(p =>
             normalized.StartsWith(p, StringComparison.OrdinalIgnoreCase) ||
             normalized.Contains(p.Trim('/')));
     }

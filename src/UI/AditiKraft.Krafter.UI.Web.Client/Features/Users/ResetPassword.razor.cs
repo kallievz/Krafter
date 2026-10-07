@@ -1,4 +1,3 @@
-
 namespace AditiKraft.Krafter.UI.Web.Client.Features.Users;
 
 public partial class ResetPassword(
@@ -14,7 +13,7 @@ public partial class ResetPassword(
 
     public bool IsBusy { get; set; }
 
-    private async Task SubmitResetPassword(ResetPasswordRequest requestInput)
+    private async Task SubmitResetPasswordAsync(ResetPasswordRequest requestInput)
     {
         requestInput.Token = Token;
         IsBusy = true;

@@ -1,4 +1,3 @@
-
 namespace AditiKraft.Krafter.UI.Web.Client.Features.Users;
 
 public partial class ChangePassword(
@@ -14,7 +13,7 @@ public partial class ChangePassword(
 
     public bool IsBusy { get; set; }
 
-    private async Task SubmitChangePassword(ChangePasswordRequest requestInput)
+    private async Task SubmitChangePasswordAsync(ChangePasswordRequest requestInput)
     {
         IsBusy = true;
         Response response = await api.CallAsync(

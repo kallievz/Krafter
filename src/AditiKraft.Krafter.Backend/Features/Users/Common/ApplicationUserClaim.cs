@@ -16,6 +16,3 @@ public class ApplicationUserClaim : IdentityUserClaim<string>, ICommonAuthEntity
 
     public string TenantId { get; set; } = null!;
 }
-
-
-

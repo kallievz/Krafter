@@ -12,6 +12,3 @@ public class UserRefreshToken : ITenant
 
     [NotMapped] public DateTime TokenExpiryTime { get; set; }
 }
-
-
-

@@ -9,7 +9,7 @@ namespace AditiKraft.Krafter.Tests.Configuration;
 public sealed class OpenApiConfigurationTests
 {
     [Fact]
-    public async Task OpenApiEndpointGeneratesRequestSchemaWithConfiguredDocumentMetadata()
+    public async Task OpenApiEndpointGeneratesRequestSchemaWithConfiguredDocumentMetadataAsync()
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder();
         builder.Services.AddSwaggerConfiguration();
@@ -37,3 +37,4 @@ public sealed class OpenApiConfigurationTests
         Assert.True(properties.TryGetProperty("description", out _));
     }
 }
+

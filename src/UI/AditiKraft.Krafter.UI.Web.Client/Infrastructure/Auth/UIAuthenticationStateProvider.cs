@@ -30,7 +30,7 @@ public class UIAuthenticationStateProvider : AuthenticationStateProvider
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         // On the very first load, try to get the user from the persisted state.
-        if (_isInitialLoad && _persistentState.TryTakeFromJson<UserInfo>(nameof(UserInfo), out UserInfo? userInfo) &&
+        if (_isInitialLoad && _persistentState.TryTakeFromJson(nameof(UserInfo), out UserInfo? userInfo) &&
             userInfo is not null)
         {
             _isInitialLoad = false;

@@ -1,0 +1,110 @@
+@page "/self-register"
+@using AditiKraft.Krafter.Contracts.Contracts.Auth
+
+<RadzenRow Gap="0" Class="kr-auth-panel">
+
+    @if (IsMobileDevice == false)
+    {
+        <RadzenColumn Size="12" SizeMD="4">
+            <RadzenCard Class="kr-auth-intro">
+                <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H2" Class="rz-mb-3">Welcome!</RadzenText>
+                <RadzenText TextStyle="TextStyle.H6">Create your account to get started.</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body2">Set your details and password to self-register.</RadzenText>
+            </RadzenCard>
+        </RadzenColumn>
+    }
+
+    <RadzenColumn Size="12" SizeMD="8">
+        <RadzenCard Class="kr-auth-form">
+            <RadzenText TextAlign="TextAlign.Center" TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-3">
+                Self Register
+            </RadzenText>
+
+            <RadzenTemplateForm Data="@SelfRegisterRequestInput" Submit="@((SelfRegisterRequest request) => SelfRegisterAsync(request))">
+                <FluentValidationValidator Options="@(options => options.IncludeAllRuleSets())" />
+                <RadzenStack Gap="0.5rem">
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="3">
+                            <RadzenLabel Text="TenantId" Component="TenantId" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="9">
+                            <RadzenTextBox Style="width: 100%" @bind-Value="@SelfRegisterRequestInput.TenantId" Name="TenantId" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="3">
+                            <RadzenLabel Text="First Name" Component="FirstName" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="9">
+                            <RadzenTextBox Style="width: 100%" @bind-Value="@SelfRegisterRequestInput.FirstName" Name="FirstName" />
+                        </RadzenColumn>
+                        <ValidationMessage For="@(() => SelfRegisterRequestInput.FirstName)" />
+                    </RadzenRow>
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="3">
+                            <RadzenLabel Text="Last Name" Component="LastName" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="9">
+                            <RadzenTextBox Style="width: 100%" @bind-Value="@SelfRegisterRequestInput.LastName" Name="LastName" />
+                        </RadzenColumn>
+                        <ValidationMessage For="@(() => SelfRegisterRequestInput.LastName)" />
+                    </RadzenRow>
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="3">
+                            <RadzenLabel Text="Email" Component="Email" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="9">
+                            <RadzenTextBox Style="width: 100%" @bind-Value="@SelfRegisterRequestInput.Email" Name="Email" />
+                        </RadzenColumn>
+                        <ValidationMessage For="@(() => SelfRegisterRequestInput.Email)" />
+                    </RadzenRow>
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="3">
+                            <RadzenLabel Text="User Name" Component="UserName" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="9">
+                            <RadzenTextBox Style="width: 100%" @bind-Value="@SelfRegisterRequestInput.UserName" Name="UserName" />
+                        </RadzenColumn>
+                        <ValidationMessage For="@(() => SelfRegisterRequestInput.UserName)" />
+                    </RadzenRow>
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="3">
+                            <RadzenLabel Text="Phone" Component="PhoneNumber" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="9">
+                            <RadzenTextBox Style="width: 100%" @bind-Value="@SelfRegisterRequestInput.PhoneNumber" Name="PhoneNumber" />
+                        </RadzenColumn>
+                        <ValidationMessage For="@(() => SelfRegisterRequestInput.PhoneNumber)" />
+                    </RadzenRow>
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="3">
+                            <RadzenLabel Text="Password" Component="Password" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="9">
+                            <RadzenPassword Style="width: 100%" @bind-Value="@SelfRegisterRequestInput.Password" Name="Password" />
+                        </RadzenColumn>
+                        <ValidationMessage For="@(() => SelfRegisterRequestInput.Password)" />
+                    </RadzenRow>
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="3">
+                            <RadzenLabel Text="Confirm Password" Component="ConfirmPassword" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="9">
+                            <RadzenPassword Style="width: 100%" @bind-Value="@SelfRegisterRequestInput.ConfirmPassword" Name="ConfirmPassword" />
+                        </RadzenColumn>
+                        <ValidationMessage For="@(() => SelfRegisterRequestInput.ConfirmPassword)" />
+                    </RadzenRow>
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Right" Gap="0.5rem" Class="rz-mt-4 rz-mb-2">
+                    <RadzenButton ButtonType="ButtonType.Submit" IsBusy="IsBusy" Size="ButtonSize.Small" Icon="person_add" Text="Register" />
+                </RadzenStack>
+            </RadzenTemplateForm>
+
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.5rem">
+                <RadzenText TextStyle="TextStyle.Body2">Already have an account?</RadzenText>
+                <RadzenLink Path="/login" Text="Login"></RadzenLink>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>

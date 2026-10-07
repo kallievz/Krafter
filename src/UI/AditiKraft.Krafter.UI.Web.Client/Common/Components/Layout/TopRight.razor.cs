@@ -13,12 +13,12 @@ public partial class TopRight(
 
     [Parameter] public EventCallback OnNavigating { get; set; }
 
-    private async Task SplitButtonClick(RadzenSplitButtonItem? item)
+    private async Task SplitButtonClickAsync(RadzenSplitButtonItem? item)
     {
         if (item is { Value: "Logout" })
         {
             await authenticationService.LogoutAsync("SplitButtonClick 20");
-            await NavigateToLogin();
+            await NavigateToLoginAsync();
         }
         else if (item is { Value: "ChangePassword" })
         {
@@ -32,7 +32,7 @@ public partial class TopRight(
         }
     }
 
-    private async Task NavigateToLogin()
+    private async Task NavigateToLoginAsync()
     {
         await OnNavigating.InvokeAsync();
         navigationManager.NavigateTo("/login");

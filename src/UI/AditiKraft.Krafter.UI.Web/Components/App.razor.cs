@@ -12,12 +12,11 @@ public partial class App(ThemeService themeService, ThemeManager themeManager)
         {
             string? theme = HttpContext.Request.Cookies["AppTheme"];
 
-            if (!string.IsNullOrEmpty(theme))
+            if (!string.IsNullOrWhiteSpace(theme))
             {
-                themeManager.CurrentActive =
-                    theme?.Contains("dark") == true
-                        ? ThemeManager.ThemePreference.Dark
-                        : ThemeManager.ThemePreference.Light;
+                themeManager.CurrentActive = theme.Contains("dark")
+                    ? ThemeManager.ThemePreference.Dark
+                    : ThemeManager.ThemePreference.Light;
                 themeService.SetTheme(theme, false);
             }
             else

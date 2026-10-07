@@ -125,7 +125,7 @@ public sealed class CorsConfigurationTests
     [InlineData("https://blue.getkrafter.dev.attacker.com", false)]
     [InlineData("http://blue.getkrafter.dev", false)]
     [InlineData("https://blue.getkrafter.dev:8443", false)]
-    public async Task SiblingTenantCorsExcludesReservedAndUnrelatedOrigins(string origin, bool expected)
+    public async Task SiblingTenantCorsExcludesReservedAndUnrelatedOriginsAsync(string origin, bool expected)
     {
         CorsPolicy policy = await CreatePolicyAsync("https://krafter.getkrafter.dev", true, new()
         {
@@ -156,3 +156,4 @@ public sealed class CorsConfigurationTests
         return Assert.IsType<CorsPolicy>(policy);
     }
 }
+

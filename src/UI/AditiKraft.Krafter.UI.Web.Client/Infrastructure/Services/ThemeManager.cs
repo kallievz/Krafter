@@ -16,7 +16,7 @@ public class ThemeManager(ThemeService themeService, IJSRuntime jsRuntime)
     public ThemePreference CurrentActive { get; set; } =
         themeService.Theme?.Contains("dark") == true ? ThemePreference.Dark : ThemePreference.Light;
 
-    public async Task SetThemePreference(ThemePreference preference)
+    public async Task SetThemePreferenceAsync(ThemePreference preference)
     {
         CurrentPreference = preference;
 
@@ -46,15 +46,14 @@ public class ThemeManager(ThemeService themeService, IJSRuntime jsRuntime)
         else
         {
             CurrentActive = preference;
-            apptheme = await MapPreferenceToTheme(preference);
+            apptheme = await MapPreferenceToThemeAsync(preference);
         }
 
         themeService.SetTheme(apptheme);
         await (ThemeChangeRequested?.Invoke("") ?? Task.CompletedTask);
     }
 
-
-    public async Task OnSystemThemeChanged(string systemTheme)
+    public async Task OnSystemThemeChangedAsync(string systemTheme)
     {
         string value = await jsRuntime.InvokeAsync<string>("getStoredThemePreference");
         if (value == "auto")
@@ -116,11 +115,13 @@ public class ThemeManager(ThemeService themeService, IJSRuntime jsRuntime)
         }
         else
         {
-            return themeService.Theme;
+            return ActiveTheme;
         }
     }
 
-    private async Task<string> MapPreferenceToTheme(ThemePreference preference)
+    private string ActiveTheme => themeService.Theme ?? "default";
+
+    private async Task<string> MapPreferenceToThemeAsync(ThemePreference preference)
     {
         if (preference == ThemePreference.Auto)
         {
@@ -138,12 +139,11 @@ public class ThemeManager(ThemeService themeService, IJSRuntime jsRuntime)
         }
         else
         {
-            return themeService.Theme;
+            return ActiveTheme;
         }
     }
 
-
-    private string CurrentLightTheme => themeService.Theme.ToLowerInvariant() switch
+    private string CurrentLightTheme => ActiveTheme.ToLowerInvariant() switch
     {
         "dark" => "default",
         "material-dark" => "material",
@@ -152,10 +152,10 @@ public class ThemeManager(ThemeService themeService, IJSRuntime jsRuntime)
         "software-dark" => "software",
         "humanistic-dark" => "humanistic",
         "standard-dark" => "standard",
-        _ => themeService.Theme
+        _ => ActiveTheme
     };
 
-    private string CurrentDarkTheme => themeService.Theme.ToLowerInvariant() switch
+    private string CurrentDarkTheme => ActiveTheme.ToLowerInvariant() switch
     {
         "default" => "dark",
         "material" => "material-dark",
@@ -164,9 +164,8 @@ public class ThemeManager(ThemeService themeService, IJSRuntime jsRuntime)
         "software" => "software-dark",
         "humanistic" => "humanistic-dark",
         "standard" => "standard-dark",
-        _ => themeService.Theme
+        _ => ActiveTheme
     };
-
 
     public async Task SetDifferentThemeAsync(string apptheme)
     {

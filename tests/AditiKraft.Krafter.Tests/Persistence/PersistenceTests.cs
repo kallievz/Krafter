@@ -4,6 +4,7 @@ using AditiKraft.Krafter.Backend.Features.Tenants;
 using AditiKraft.Krafter.Backend.Features.Tenants.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
 using AditiKraft.Krafter.Contracts.Common.Models;
+using AditiKraft.Krafter.Contracts.Contracts.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -15,7 +16,7 @@ public sealed class PersistenceTests
     [Fact]
     public void PostgreSqlTenantMigrationEnforcesCaseInsensitiveUniquenessForNondeletedTenants()
     {
-        var options = new DbContextOptionsBuilder<TenantDbContext>()
+        DbContextOptions<TenantDbContext> options = new DbContextOptionsBuilder<TenantDbContext>()
             .UseNpgsql("Host=localhost;Database=model_check;Username=model_check;Password=unused")
             .Options;
         using var db = new TenantDbContext(options);
@@ -35,7 +36,7 @@ public sealed class PersistenceTests
     [Fact]
     public void PostgreSqlModelMatchesExistingMigrations()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        DbContextOptions<ApplicationDbContext> options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseNpgsql("Host=localhost;Database=model_check;Username=model_check;Password=unused")
             .Options;
         using var db = new ApplicationDbContext(options, new CurrentUser(), new CurrentTenantService());
@@ -45,11 +46,11 @@ public sealed class PersistenceTests
     }
 
     [Fact]
-    public async Task HistoryRequestReturnsBadRequestWithoutQueryingDatabase()
+    public async Task HistoryRequestReturnsBadRequestWithoutQueryingDatabaseAsync()
     {
         await using var db = new TenantDbContext(new DbContextOptions<TenantDbContext>());
 
-        var result = await new GetTenants.Handler(db).GetAsync(new GetRequestInput { History = true },
+        Response<PaginationResponse<TenantDto>> result = await new GetTenants.Handler(db).GetAsync(new GetRequestInput { History = true },
             CancellationToken.None);
 
         Assert.True(result.IsError);
@@ -60,17 +61,17 @@ public sealed class PersistenceTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task TenantListKeepsCurrentAndDeletedRecordsSeparate(bool deleted)
+    public async Task TenantListKeepsCurrentAndDeletedRecordsSeparateAsync(bool deleted)
     {
-        var options = new DbContextOptionsBuilder<TenantDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
+        DbContextOptions<TenantDbContext> options = new DbContextOptionsBuilder<TenantDbContext>()
+            .UseInMemoryDatabase(Guid.CreateVersion7().ToString()).Options;
         await using var db = new TenantDbContext(options);
         db.Tenants.AddRange(
             new Tenant { Id = "current", Name = "Current", Identifier = "current", AdminEmail = "a@example.com" },
             new Tenant { Id = "deleted", Name = "Deleted", Identifier = "deleted", AdminEmail = "b@example.com", IsDeleted = true });
         await db.SaveChangesAsync();
 
-        var result = await new GetTenants.Handler(db).GetAsync(
+        Response<PaginationResponse<TenantDto>> result = await new GetTenants.Handler(db).GetAsync(
             new GetRequestInput { IsDeleted = deleted, MaxResultCount = 10 }, CancellationToken.None);
 
         Assert.False(result.IsError);
@@ -78,3 +79,4 @@ public sealed class PersistenceTests
         Assert.Equal(1, result.Data.TotalCount);
     }
 }
+

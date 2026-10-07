@@ -3,6 +3,7 @@ using AditiKraft.Krafter.Backend.Features.Auth;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Primitives;
 
 namespace AditiKraft.Krafter.Tests.Configuration;
 
@@ -28,7 +29,7 @@ public sealed class GoogleCallbackTests
 
         Assert.NotNull(tokens);
         Assert.Equal("access-token", tokens.AccessToken);
-        var parameters = QueryHelpers.ParseQuery(Assert.IsType<string>(handler.RequestBody));
+        Dictionary<string, StringValues> parameters = QueryHelpers.ParseQuery(Assert.IsType<string>(handler.RequestBody));
         Assert.Equal(expectedRedirectUri, parameters["redirect_uri"].ToString());
         Assert.Equal("test-client", parameters["client_id"].ToString());
         Assert.Equal("test-code", parameters["code"].ToString());

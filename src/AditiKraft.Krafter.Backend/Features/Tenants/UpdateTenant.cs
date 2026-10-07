@@ -8,6 +8,7 @@ using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Auth.Permissions;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Tenants;
+using FluentValidation.Results;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -56,7 +57,7 @@ public sealed class UpdateTenant
                 }
             }
 
-            var validation = await new CreateOrUpdateTenantRequestValidator(urls).ValidateAsync(request, cancellationToken);
+            ValidationResult validation = await new CreateOrUpdateTenantRequestValidator(urls).ValidateAsync(request, cancellationToken);
             if (!validation.IsValid)
             {
                 return Response.BadRequest(string.Join(" ", validation.Errors.Select(error => error.ErrorMessage)));
@@ -127,7 +128,7 @@ public sealed class UpdateTenant
                 await dbContext.SaveChangesAsync(cancellationToken);
             }
             catch (DbUpdateException exception) when (exception.InnerException is PostgresException
-                   { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: TenantDbContext.TenantIdentifierIndexName })
+            { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: TenantDbContext.TenantIdentifierIndexName })
             {
                 return Response.Conflict("Identifier already exists, please try a different identifier.");
             }

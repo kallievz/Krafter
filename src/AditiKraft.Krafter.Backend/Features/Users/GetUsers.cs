@@ -1,16 +1,16 @@
-using AditiKraft.Krafter.Backend.Web.Authorization;
-using AditiKraft.Krafter.Backend.Common.Extensions;
-using LinqKit;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
-using AditiKraft.Krafter.Backend.Web;
+using AditiKraft.Krafter.Backend.Common.Extensions;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
+using AditiKraft.Krafter.Backend.Web;
+using AditiKraft.Krafter.Backend.Web.Authorization;
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Auth.Permissions;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Users;
+using LinqKit;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AditiKraft.Krafter.Backend.Features.Users;
 
@@ -132,6 +132,3 @@ public sealed class GetUsers
         }
     }
 }
-
-
-

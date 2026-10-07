@@ -68,7 +68,6 @@ public sealed class UpdateRole
             await db.SaveChangesAsync(cancellationToken);
             return new Response();
         }
-
     }
 
     public sealed class Route : IRouteRegistrar

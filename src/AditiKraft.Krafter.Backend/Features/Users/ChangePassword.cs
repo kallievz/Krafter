@@ -56,7 +56,7 @@ public sealed class ChangePassword
             {
                 await jobService.EnqueueAsync(
                     new SendEmailRequestInput { Email = user.Email, Subject = emailSubject, HtmlMessage = emailBody },
-                    nameof(Jobs.SendEmailJob),
+                    nameof(Jobs.SendEmailJobAsync),
                     CancellationToken.None);
             }
 

@@ -1,20 +1,22 @@
 using AditiKraft.Krafter.UI.Web.Client.Infrastructure.SignalR;
-using Radzen.Blazor.Rendering;
 
 namespace AditiKraft.Krafter.UI.Web.Client.Common.Components.Layout;
 
 public partial class Notifications(SignalRService signalRService) : IDisposable
 {
-    private RadzenButton button = null!;
-    private Popup popup = null!;
     private readonly List<string> _messages = new();
+    private RadzenButton _button = null!;
+    private RadzenPopup _popup = null!;
 
-    protected override async Task OnInitializedAsync() => signalRService.MessageReceived += OnMessageReceived;
-
-    private async Task OnOpen()
+    protected override Task OnInitializedAsync()
     {
-        // await JSRuntime.InvokeVoidAsync("eval", "setTimeout(function(){ document.getElementById('search').focus(); }, 200)");
+        signalRService.MessageReceived += OnMessageReceived;
+        return Task.CompletedTask;
     }
+
+    private Task OnOpen() => Task.CompletedTask;
+
+    private Task OnNotificationClickAsync() => _popup.ToggleAsync(_button.Element);
 
     private void OnMessageReceived(string user, string message)
     {

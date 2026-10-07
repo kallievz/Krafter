@@ -31,13 +31,13 @@
         </RadzenRow>
     </RadzenHeader>
 
-    <RadzenBody @ref="@(body0)">
+    <RadzenBody>
         <ChildContent>
             <PageTitle>@LocalAppState.CurrentPageTitle</PageTitle>
             @Body
         </ChildContent>
     </RadzenBody>
-    <RadzenSidebar @ref="@(sidebar0)" @bind-Expanded="@_sidebarExpanded" class="demos-sidebar" style="display: flex; flex-direction: column">
+    <RadzenSidebar @bind-Expanded="@_sidebarExpanded" class="demos-sidebar" style="display: flex; flex-direction: column">
         <AuthorizeView>
             <Authorized>
                 <div style="padding: 0.5rem">
@@ -45,7 +45,7 @@
                 </div>
                 <div style="flex: 1; overflow: auto">
                     <RadzenPanelMenu>
-                        @foreach (var category in menus)
+                        @foreach (var category in _menus)
                         {
                             if (category.Children != null && category.Children.Count() > 0 && (HasChildPermission(category)))
                             {
@@ -170,7 +170,7 @@
     private ThemeManager.ThemePreference themePreference
     {
         get => themeManager.CurrentPreference;
-        set { themeManager.SetThemePreference(value).ConfigureAwait(false); }
+        set { themeManager.SetThemePreferenceAsync(value).ConfigureAwait(false); }
     }
 
 

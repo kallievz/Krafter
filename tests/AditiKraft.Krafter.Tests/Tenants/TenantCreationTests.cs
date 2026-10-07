@@ -18,7 +18,7 @@ namespace AditiKraft.Krafter.Tests.Tenants;
 
 public sealed class TenantCreationTests
 {
-    private static readonly AppUrls Urls = new()
+    private static readonly AppUrls _urls = new()
     {
         RootUiUrl = "https://krafter.getkrafter.dev",
         TenantBaseDomain = "getkrafter.dev",
@@ -27,10 +27,10 @@ public sealed class TenantCreationTests
     };
 
     [Fact]
-    public async Task CreatingTenantPersistsUtcCreationTimeAndUpdatingPreservesIt()
+    public async Task CreatingTenantPersistsUtcCreationTimeAndUpdatingPreservesItAsync()
     {
         var services = new ServiceCollection();
-        string databaseName = Guid.NewGuid().ToString();
+        string databaseName = Guid.CreateVersion7().ToString();
         services.AddLogging();
         services.AddScoped<ICurrentUser, CurrentUser>();
         services.AddTenantServices();
@@ -60,7 +60,7 @@ public sealed class TenantCreationTests
             IsActive = true,
             ValidUpto = new DateTime(2030, 6, 15, 18, 15, 0, DateTimeKind.Utc)
         };
-        var create = new CreateTenant.Handler(db, provider, currentUser, Urls);
+        var create = new CreateTenant.Handler(db, provider, currentUser, _urls);
 
         DateTime before = DateTime.UtcNow;
         Response created = await create.CreateAsync(request, CancellationToken.None);
@@ -76,7 +76,7 @@ public sealed class TenantCreationTests
         Assert.Equal(DateTimeKind.Utc, saved.ValidUpto.Kind);
 
         request.Name = "Updated tenant";
-        var update = new UpdateTenant.Handler(db, provider, Urls);
+        var update = new UpdateTenant.Handler(db, provider, _urls);
         Response updated = await update.UpdateAsync(saved.Id!, request, CancellationToken.None);
 
         Assert.False(updated.IsError, updated.Message);
@@ -105,12 +105,12 @@ public sealed class TenantCreationTests
     [InlineData("abcdefghijk")]
     [InlineData("नेपाल")]
     [InlineData("")]
-    public async Task CreateRejectsInvalidOrReservedIdentifiersEvenWithForgedRootId(string identifier)
+    public async Task CreateRejectsInvalidOrReservedIdentifiersEvenWithForgedRootIdAsync(string identifier)
     {
         await using TenantDbContext db = CreateDb();
         CreateOrUpdateTenantRequest request = ValidRequest(identifier);
         request.Id = "root";
-        var handler = new CreateTenant.Handler(db, null!, null!, Urls);
+        var handler = new CreateTenant.Handler(db, null!, null!, _urls);
 
         Response response = await handler.CreateAsync(request, CancellationToken.None);
 
@@ -126,17 +126,17 @@ public sealed class TenantCreationTests
     [InlineData("a-1")]
     public void ValidatorAcceptsValidIdentifiers(string identifier)
     {
-        var validator = new CreateOrUpdateTenantRequestValidator(Urls);
+        var validator = new CreateOrUpdateTenantRequestValidator(_urls);
         Assert.True(validator.Validate(ValidRequest(identifier)).IsValid);
     }
 
     [Fact]
-    public async Task CreateRejectsIdentifierMatchingExistingTenantIgnoringCase()
+    public async Task CreateRejectsIdentifierMatchingExistingTenantIgnoringCaseAsync()
     {
         await using TenantDbContext db = CreateDb();
         db.Tenants.Add(ExistingTenant("existing", "Blue"));
         await db.SaveChangesAsync();
-        var handler = new CreateTenant.Handler(db, null!, null!, Urls);
+        var handler = new CreateTenant.Handler(db, null!, null!, _urls);
 
         Response response = await handler.CreateAsync(ValidRequest("blue"), CancellationToken.None);
 
@@ -145,12 +145,12 @@ public sealed class TenantCreationTests
     }
 
     [Fact]
-    public async Task UpdateRejectsIdentifierMatchingAnotherTenantIgnoringCase()
+    public async Task UpdateRejectsIdentifierMatchingAnotherTenantIgnoringCaseAsync()
     {
         await using TenantDbContext db = CreateDb();
         db.Tenants.AddRange(ExistingTenant("existing", "Blue"), ExistingTenant("edited", "green"));
         await db.SaveChangesAsync();
-        var handler = new UpdateTenant.Handler(db, null!, Urls);
+        var handler = new UpdateTenant.Handler(db, null!, _urls);
 
         Response response = await handler.UpdateAsync("edited", ValidRequest("blue"), CancellationToken.None);
 
@@ -165,14 +165,14 @@ public sealed class TenantCreationTests
     [InlineData("status")]
     [InlineData("Blue")]
     [InlineData("blue.red")]
-    public async Task UpdateRejectsInvalidIdentifiersAndIgnoresForgedRequestId(string identifier)
+    public async Task UpdateRejectsInvalidIdentifiersAndIgnoresForgedRequestIdAsync(string identifier)
     {
         await using TenantDbContext db = CreateDb();
         db.Tenants.Add(ExistingTenant("edited", "green"));
         await db.SaveChangesAsync();
         CreateOrUpdateTenantRequest request = ValidRequest(identifier);
         request.Id = "root";
-        var handler = new UpdateTenant.Handler(db, null!, Urls);
+        var handler = new UpdateTenant.Handler(db, null!, _urls);
 
         Response response = await handler.UpdateAsync("edited", request, CancellationToken.None);
 
@@ -181,7 +181,7 @@ public sealed class TenantCreationTests
     }
 
     [Fact]
-    public async Task UpdateAllowsRootNameChangeWithoutChangingReservedIdentifier()
+    public async Task UpdateAllowsRootNameChangeWithoutChangingReservedIdentifierAsync()
     {
         await using TenantDbContext db = CreateDb();
         Tenant root = ExistingTenant(SeedDataConstants.RootTenant.Id, DefaultTenantConstants.Identifier);
@@ -190,7 +190,7 @@ public sealed class TenantCreationTests
         CreateOrUpdateTenantRequest request = ValidRequest(DefaultTenantConstants.Identifier);
         request.Name = "Updated root";
         request.ValidUpto = root.ValidUpto;
-        var handler = new UpdateTenant.Handler(db, null!, Urls);
+        var handler = new UpdateTenant.Handler(db, null!, _urls);
 
         Response response = await handler.UpdateAsync(root.Id!, request, CancellationToken.None);
 
@@ -200,16 +200,16 @@ public sealed class TenantCreationTests
     }
 
     private static TenantDbContext CreateDb() => new(new DbContextOptionsBuilder<TenantDbContext>()
-        .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
+        .UseInMemoryDatabase(Guid.CreateVersion7().ToString()).Options);
 
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task ConcurrentIdentifierConflictReturnsConflict(bool updating)
+    public async Task ConcurrentIdentifierConflictReturnsConflictAsync(bool updating)
     {
         var conflict = new IdentifierConflictInterceptor();
-        var options = new DbContextOptionsBuilder<TenantDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString()).AddInterceptors(conflict).Options;
+        DbContextOptions<TenantDbContext> options = new DbContextOptionsBuilder<TenantDbContext>()
+            .UseInMemoryDatabase(Guid.CreateVersion7().ToString()).AddInterceptors(conflict).Options;
         await using var db = new TenantDbContext(options);
         if (updating)
         {
@@ -219,8 +219,8 @@ public sealed class TenantCreationTests
         conflict.RejectSave = true;
 
         Response response = updating
-            ? await new UpdateTenant.Handler(db, null!, Urls).UpdateAsync("edited", ValidRequest("blue"), CancellationToken.None)
-            : await new CreateTenant.Handler(db, null!, new CurrentUser(), Urls).CreateAsync(ValidRequest("blue"), CancellationToken.None);
+            ? await new UpdateTenant.Handler(db, null!, _urls).UpdateAsync("edited", ValidRequest("blue"), CancellationToken.None)
+            : await new CreateTenant.Handler(db, null!, new CurrentUser(), _urls).CreateAsync(ValidRequest("blue"), CancellationToken.None);
 
         Assert.Equal(409, response.StatusCode);
         db.ChangeTracker.Clear();
@@ -277,3 +277,4 @@ public sealed class TenantCreationTests
             Task.CompletedTask;
     }
 }
+

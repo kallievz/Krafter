@@ -49,7 +49,7 @@ public sealed class UiUrlConfigurationTests
     [Fact]
     public void SplitHostRequiresPublicApiEvenWhenDiscoveryIsAvailable()
     {
-        var exception = Assert.Throws<InvalidOperationException>(() => UiUrlConfiguration.Resolve(
+        InvalidOperationException exception = Assert.Throws<InvalidOperationException>(() => UiUrlConfiguration.Resolve(
             CreateConfiguration(new() { ["services:api:https:0"] = "https://localhost:5199" }),
             BlazorHostingMode.SplitHost));
 
@@ -59,7 +59,7 @@ public sealed class UiUrlConfigurationTests
     [Fact]
     public void SingleHostRejectsSeparatePublicApiSetting()
     {
-        var exception = Assert.Throws<InvalidOperationException>(() => UiUrlConfiguration.Resolve(
+        InvalidOperationException exception = Assert.Throws<InvalidOperationException>(() => UiUrlConfiguration.Resolve(
             CreateConfiguration(new() { ["Urls:ApiBaseUrl"] = "https://api.example.com" }),
             BlazorHostingMode.SingleHost));
 
@@ -77,7 +77,7 @@ public sealed class UiUrlConfigurationTests
     [InlineData("https://app.example.com/#fragment")]
     public void InvalidOriginsProduceActionableConfigurationErrors(string? value)
     {
-        var exception = Assert.Throws<InvalidOperationException>(() => AppUrls.ParseOrigin(value, "Urls:RootUiUrl"));
+        InvalidOperationException exception = Assert.Throws<InvalidOperationException>(() => AppUrls.ParseOrigin(value, "Urls:RootUiUrl"));
 
         Assert.Contains("Urls:RootUiUrl", exception.Message);
         Assert.DoesNotContain("password", exception.Message);
@@ -95,7 +95,7 @@ public sealed class UiUrlConfigurationTests
     [Theory]
     [InlineData(null)]
     [InlineData("https://api.example.com")]
-    public async Task BrowserLoadsPublicUrlsFromHostWithoutInternalAddress(string? publicApiUrl)
+    public async Task BrowserLoadsPublicUrlsFromHostWithoutInternalAddressAsync(string? publicApiUrl)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder();
         builder.Services.AddSingleton(new AppUrls
@@ -147,7 +147,7 @@ public sealed class UiUrlConfigurationTests
     [InlineData("127.0.0.1")]
     public void InvalidTenantDomainFailsAtStartup(string domain)
     {
-        var error = Assert.Throws<InvalidOperationException>(() => UiUrlConfiguration.Resolve(
+        InvalidOperationException error = Assert.Throws<InvalidOperationException>(() => UiUrlConfiguration.Resolve(
             CreateConfiguration(new() { ["Urls:TenantBaseDomain"] = domain }), BlazorHostingMode.SingleHost));
         Assert.Contains("Urls:TenantBaseDomain", error.Message);
     }
@@ -176,3 +176,4 @@ public sealed class UiUrlConfigurationTests
         return new ConfigurationBuilder().AddInMemoryCollection(values).Build();
     }
 }
+

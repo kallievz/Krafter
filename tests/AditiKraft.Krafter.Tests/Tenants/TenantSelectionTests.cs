@@ -22,11 +22,11 @@ public sealed class TenantSelectionTests
     [InlineData("localhost:5001", "blue", "blue")]
     [InlineData("example.com", "blue", "blue")]
     [InlineData("blue.example.com:5001", "127", "blue")]
-    public async Task IpHostsUseTenantHeaderOrRootWhileDomainHostsKeepSubdomainPriority(
+    public async Task IpHostsUseTenantHeaderOrRootWhileDomainHostsKeepSubdomainPriorityAsync(
         string host, string? header, string expectedTenant)
     {
-        var options = new DbContextOptionsBuilder<TenantDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
+        DbContextOptions<TenantDbContext> options = new DbContextOptionsBuilder<TenantDbContext>()
+            .UseInMemoryDatabase(Guid.CreateVersion7().ToString()).Options;
         await using var db = new TenantDbContext(options);
         db.Tenants.AddRange(ActiveTenant("blue"), ActiveTenant("127"));
         await db.SaveChangesAsync();
@@ -65,14 +65,14 @@ public sealed class TenantSelectionTests
     [InlineData("blue.getkrafter.dev", "red", null, "/users", 200, "blue")]
     [InlineData("api.getkrafter.dev", "BLUE", null, "/users", 200, "blue")]
     [InlineData("api.getkrafter.dev", null, "blue", "/users", 200, "root")]
-    public async Task SiblingHostSelectionDoesNotFallBackForUnknownTenants(
+    public async Task SiblingHostSelectionDoesNotFallBackForUnknownTenantsAsync(
         string host, string? header, string? query, string path, int status, string? identifier)
     {
         await AssertSelectionAsync(host, header, query, path, status, identifier);
     }
 
     [Fact]
-    public async Task RealtimeQueryIsLimitedToHubAndHeaderTakesPriority()
+    public async Task RealtimeQueryIsLimitedToHubAndHeaderTakesPriorityAsync()
     {
         string path = $"/{ApiRoutes.ApiPrefix}/RealtimeHub";
         await AssertSelectionAsync("api.getkrafter.dev", null, "blue", path, 200, "blue");
@@ -85,8 +85,8 @@ public sealed class TenantSelectionTests
     private static async Task AssertSelectionAsync(string host, string? header, string? query,
         string path, int expectedStatus, string? expectedIdentifier)
     {
-        var options = new DbContextOptionsBuilder<TenantDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
+        DbContextOptions<TenantDbContext> options = new DbContextOptionsBuilder<TenantDbContext>()
+            .UseInMemoryDatabase(Guid.CreateVersion7().ToString()).Options;
         await using var db = new TenantDbContext(options);
         db.Tenants.Add(ActiveTenant("blue"));
         await db.SaveChangesAsync();
@@ -103,8 +103,16 @@ public sealed class TenantSelectionTests
         context.Request.Host = new HostString(host);
         context.Request.Path = path;
         context.Response.Body = new MemoryStream();
-        if (header is not null) context.Request.Headers["x-tenant-identifier"] = header;
-        if (query is not null) context.Request.QueryString = new QueryString("?tenantIdentifier=" + query);
+        if (header is not null)
+        {
+            context.Request.Headers["x-tenant-identifier"] = header;
+        }
+
+        if (query is not null)
+        {
+            context.Request.QueryString = new QueryString("?tenantIdentifier=" + query);
+        }
+
         bool nextCalled = false;
         await middleware.InvokeAsync(context, _ => { nextCalled = true; return Task.CompletedTask; });
         Assert.Equal(expectedStatus, context.Response.StatusCode);
@@ -131,3 +139,4 @@ public sealed class TenantSelectionTests
         ValidUpto = DateTime.MaxValue
     };
 }
+

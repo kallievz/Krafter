@@ -5,10 +5,10 @@ public partial class SingleSelectUserDropDownDataGrid(
     IUsersApi usersApi
 ) : ComponentBase
 {
-    private RadzenDropDownDataGrid<string> dropDownGrid = default!;
-    private int TotalCount = 0;
-    private bool IsLoading = true;
-    private IEnumerable<UserInfo>? Data;
+    private RadzenDropDownDataGrid<string> _dropDownGrid = default!;
+    private int _totalCount = 0;
+    private bool _isLoading = true;
+    private IEnumerable<UserInfo>? _data;
     [Parameter] public GetRequestInput GetRequestInput { get; set; } = new();
 
     [Parameter] public string? Value { get; set; }
@@ -18,23 +18,23 @@ public partial class SingleSelectUserDropDownDataGrid(
     [Parameter] public List<string> IdsToDisable { get; set; } = new();
     [Parameter] public string? RoleId { get; set; }
 
-    private async Task LoadProcesses(LoadDataArgs args)
+    private async Task LoadProcessesAsync(LoadDataArgs args)
     {
-        IsLoading = true;
+        _isLoading = true;
         await Task.Yield();
         GetRequestInput.SkipCount = args.Skip ?? 0;
         GetRequestInput.MaxResultCount = args.Top ?? 10;
         GetRequestInput.Filter = args.Filter;
         GetRequestInput.OrderBy = args.OrderBy;
-        IsLoading = true;
+        _isLoading = true;
         if (!string.IsNullOrWhiteSpace(RoleId))
         {
             Response<PaginationResponse<UserInfo>> response = await api.CallAsync(() => usersApi.GetUsersByRoleAsync(
                 RoleId, GetRequestInput), showErrorNotification: true);
             if (response is { Data.Items: not null })
             {
-                Data = response.Data.Items.Where(c => !IdsToDisable.Contains(c.Id ?? "")).ToList();
-                TotalCount = response.Data.TotalCount;
+                _data = response.Data.Items.Where(c => !IdsToDisable.Contains(c.Id ?? "")).ToList();
+                _totalCount = response.Data.TotalCount;
             }
         }
         else
@@ -43,8 +43,8 @@ public partial class SingleSelectUserDropDownDataGrid(
                 GetRequestInput), showErrorNotification: true);
             if (response is { Data.Items: not null })
             {
-                TotalCount = response.Data.TotalCount;
-                Data = response.Data.Items.Where(c => !IdsToDisable.Contains(c.Id ?? "")).Select(c => new UserInfo
+                _totalCount = response.Data.TotalCount;
+                _data = response.Data.Items.Where(c => !IdsToDisable.Contains(c.Id ?? "")).Select(c => new UserInfo
                 {
                     Id = c.Id,
                     FirstName = c.FirstName,
@@ -54,11 +54,11 @@ public partial class SingleSelectUserDropDownDataGrid(
             }
         }
 
-        IsLoading = false;
+        _isLoading = false;
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task OnValueChanged(object newValue)
+    private async Task OnValueChangedAsync(object newValue)
     {
         if (newValue is string newValueEnumerable)
         {

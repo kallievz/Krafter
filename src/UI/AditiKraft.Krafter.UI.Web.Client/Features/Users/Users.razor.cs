@@ -10,12 +10,11 @@ public partial class Users(
 ) : ComponentBase
 {
     public const string RoutePath = ApiRoutes.Users;
-    private RadzenDataGrid<UserDto> grid = default!;
-    private GetRequestInput requestInput = new();
+    private readonly GetRequestInput _requestInput = new();
 
-    private Response<PaginationResponse<UserDto>>? response = new() { Data = new PaginationResponse<UserDto>() };
+    private Response<PaginationResponse<UserDto>>? _response = new() { Data = new PaginationResponse<UserDto>() };
 
-    private bool IsLoading = true;
+    private bool _isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -24,34 +23,34 @@ public partial class Users(
         await GetListAsync();
     }
 
-    private async Task LoadData(LoadDataArgs args)
+    private async Task LoadDataAsync(LoadDataArgs args)
     {
-        IsLoading = true;
+        _isLoading = true;
         await Task.Yield();
-        requestInput.SkipCount = args.Skip ?? 0;
-        requestInput.MaxResultCount = args.Top ?? 10;
-        requestInput.Filter = args.Filter;
-        requestInput.OrderBy = args.OrderBy;
+        _requestInput.SkipCount = args.Skip ?? 0;
+        _requestInput.MaxResultCount = args.Top ?? 10;
+        _requestInput.Filter = args.Filter;
+        _requestInput.OrderBy = args.OrderBy;
         await GetListAsync();
     }
 
     private async Task GetListAsync(bool resetPaginationData = false)
     {
-        IsLoading = true;
+        _isLoading = true;
         if (resetPaginationData)
         {
-            requestInput.SkipCount = 0;
+            _requestInput.SkipCount = 0;
         }
 
-        response = await api.CallAsync(() => usersApi.GetUsersAsync(requestInput));
-        IsLoading = false;
+        _response = await api.CallAsync(() => usersApi.GetUsersAsync(_requestInput));
+        _isLoading = false;
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task AddUser()
+    private async Task AddUserAsync()
     {
         object? result = await dialogService.OpenAsync<CreateOrUpdateUser>($"Add New User",
-            new Dictionary<string, object> { { "UserInput", new UserDto() } },
+            new Dictionary<string, object?> { { "UserInput", new UserDto() } },
             new DialogOptions { Width = "40vw", Resizable = true, Draggable = true, Top = "5vh" });
         if (result is true)
         {
@@ -59,10 +58,10 @@ public partial class Users(
         }
     }
 
-    private async Task UpdateUser(UserDto user)
+    private async Task UpdateUserAsync(UserDto user)
     {
         object? result = await dialogService.OpenAsync<CreateOrUpdateUser>($"Update User {user.FirstName}",
-            new Dictionary<string, object> { { "UserInput", user } },
+            new Dictionary<string, object?> { { "UserInput", user } },
             new DialogOptions { Width = "40vw", Resizable = true, Draggable = true, Top = "5vh" });
         if (result is true)
         {
@@ -70,7 +69,7 @@ public partial class Users(
         }
     }
 
-    private async Task DeleteUser(UserDto user)
+    private async Task DeleteUserAsync(UserDto user)
     {
         bool? confirmed = await dialogService.Confirm(
             $"Are you sure you want to delete user '{user.FirstName} {user.LastName}'?",
@@ -90,19 +89,19 @@ public partial class Users(
         }
     }
 
-    private async Task ActionClicked(RadzenSplitButtonItem? item, UserDto data)
+    private async Task ActionClickedAsync(RadzenSplitButtonItem? item, UserDto data)
     {
         if (item is { Value: PermissionAction.Update })
         {
-            await UpdateUser(data);
+            await UpdateUserAsync(data);
         }
         else if (item is { Value: PermissionAction.Create })
         {
-            await AddUser();
+            await AddUserAsync();
         }
         else if (item is { Value: PermissionAction.Delete })
         {
-            await DeleteUser(data);
+            await DeleteUserAsync(data);
         }
     }
 }

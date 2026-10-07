@@ -6,7 +6,7 @@ namespace AditiKraft.Krafter.UI.Web.Client.Infrastructure.Services;
 
 public class ApiCallService(NotificationService notificationService)
 {
-    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
+    private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
 
     public async Task<Response<T>> CallAsync<T>(
         Func<Task<Response<T>>> apiCall,
@@ -45,7 +45,6 @@ public class ApiCallService(NotificationService notificationService)
             return HandleGenericException<T>(ex, errorTitle, errorMessage, showErrorNotification);
         }
     }
-
 
     public async Task<Response> CallAsync(
         Func<Task<Response>> apiCall,
@@ -117,7 +116,6 @@ public class ApiCallService(NotificationService notificationService)
         return new Response { IsError = true, StatusCode = (int)ex.StatusCode, Message = message, Error = errorResult };
     }
 
-
     private async Task<(string Message, ErrorResult Error)> ParseApiErrorAsync(ApiException ex,
         string? customErrorMessage)
     {
@@ -136,7 +134,7 @@ public class ApiCallService(NotificationService notificationService)
         try
         {
             // Try to parse as Response (our standard error format)
-            Response? errorResponse = JsonSerializer.Deserialize<Response>(content, JsonOptions);
+            Response? errorResponse = JsonSerializer.Deserialize<Response>(content, _jsonOptions);
             if (errorResponse is { IsError: true } ||
                 (errorResponse?.StatusCode != 0 && errorResponse?.StatusCode != 200))
             {
@@ -146,7 +144,7 @@ public class ApiCallService(NotificationService notificationService)
 
             // Try to parse as ValidationErrorResponse (FluentValidation format)
             ValidationErrorResponse? validationError =
-                JsonSerializer.Deserialize<ValidationErrorResponse>(content, JsonOptions);
+                JsonSerializer.Deserialize<ValidationErrorResponse>(content, _jsonOptions);
             if (validationError?.Errors?.Count > 0)
             {
                 var messages = new List<string>();
@@ -167,7 +165,6 @@ public class ApiCallService(NotificationService notificationService)
         string finalMessage = !string.IsNullOrWhiteSpace(content) ? content : GetHttpStatusMessage(ex.StatusCode);
         return (finalMessage, new ErrorResult { Message = finalMessage });
     }
-
 
     private Response<T> HandleHttpException<T>(HttpRequestException ex, string? errorTitle, string? errorMessage,
         bool showNotification)
@@ -244,7 +241,6 @@ public class ApiCallService(NotificationService notificationService)
             Error = new ErrorResult { Message = ex.Message }
         };
     }
-
 
     private static string GetHttpStatusMessage(HttpStatusCode statusCode)
     {

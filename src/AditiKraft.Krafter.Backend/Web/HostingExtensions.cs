@@ -37,6 +37,9 @@ public static class HostingExtensions
 
         builder.Services.AddCurrentUserServices();
         builder.Services.AddTenantServices();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.Configure<EndpointTimingOptions>(builder.Configuration.GetSection(EndpointTimingOptions.SectionName));
+        builder.Services.AddScoped<EndpointTimingMiddleware>();
         builder.Services.AddScoped<MultiTenantServiceMiddleware>();
         builder.Services.AddScoped<ITenantFinderService, TenantFinderService>();
 
@@ -70,14 +73,15 @@ public static class HostingExtensions
     }
 
     /// <summary>
-    /// Applies backend middleware pipeline: exception handling, multi-tenancy, auth.
+    /// Applies backend middleware pipeline: endpoint timing, exception handling, multi-tenancy, auth.
     /// Call after UseForwardedHeaders/UseResponseCompression and before endpoint mapping.
     /// </summary>
-    public static WebApplication UseBackendMiddleware(this WebApplication app, IConfiguration config)
+    public static WebApplication UseBackendMiddleware(this WebApplication app)
     {
+        app.UseMiddleware<EndpointTimingMiddleware>();
         app.UseMiddleware<ExceptionMiddleware>();
         app.UseMiddleware<MultiTenantServiceMiddleware>();
-        app.AuthMiddleware(config);
+        app.AuthMiddleware();
 
         return app;
     }

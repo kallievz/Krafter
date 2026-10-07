@@ -1,10 +1,10 @@
-﻿using System.Text;
+using System.Text;
 
 namespace AditiKraft.Krafter.Backend.Common;
 
 public static class PasswordGenerator
 {
-    private static readonly Random Random = new();
+    private static readonly Random _random = new();
     private const string UppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private const string LowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
     private const string Digits = "0123456789";
@@ -35,7 +35,7 @@ public static class PasswordGenerator
 
     private static char GetRandomCharacter(string validCharacters)
     {
-        int index = Random.Next(validCharacters.Length);
+        int index = _random.Next(validCharacters.Length);
         return validCharacters[index];
     }
 
@@ -44,7 +44,7 @@ public static class PasswordGenerator
         int n = array.Length;
         for (int i = 0; i < n; i++)
         {
-            int r = i + Random.Next(n - i);
+            int r = i + _random.Next(n - i);
             (array[r], array[i]) = (array[i], array[r]);
         }
 

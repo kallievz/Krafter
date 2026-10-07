@@ -19,17 +19,17 @@ namespace AditiKraft.Krafter.Tests.Auth;
 
 public sealed class ServerRefreshCoordinationTests
 {
-    private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(10);
+    private static readonly TimeSpan _timeout = TimeSpan.FromSeconds(10);
 
     [Fact]
-    public async Task ServerFeatureClientsAndRootScopeShareRefreshAndSaveTokensInEveryRequest()
+    public async Task ServerFeatureClientsAndRootScopeShareRefreshAndSaveTokensInEveryRequestAsync()
     {
         TokenResponse original = TokenTestData.Create(expired: true);
         TokenResponse fresh = TokenTestData.Create();
-        var release = NewSignal();
+        TaskCompletionSource release = NewSignal();
         var api = new AuthApi(async (_, cancellation) =>
         {
-            await release.Task.WaitAsync(Timeout, cancellation);
+            await release.Task.WaitAsync(_timeout, cancellation);
             return Response<TokenResponse>.Success(fresh);
         });
         var observations = new RefreshObservations();
@@ -38,7 +38,7 @@ public sealed class ServerRefreshCoordinationTests
 
         Task<HttpContext> users = RunRequestAsync(provider, original, services =>
             services.GetRequiredService<IUsersApi>().GetUsersAsync(new GetRequestInput()));
-        await api.Started.Task.WaitAsync(Timeout);
+        await api.Started.Task.WaitAsync(_timeout);
         Task<HttpContext> roles = RunRequestAsync(provider, original, services =>
             services.GetRequiredService<IRolesApi>().GetRolesAsync(new GetRequestInput()));
         AuthTokenService? rootTokens = null;
@@ -59,7 +59,7 @@ public sealed class ServerRefreshCoordinationTests
             release.TrySetResult();
         }
 
-        HttpContext[] contexts = await Task.WhenAll(users, roles, root).WaitAsync(Timeout);
+        HttpContext[] contexts = await Task.WhenAll(users, roles, root).WaitAsync(_timeout);
         Assert.Equal(1, api.RefreshCount);
         Assert.Equal(2, sentTokens.Count);
         Assert.All(sentTokens, token => Assert.Equal(fresh.Token, token));
@@ -81,7 +81,7 @@ public sealed class ServerRefreshCoordinationTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task DifferentTokenPairsRefreshIndependently(bool sameAccessToken)
+    public async Task DifferentTokenPairsRefreshIndependentlyAsync(bool sameAccessToken)
     {
         TokenResponse alice = TokenTestData.Create(expired: true);
         TokenResponse bob = sameAccessToken
@@ -89,12 +89,12 @@ public sealed class ServerRefreshCoordinationTests
             : TokenTestData.Create("bob", expired: true);
         TokenResponse freshAlice = TokenTestData.Create();
         TokenResponse freshBob = TokenTestData.Create("bob");
-        var releaseAlice = NewSignal();
+        TaskCompletionSource releaseAlice = NewSignal();
         var api = new AuthApi(async (request, cancellation) =>
         {
             if (request.RefreshToken == alice.RefreshToken)
             {
-                await releaseAlice.Task.WaitAsync(Timeout, cancellation);
+                await releaseAlice.Task.WaitAsync(_timeout, cancellation);
                 return Response<TokenResponse>.Success(freshAlice);
             }
 
@@ -104,11 +104,11 @@ public sealed class ServerRefreshCoordinationTests
         using IServiceScope firstScope = provider.CreateScope();
         using IServiceScope secondScope = provider.CreateScope();
         Task<Response<TokenResponse>> first = RefreshAsync(firstScope, alice);
-        await api.Started.Task.WaitAsync(Timeout);
+        await api.Started.Task.WaitAsync(_timeout);
 
         try
         {
-            Response<TokenResponse> second = await RefreshAsync(secondScope, bob).WaitAsync(Timeout);
+            Response<TokenResponse> second = await RefreshAsync(secondScope, bob).WaitAsync(_timeout);
             AssertTokensEqual(freshBob, second.Data);
             Assert.False(first.IsCompleted);
         }
@@ -117,7 +117,7 @@ public sealed class ServerRefreshCoordinationTests
             releaseAlice.TrySetResult();
         }
 
-        AssertTokensEqual(freshAlice, (await first.WaitAsync(Timeout)).Data);
+        AssertTokensEqual(freshAlice, (await first.WaitAsync(_timeout)).Data);
         Assert.Equal(2, api.RefreshCount);
     }
 
@@ -125,7 +125,7 @@ public sealed class ServerRefreshCoordinationTests
     [InlineData("error")]
     [InlineData("missing-data")]
     [InlineData("blank-token")]
-    public async Task FailedOrIncompleteResponsesCanBeRetriedImmediately(string failure)
+    public async Task FailedOrIncompleteResponsesCanBeRetriedImmediatelyAsync(string failure)
     {
         TokenResponse original = TokenTestData.Create(expired: true);
         TokenResponse fresh = TokenTestData.Create();
@@ -151,16 +151,16 @@ public sealed class ServerRefreshCoordinationTests
     }
 
     [Fact]
-    public async Task CancelingFirstCallerDoesNotCancelAnotherCallerWaitingForTheSameRefresh()
+    public async Task CancelingFirstCallerDoesNotCancelAnotherCallerWaitingForTheSameRefreshAsync()
     {
         TokenResponse original = TokenTestData.Create(expired: true);
         TokenResponse fresh = TokenTestData.Create();
-        var release = NewSignal();
+        TaskCompletionSource release = NewSignal();
         CancellationToken refreshCancellation = default;
         var api = new AuthApi(async (_, cancellation) =>
         {
             refreshCancellation = cancellation;
-            await release.Task.WaitAsync(Timeout, cancellation);
+            await release.Task.WaitAsync(_timeout, cancellation);
             return Response<TokenResponse>.Success(fresh);
         });
         await using ServiceProvider provider = CreateProvider(api);
@@ -168,13 +168,13 @@ public sealed class ServerRefreshCoordinationTests
         using IServiceScope secondScope = provider.CreateScope();
         using var cancellationSource = new CancellationTokenSource();
         Task<Response<TokenResponse>> first = RefreshAsync(firstScope, original, cancellationSource.Token);
-        await api.Started.Task.WaitAsync(Timeout);
+        await api.Started.Task.WaitAsync(_timeout);
         Task<Response<TokenResponse>> second = RefreshAsync(secondScope, original);
 
         try
         {
             cancellationSource.Cancel();
-            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => first.WaitAsync(Timeout));
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => first.WaitAsync(_timeout));
             Assert.False(refreshCancellation.IsCancellationRequested);
             Assert.False(second.IsCompleted);
         }
@@ -183,7 +183,7 @@ public sealed class ServerRefreshCoordinationTests
             release.TrySetResult();
         }
 
-        AssertTokensEqual(fresh, (await second.WaitAsync(Timeout)).Data);
+        AssertTokensEqual(fresh, (await second.WaitAsync(_timeout)).Data);
         Assert.Equal(1, api.RefreshCount);
     }
 
@@ -266,7 +266,8 @@ public sealed class ServerRefreshCoordinationTests
     private sealed class ForwardingAuthenticationService(AuthTokenService tokens, RefreshObservations observations)
         : IAuthenticationService
     {
-        public event Action<string?>? LoginChange { add { } remove { } }
+        public event Action<string?>? LoginChange
+        { add { } remove { } }
 
         public Task<bool> RefreshAsync()
         {
@@ -275,6 +276,7 @@ public sealed class ServerRefreshCoordinationTests
         }
 
         public Task<bool> LoginAsync(TokenRequest model) => throw new NotSupportedException();
+
         public Task LogoutAsync(string methodName) => throw new NotSupportedException();
     }
 
@@ -304,9 +306,15 @@ public sealed class ServerRefreshCoordinationTests
             return refresh(request, cancellationToken);
         }
 
-        public Task<Response<TokenResponse>> CreateTokenAsync(TokenRequest request, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public Task<Response<TokenResponse>> CreateTokenAsync(string? tenantIdentifier, TokenRequest request, CancellationToken cancellationToken) => throw new NotSupportedException();
+
         public Task<Response<TokenResponse>> GoogleAuthAsync(GoogleAuthRequest request, CancellationToken cancellationToken) => throw new NotSupportedException();
+
         public Task<Response<TokenResponse>> GetCurrentTokenAsync(CancellationToken cancellationToken) => throw new NotSupportedException();
+
+        public Task<Response> SelfRegisterAsync(string? tenantIdentifier, SelfRegisterRequest request, CancellationToken cancellationToken) => throw new NotSupportedException();
+
         public Task LogoutAsync(CancellationToken cancellationToken) => throw new NotSupportedException();
     }
 }
+

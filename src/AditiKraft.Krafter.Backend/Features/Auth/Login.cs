@@ -1,8 +1,7 @@
-using AditiKraft.Krafter.Backend.Web;
-using AditiKraft.Krafter.Backend.Web.Configuration;
-using AditiKraft.Krafter.Contracts.Common.Auth;
 using AditiKraft.Krafter.Backend.Features.Auth.Common;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
+using AditiKraft.Krafter.Backend.Web;
+using AditiKraft.Krafter.Backend.Web.Configuration;
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Auth;
@@ -17,16 +16,14 @@ public sealed class Login
     internal sealed class Handler(
         UserManager<ApplicationUser> userManager,
         ITokenService tokenService,
-        IOptions<JwtSettings> jwtSettings,
         IOptions<SecuritySettings> securitySettings
     ) : IScopedHandler
     {
         private readonly SecuritySettings _securitySettings = securitySettings.Value;
-        private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
         public async Task<Response<TokenResponse>> LoginAsync(
             TokenRequest request, string ipAddress,
-            CancellationToken cancellationToken)
+            CancellationToken _)
         {
             ApplicationUser? user = await userManager.FindByEmailAsync(request.Email.Trim().Normalize());
             if (user is null)
@@ -64,6 +61,11 @@ public sealed class Login
             ([FromBody] TokenRequest request, HttpContext context,
                 [FromServices] Handler handler) =>
             {
+                if (string.IsNullOrWhiteSpace(request.TenantId))
+                {
+                    request.TenantId = context.Request.Headers["x-tenant-identifier"].ToString();
+                }
+
                 string? ipAddress = GetIpAddress(context);
                 Response<TokenResponse> res = await handler.LoginAsync(request, ipAddress!, CancellationToken.None);
                 return Results.Json(res, statusCode: res.StatusCode);
@@ -78,6 +80,3 @@ public sealed class Login
         }
     }
 }
-
-
-

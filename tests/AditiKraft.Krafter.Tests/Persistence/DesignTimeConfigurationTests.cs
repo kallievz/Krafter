@@ -1,3 +1,5 @@
+using AditiKraft.Krafter.Backend.Infrastructure.Jobs;
+using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
 using AditiKraft.Krafter.Backend.Migrations;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,9 +24,9 @@ public sealed class DesignTimeConfigurationTests
             Directory.SetCurrentDirectory(directory);
             Environment.SetEnvironmentVariable(key, connection);
 
-            using var db = new DesignTimeApplicationDbContextFactory().CreateDbContext([]);
-            using var tenants = new DesignTimeDbContextFactory().CreateDbContext([]);
-            using var jobs = new DesignTimeBackgroundJobsContextDbContextFactory().CreateDbContext([]);
+            using ApplicationDbContext db = new DesignTimeApplicationDbContextFactory().CreateDbContext([]);
+            using TenantDbContext tenants = new DesignTimeDbContextFactory().CreateDbContext([]);
+            using BackgroundJobsContext jobs = new DesignTimeBackgroundJobsContextDbContextFactory().CreateDbContext([]);
 
             Assert.Equal(connection, db.Database.GetConnectionString());
             Assert.Equal(connection, tenants.Database.GetConnectionString());

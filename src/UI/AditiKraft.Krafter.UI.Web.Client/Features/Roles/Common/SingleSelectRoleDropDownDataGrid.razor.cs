@@ -5,10 +5,10 @@ public partial class SingleSelectRoleDropDownDataGrid(
     IRolesApi rolesApi
 ) : ComponentBase
 {
-    private RadzenDropDownDataGrid<string> dropDownGrid = null!;
-    private Response<PaginationResponse<RoleDto>>? response;
-    private bool IsLoading = true;
-    private IEnumerable<RoleDto>? Data;
+    private RadzenDropDownDataGrid<string> _dropDownGrid = null!;
+    private Response<PaginationResponse<RoleDto>>? _response;
+    private bool _isLoading = true;
+    private IEnumerable<RoleDto>? _data;
     [Parameter] public GetRequestInput GetRequestInput { get; set; } = new();
 
     [Parameter] public string? Value { get; set; }
@@ -17,28 +17,28 @@ public partial class SingleSelectRoleDropDownDataGrid(
 
     [Parameter] public List<string> IdsToDisable { get; set; } = new();
 
-    private async Task LoadData(LoadDataArgs args)
+    private async Task LoadDataAsync(LoadDataArgs args)
     {
-        IsLoading = true;
+        _isLoading = true;
         await Task.Yield();
         GetRequestInput.SkipCount = args.Skip ?? 0;
         GetRequestInput.MaxResultCount = args.Top ?? 10;
         GetRequestInput.Filter = args.Filter;
         GetRequestInput.OrderBy = args.OrderBy;
-        IsLoading = true;
-        response = await api.CallAsync(() => rolesApi.GetRolesAsync(GetRequestInput), showErrorNotification: true);
-        if (response is { Data.Items: not null })
+        _isLoading = true;
+        _response = await api.CallAsync(() => rolesApi.GetRolesAsync(GetRequestInput), showErrorNotification: true);
+        if (_response is { Data.Items: not null })
         {
-            Data = response.Data.Items.Where(c => !IdsToDisable.Contains(c.Id)).ToList();
+            _data = _response.Data.Items.Where(c => !IdsToDisable.Contains(c.Id)).ToList();
         }
 
-        IsLoading = false;
+        _isLoading = false;
         await InvokeAsync(StateHasChanged);
     }
 
     private int GetCount()
     {
-        if (response is { Data: { Items: not null, TotalCount: var totalCount } })
+        if (_response is { Data: { Items: not null, TotalCount: var totalCount } })
         {
             return totalCount;
         }
@@ -46,7 +46,7 @@ public partial class SingleSelectRoleDropDownDataGrid(
         return 0;
     }
 
-    private async Task OnValueChanged(object newValue)
+    private async Task OnValueChangedAsync(object newValue)
     {
         if (newValue is string newValueEnumerable)
         {
