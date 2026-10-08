@@ -53,6 +53,16 @@ public class MenuService
                     Icon = "monitor_heart",
                     Tags = new[] { "jobs", "tickerq", "dashboard", "background processing" },
                     Permission = PermissionDefinition.NameFor(PermissionAction.View, PermissionResource.Notifications)
+                },
+                new Menu
+                {
+                    Name = "Telemetry Dashboard",
+                    Path = "telemetry-dashboard",
+                    Title = "Grafana Metrics Dashboard",
+                    Description = "View application telemetry in Grafana backed by prometheus-net.",
+                    Icon = "query_stats",
+                    Tags = new[] { "telemetry", "metrics", "grafana", "prometheus", "observability" },
+                    Permission = PermissionDefinition.NameFor(PermissionAction.View, PermissionResource.Notifications)
                 }
             }
         },
@@ -65,6 +75,24 @@ public class MenuService
             Title = "Tenant Management",
             Description = "Manage multiple tenants within the system, including creation and updates.",
             Tags = new[] { "tenants", "multi-tenancy", "organizations", "clients" }
+        },
+        new Menu
+        {
+            Name = "Integration",
+            Icon = "integration_instructions",
+            Children = new[]
+            {
+                new Menu
+                {
+                    Name = "Munsoft",
+                    Path = $"{ApiRoutes.Integrations}/munsoft",
+                    Icon = "sync",
+                    Title = "Munsoft Integration",
+                    Description = "View Munsoft instances and trigger instance synchronization.",
+                    Tags = new[] { "integration", "munsoft", "instances", "sync" },
+                    Permission = PermissionDefinition.NameFor(PermissionAction.View, PermissionResource.Tenants)
+                }
+            }
         }
     };
 

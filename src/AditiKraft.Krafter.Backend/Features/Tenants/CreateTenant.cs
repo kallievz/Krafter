@@ -132,35 +132,35 @@ public sealed class CreateTenant
                 {
                     Id = Guid.CreateVersion7().ToString(),
                     TenantId = tenantId,
-                    Key = TenantSettingKeys.NotificationsProvider,
+                    Key = TenantSettingKeys.EmailProvider,
                     Value = "smtp"
                 },
                 new TenantSetting
                 {
                     Id = Guid.CreateVersion7().ToString(),
                     TenantId = tenantId,
-                    Key = TenantSettingKeys.NotificationsSmtpHost,
+                    Key = TenantSettingKeys.EmailSmtpHost,
                     Value = smtpEmailSettings.Host
                 },
                 new TenantSetting
                 {
                     Id = Guid.CreateVersion7().ToString(),
                     TenantId = tenantId,
-                    Key = TenantSettingKeys.NotificationsSmtpPort,
+                    Key = TenantSettingKeys.EmailSmtpPort,
                     Value = smtpEmailSettings.Port.ToString()
                 },
                 new TenantSetting
                 {
                     Id = Guid.CreateVersion7().ToString(),
                     TenantId = tenantId,
-                    Key = TenantSettingKeys.NotificationsSmtpUserName,
+                    Key = TenantSettingKeys.EmailSmtpUserName,
                     Value = smtpEmailSettings.UserName
                 },
                 new TenantSetting
                 {
                     Id = Guid.CreateVersion7().ToString(),
                     TenantId = tenantId,
-                    Key = TenantSettingKeys.NotificationsSmtpPassword,
+                    Key = TenantSettingKeys.EmailSmtpPassword,
                     Value = smtpEmailSettings.Password,
                     IsSensitive = true
                 },
@@ -168,51 +168,30 @@ public sealed class CreateTenant
                 {
                     Id = Guid.CreateVersion7().ToString(),
                     TenantId = tenantId,
-                    Key = TenantSettingKeys.NotificationsSmtpSenderEmail,
+                    Key = TenantSettingKeys.EmailSenderEmail,
                     Value = smtpEmailSettings.SenderEmail
                 },
                 new TenantSetting
                 {
                     Id = Guid.CreateVersion7().ToString(),
                     TenantId = tenantId,
-                    Key = TenantSettingKeys.NotificationsSmtpSenderName,
+                    Key = TenantSettingKeys.EmailSenderName,
                     Value = smtpEmailSettings.SenderName
                 },
                 new TenantSetting
                 {
                     Id = Guid.CreateVersion7().ToString(),
                     TenantId = tenantId,
-                    Key = TenantSettingKeys.NotificationsSmtpReplyToEmail,
+                    Key = TenantSettingKeys.EmailReplyToEmail,
                     Value = smtpEmailSettings.ReplyToEmail
                 },
                 new TenantSetting
                 {
                     Id = Guid.CreateVersion7().ToString(),
                     TenantId = tenantId,
-                    Key = TenantSettingKeys.NotificationsSendGridApiKey,
+                    Key = TenantSettingKeys.EmailSendGridApiKey,
                     Value = sendGridEmailSettings.ApiKey,
                     IsSensitive = true
-                },
-                new TenantSetting
-                {
-                    Id = Guid.CreateVersion7().ToString(),
-                    TenantId = tenantId,
-                    Key = TenantSettingKeys.NotificationsSendGridSenderEmail,
-                    Value = sendGridEmailSettings.SenderEmail
-                },
-                new TenantSetting
-                {
-                    Id = Guid.CreateVersion7().ToString(),
-                    TenantId = tenantId,
-                    Key = TenantSettingKeys.NotificationsSendGridSenderName,
-                    Value = sendGridEmailSettings.SenderName
-                },
-                new TenantSetting
-                {
-                    Id = Guid.CreateVersion7().ToString(),
-                    TenantId = tenantId,
-                    Key = TenantSettingKeys.NotificationsSendGridReplyToEmail,
-                    Value = sendGridEmailSettings.ReplyToEmail
                 }
             ];
         }

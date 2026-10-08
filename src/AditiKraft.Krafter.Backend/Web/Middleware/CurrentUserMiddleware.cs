@@ -1,4 +1,6 @@
 using AditiKraft.Krafter.Backend.Common.Auth;
+using AditiKraft.Krafter.Contracts.Common.Extensions;
+using Serilog.Context;
 
 namespace AditiKraft.Krafter.Backend.Web.Middleware;
 
@@ -8,6 +10,14 @@ public class CurrentUserMiddleware(ICurrentUserInitializer currentUserInitialize
     {
         currentUserInitializer.SetCurrentUser(context.User);
 
-        await next(context).ConfigureAwait(false);
+        using (PushProperty("UserId", context.User.GetUserId()))
+        using (PushProperty("UserName", context.User.Identity?.Name))
+        using (PushProperty("UserEmail", context.User.GetEmail()))
+        {
+            await next(context).ConfigureAwait(false);
+        }
     }
+
+    private static IDisposable? PushProperty(string propertyName, string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : LogContext.PushProperty(propertyName, value);
 }

@@ -20,5 +20,6 @@ internal sealed class EmailTemplateConfiguration(ITenantGetterService tenantGett
         builder.Property(c => c.BodyTemplate).IsRequired();
         builder.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == _tenantGetterService.Tenant.Id);
         builder.HasIndex(c => new { c.TenantId, c.Key }).IsUnique();
+        builder.ToTable("EmailTemplates", SchemaConstants.Comms);
     }
 }

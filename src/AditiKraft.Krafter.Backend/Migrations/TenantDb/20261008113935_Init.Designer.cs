@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AditiKraft.Krafter.Backend.Migrations.TenantDb
 {
     [DbContext(typeof(TenantDbContext))]
-    [Migration("20261008101709_Init")]
+    [Migration("20261008113935_Init")]
     partial class Init
     {
         /// <inheritdoc />

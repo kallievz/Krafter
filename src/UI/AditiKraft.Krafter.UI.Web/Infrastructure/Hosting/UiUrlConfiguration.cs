@@ -10,6 +10,7 @@ public static class UiUrlConfiguration
         AppUrls urls = configuration.GetSection(AppUrls.SectionName).Get<AppUrls>() ?? new AppUrls();
         _ = urls.GetRootUiUri();
         _ = urls.GetTenantBaseUri();
+        _ = urls.GetGrafanaUri();
 
         if (hostingMode == BlazorHostingMode.SingleHost)
         {
@@ -40,6 +41,7 @@ public static class UiUrlConfiguration
             {
                 RootUiUrl = urls.RootUiUrl,
                 ApiBaseUrl = urls.ApiBaseUrl,
+                GrafanaUrl = urls.GrafanaUrl,
                 TenantBaseDomain = urls.TenantBaseDomain,
                 ReservedTenantIdentifiers = urls.ReservedTenantIdentifiers
             });

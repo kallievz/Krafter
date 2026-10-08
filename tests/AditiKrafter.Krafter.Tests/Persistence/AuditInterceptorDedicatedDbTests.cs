@@ -31,43 +31,43 @@ public sealed class AuditInterceptorDedicatedDbTests
     [Fact]
     public async Task Adding_entity_creates_audit_entry_in_dedicated_db_and_respects_AuditIgnore()
     {
-        var currentUser = new CurrentUser();
+        CurrentUser currentUser = new();
         currentUser.SetCurrentUserId("user-123");
 
-        var tenantService = new CurrentTenantService();
+        CurrentTenantService tenantService = new();
         tenantService.SetTenant(new AditiKraft.Krafter.Contracts.Common.Models.CurrentTenantDetails { Id = "tenant-1", TenantLink = "http://local" });
 
         // Prepare a service provider with AuditDbContext registered using the same in-memory database name
         string dbName = Guid.NewGuid().ToString();
-        var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+        Microsoft.Extensions.DependencyInjection.ServiceCollection services = new();
         services.AddDbContext<AuditDbContext>(opts => opts.UseInMemoryDatabase(dbName));
-        var serviceProvider = services.BuildServiceProvider();
+        ServiceProvider serviceProvider = services.BuildServiceProvider();
 
         // Create interceptor with metadata cache (no external scope factory needed)
-        var metadataCache = new AditiKraft.Krafter.Backend.Infrastructure.Persistence.Services.AuditMetadataCache();
-        var interceptor = new AditiKraft.Krafter.Backend.Infrastructure.Persistence.Interceptors.AuditSaveChangesInterceptor(currentUser, tenantService, metadataCache);
+        AditiKraft.Krafter.Backend.Infrastructure.Persistence.Services.AuditMetadataCache metadataCache = new();
+        AditiKraft.Krafter.Backend.Infrastructure.Persistence.Interceptors.AuditSaveChangesInterceptor interceptor = new(currentUser, tenantService, metadataCache);
 
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        DbContextOptions<ApplicationDbContext> options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(dbName)
             .AddInterceptors(interceptor)
             .Options;
 
-        await using var db = new ApplicationDbContext(options, currentUser, tenantService);
+        await using ApplicationDbContext db = new(options, currentUser, tenantService);
 
-        var entity = new TestEntity { Name = "Alice", Secret = "top-secret" };
+        TestEntity entity = new() { Name = "Alice", Secret = "top-secret" };
         db.Add(entity);
         await db.SaveChangesAsync();
 
         // After SaveChanges, an outbox row should be created in ApplicationDbContext
-        var outbox = await db.AuditOutbox.FirstOrDefaultAsync();
+        AuditOutbox? outbox = await db.AuditOutbox.FirstOrDefaultAsync();
         Assert.NotNull(outbox);
         Assert.NotNull(outbox.Payload);
         Assert.Contains("Name", outbox.Payload);
         Assert.DoesNotContain("Secret", outbox.Payload);
 
         // Simulate the outbox processor by delivering to the AuditDbContext
-        await using var auditDb = serviceProvider.GetRequiredService<AuditDbContext>();
-        var audit = System.Text.Json.JsonSerializer.Deserialize<AditiKraft.Krafter.Backend.Common.Entities.AuditLog>(outbox.Payload);
+        await using AuditDbContext auditDb = serviceProvider.GetRequiredService<AuditDbContext>();
+        AuditLog? audit = System.Text.Json.JsonSerializer.Deserialize<AditiKraft.Krafter.Backend.Common.Entities.AuditLog>(outbox.Payload);
         Assert.NotNull(audit);
         auditDb.AuditLogs.Add(audit);
         outbox.ProcessedOn = DateTime.UtcNow;
@@ -75,12 +75,57 @@ public sealed class AuditInterceptorDedicatedDbTests
         await auditDb.SaveChangesAsync();
         await db.SaveChangesAsync();
 
-        var persisted = await auditDb.AuditLogs.FirstOrDefaultAsync();
+        AuditLog? persisted = await auditDb.AuditLogs.FirstOrDefaultAsync();
         Assert.NotNull(persisted);
         Assert.Equal("Added", persisted.Action);
         Assert.Equal("user-123", persisted.UserId);
         Assert.Equal("tenant-1", persisted.TenantId);
         Assert.Contains("Name", persisted.NewValues);
         Assert.DoesNotContain("Secret", persisted.NewValues);
+    }
+
+    [Fact]
+    public async Task Updating_tenant_name_creates_audit_outbox_entry()
+    {
+        CurrentUser currentUser = new();
+        currentUser.SetCurrentUserId("user-123");
+
+        CurrentTenantService tenantService = new();
+        tenantService.SetTenant(new AditiKrafter.Contracts.Common.Models.CurrentTenantDetails { Id = "tenant-1", TenantLink = "http://local" });
+
+        string dbName = Guid.NewGuid().ToString();
+        Microsoft.Extensions.DependencyInjection.ServiceCollection services = new();
+        services.AddDbContext<AuditDbContext>(opts => opts.UseInMemoryDatabase($"{dbName}-audit"));
+        ServiceProvider serviceProvider = services.BuildServiceProvider();
+
+        AditiKraft.Krafter.Backend.Infrastructure.Persistence.Services.AuditMetadataCache metadataCache = new();
+        AditiKraft.Krafter.Backend.Infrastructure.Persistence.Interceptors.AuditSaveChangesInterceptor interceptor = new(currentUser, tenantService, metadataCache, serviceProvider, Microsoft.Extensions.Logging.Abstractions.NullLogger<AditiKraft.Krafter.Backend.Infrastructure.Persistence.Interceptors.AuditSaveChangesInterceptor>.Instance);
+
+        DbContextOptions<TenantDbContext> options = new DbContextOptionsBuilder<TenantDbContext>()
+            .UseInMemoryDatabase(dbName)
+            .AddInterceptors(interceptor)
+            .Options;
+
+        await using TenantDbContext db = new(options);
+        db.Tenants.Add(new AditiKraft.Krafter.Backend.Features.Tenants.Common.Tenant
+        {
+            Id = "tenant-1",
+            Identifier = "tenant-1",
+            Name = "Tenant One",
+            AdminEmail = "admin@example.com",
+            IsActive = true,
+            ValidUpto = DateTime.UtcNow.AddDays(1),
+            CreatedOn = DateTime.UtcNow
+        });
+        await db.SaveChangesAsync();
+
+        var tenant = await db.Tenants.SingleAsync(t => t.Id == "tenant-1");
+        tenant.Name = "Tenant Updated";
+        await db.SaveChangesAsync();
+
+        AuditOutbox? outbox = await db.AuditOutbox.OrderByDescending(x => x.CreatedOn).FirstOrDefaultAsync();
+        Assert.NotNull(outbox);
+        Assert.Contains("Tenant Updated", outbox.Payload);
+        Assert.Contains("Tenant", outbox.Payload);
     }
 }

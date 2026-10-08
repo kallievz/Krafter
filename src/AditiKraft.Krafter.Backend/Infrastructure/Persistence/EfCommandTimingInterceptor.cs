@@ -1,4 +1,7 @@
 using System.Data.Common;
+using AditiKraft.Krafter.Backend.Common.Auth;
+using AditiKraft.Krafter.Backend.Common.Tenants;
+using AditiKraft.Krafter.Backend.Infrastructure.Telemetry;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 
@@ -7,6 +10,8 @@ namespace AditiKraft.Krafter.Backend.Infrastructure.Persistence;
 public sealed class EfCommandTimingInterceptor(
     ILogger<EfCommandTimingInterceptor> logger,
     IHttpContextAccessor httpContextAccessor,
+    ICurrentUser currentUser,
+    ITenantGetterService tenantGetterService,
     IOptions<EfQueryPerformanceOptions> options) : DbCommandInterceptor
 {
     private readonly EfQueryPerformanceOptions _options = options.Value;
@@ -58,31 +63,43 @@ public sealed class EfCommandTimingInterceptor(
         }
 
         double elapsedMs = eventData.Duration.TotalMilliseconds;
+        BackendTelemetry.EfCommandDuration.Record(elapsedMs);
 
-        string? requestId = httpContextAccessor.HttpContext?.TraceIdentifier;
-        string? path = httpContextAccessor.HttpContext?.Request.Path.Value;
+        HttpContext? httpContext = httpContextAccessor.HttpContext;
+        string? requestId = httpContext?.TraceIdentifier;
+        string? path = httpContext?.Request.Path.Value;
+        string? userId = currentUser.GetUserId();
+        string? tenantId = tenantGetterService.Tenant?.Id;
+        string? tenantName = tenantGetterService.Tenant?.Name;
 
         if (elapsedMs >= _options.SlowQueryThresholdMs)
         {
+            BackendTelemetry.EfSlowCommandCount.Add(1);
             logger.LogWarning(
-                "EF slow query detected ({ElapsedMs:F2} ms). CommandType={CommandType}, DataSource={DataSource}, Database={Database}, RequestId={RequestId}, Path={Path}, Sql={Sql}",
+                "EF slow query detected ({ElapsedMs:F2} ms). CommandType={CommandType}, DataSource={DataSource}, Database={Database}, RequestId={RequestId}, Path={Path}, UserId={UserId}, TenantId={TenantId}, TenantName={TenantName}, Sql={Sql}",
                 elapsedMs,
                 command.CommandType,
                 command.Connection?.DataSource,
                 command.Connection?.Database,
                 requestId,
                 path,
+                userId,
+                tenantId,
+                tenantName,
                 command.CommandText);
             return;
         }
 
         logger.LogDebug(
-            "EF query ({ElapsedMs:F2} ms). CommandType={CommandType}, DataSource={DataSource}, Database={Database}, RequestId={RequestId}, Path={Path}",
+            "EF query ({ElapsedMs:F2} ms). CommandType={CommandType}, DataSource={DataSource}, Database={Database}, RequestId={RequestId}, Path={Path}, UserId={UserId}, TenantId={TenantId}, TenantName={TenantName}",
             elapsedMs,
             command.CommandType,
             command.Connection?.DataSource,
             command.Connection?.Database,
             requestId,
-            path);
+            path,
+            userId,
+            tenantId,
+            tenantName);
     }
 }

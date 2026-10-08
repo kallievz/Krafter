@@ -9,6 +9,7 @@ public sealed class AppUrls
 
     public string RootUiUrl { get; set; } = default!;
     public string? ApiBaseUrl { get; set; }
+    public string? GrafanaUrl { get; set; }
     public string? TenantBaseDomain { get; set; }
     public string[] ReservedTenantIdentifiers { get; set; } = [];
 
@@ -19,6 +20,8 @@ public sealed class AppUrls
     public Uri GetRootUiUri() => ParseOrigin(RootUiUrl, "Urls:RootUiUrl");
 
     public Uri? GetApiUri() => ApiBaseUrl is null ? null : ParseOrigin(ApiBaseUrl, "Urls:ApiBaseUrl");
+
+    public Uri? GetGrafanaUri() => GrafanaUrl is null ? null : ParseOrigin(GrafanaUrl, "Urls:GrafanaUrl");
 
     public Uri GetServerApiUri() => ServerApiBaseUrl is null
         ? GetApiUri() ?? GetRootUiUri()
@@ -101,7 +104,7 @@ public sealed class AppUrls
         }
 
         Uri tenantBase = GetTenantBaseUri();
-        return new[] { GetRootUiUri(), GetApiUri(), GetServerApiUri() }
+        return new[] { GetRootUiUri(), GetApiUri(), GetGrafanaUri(), GetServerApiUri() }
             .Any(uri => uri is not null && string.Equals(
                 GetSubdomain(uri.Host, tenantBase), identifier, StringComparison.OrdinalIgnoreCase));
     }

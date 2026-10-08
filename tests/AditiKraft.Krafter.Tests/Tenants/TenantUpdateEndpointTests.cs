@@ -79,6 +79,28 @@ public sealed class TenantUpdateEndpointTests
     }
 
     [Fact]
+    public async Task UpdateOnlyTenantNameAsync()
+    {
+        await using WebApplication app = await CreateAppAsync();
+        using var client = new HttpClient { BaseAddress = new Uri(Assert.Single(app.Urls)) };
+        using HttpResponseMessage response = await client.PutAsJsonAsync($"/{ApiRoutes.Tenants}/blue-id", new
+        {
+            Identifier = "blue",
+            Name = "Blue tenant updated",
+            AdminEmail = "admin@example.com",
+            IsActive = true,
+            ValidUpto = "2030-06-15T00:00:00Z"
+        });
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
+        TenantDbContext db = scope.ServiceProvider.GetRequiredService<TenantDbContext>();
+        Tenant saved = await db.Tenants.SingleAsync(tenant => tenant.Id == "blue-id");
+        Assert.Equal("Blue tenant updated", saved.Name);
+        Assert.Equal("blue", saved.Identifier);
+    }
+
+    [Fact]
     public async Task UpdateRejectsRootValidityChangeAsync()
     {
         await using WebApplication app = await CreateAppAsync();

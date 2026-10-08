@@ -1,4 +1,5 @@
 using AditiKraft.Krafter.Backend.Common.Tenants;
+using AditiKraft.Krafter.Backend.Features.Integrations.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Jobs;
 using AditiKraft.Krafter.Backend.Infrastructure.Notifications;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence.Tenants;
@@ -51,6 +52,13 @@ public static class HostingExtensions
         builder.Services.AddAuthServices(builder.Configuration);
 
         builder.Services.AddApplicationServices();
+
+        builder.Services.AddHttpClient(ExternalIntegrationHttpClientNames.MunsoftTokenClient, client =>
+        {
+            client.DefaultRequestHeaders.Accept.Add(
+                new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            client.Timeout = TimeSpan.FromSeconds(30);
+        });
 
         builder.Services.AddNotificationServices(builder.Configuration);
 
@@ -106,12 +114,9 @@ public static class HostingExtensions
         app.UseBackgroundJobs();
 
         // Prometheus metrics endpoint for local development
+        Metrics.SuppressDefaultMetrics();
         app.UseHttpMetrics();
-        app.MapGet("/metrics", async context =>
-        {
-            // prometheus-net exposes a scrape endpoint via /metrics when UseHttpMetrics is enabled
-            await context.Response.WriteAsync("Metrics endpoint");
-        });
+        app.MapMetrics();
 
         return app;
     }

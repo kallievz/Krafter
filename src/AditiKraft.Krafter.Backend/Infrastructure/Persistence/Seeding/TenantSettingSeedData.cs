@@ -11,111 +11,194 @@ internal static class TenantSettingSeedData
         [
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101001",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
                 Key = TenantSettingKeys.SecurityPasswordReusePreventionWindowInDays,
                 Value = "90"
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101002",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
                 Key = TenantSettingKeys.SecurityPasswordExpiryInDays,
                 Value = "90"
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101003",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
                 Key = TenantSettingKeys.SecurityPasswordExpiryNotificationCooldownInDays,
                 Value = "1"
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101004",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
-                Key = TenantSettingKeys.NotificationsProvider,
+                Key = TenantSettingKeys.EmailProvider,
                 Value = "dummy" // "smtp", "sendgrid"
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101005",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
-                Key = TenantSettingKeys.NotificationsSmtpHost,
+                Key = TenantSettingKeys.EmailSmtpHost,
                 Value = string.Empty
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101006",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
-                Key = TenantSettingKeys.NotificationsSmtpPort,
+                Key = TenantSettingKeys.EmailSmtpPort,
                 Value = "587"
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101007",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
-                Key = TenantSettingKeys.NotificationsSmtpUserName,
+                Key = TenantSettingKeys.EmailSmtpUserName,
                 Value = string.Empty
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101008",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
-                Key = TenantSettingKeys.NotificationsSmtpPassword,
+                Key = TenantSettingKeys.EmailSmtpPassword,
                 Value = string.Empty,
                 IsSensitive = true
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101009",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
-                Key = TenantSettingKeys.NotificationsSmtpSenderEmail,
+                Key = TenantSettingKeys.EmailSenderEmail,
                 Value = string.Empty
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101010",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
-                Key = TenantSettingKeys.NotificationsSmtpSenderName,
+                Key = TenantSettingKeys.EmailSenderName,
                 Value = string.Empty
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101011",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
-                Key = TenantSettingKeys.NotificationsSmtpReplyToEmail,
+                Key = TenantSettingKeys.EmailReplyToEmail,
                 Value = string.Empty
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101012",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
-                Key = TenantSettingKeys.NotificationsSendGridApiKey,
+                Key = TenantSettingKeys.EmailSendGridApiKey,
                 Value = string.Empty,
+                IsSensitive = true
+            },
+
+            #region Munsoft API settings
+            new TenantSetting
+            {
+                Id = Guid.CreateVersion7().ToString(),
+                TenantId = SeedDataConstants.RootTenant.Id,
+                Key = TenantSettingKeys.MunsoftBaseAddess,
+                Value = "https://api.munsoft.co.za/"
+            },
+            new TenantSetting
+            {
+                Id = Guid.CreateVersion7().ToString(),
+                TenantId = SeedDataConstants.RootTenant.Id,
+                Key = TenantSettingKeys.MunsoftUserName,
+                Value = "service_account@rumas.co.za"
+            },
+            new TenantSetting
+            {
+                Id = Guid.CreateVersion7().ToString(),
+                TenantId = SeedDataConstants.RootTenant.Id,
+                Key = TenantSettingKeys.MunsoftPassword,
+                Value = "OByE=~Ft)5ZJ",
                 IsSensitive = true
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101013",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
-                Key = TenantSettingKeys.NotificationsSendGridSenderEmail,
-                Value = string.Empty
+                Key = TenantSettingKeys.MunsoftLogin,
+                Value = "/login"
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101014",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
-                Key = TenantSettingKeys.NotificationsSendGridSenderName,
-                Value = string.Empty
+                Key = TenantSettingKeys.MunsoftInstances,
+                Value = "/instances?page=1&paginate=0"
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101015",
+                Id = Guid.CreateVersion7().ToString(),
                 TenantId = SeedDataConstants.RootTenant.Id,
-                Key = TenantSettingKeys.NotificationsSendGridReplyToEmail,
-                Value = string.Empty
+                Key = TenantSettingKeys.MunsoftInstanceId,
+                Value = "0"
+            },
+            new TenantSetting
+            {
+                Id = Guid.CreateVersion7().ToString(),
+                TenantId = SeedDataConstants.RootTenant.Id,
+                Key = TenantSettingKeys.MunsoftDebtorParquet,
+                Value = "/instances/{InstanceId}/consumer_debtors?page=1&paginate=0&export=parquet"
+            },
+            new TenantSetting
+            {
+                Id = Guid.CreateVersion7().ToString(),
+                TenantId = SeedDataConstants.RootTenant.Id,
+                Key = TenantSettingKeys.MunsoftDebtorSingle,
+                Value = "/instances/{InstanceId}/consumer_debtors/{AccountNumber}?cached=false"
             }
+            ,
+            new TenantSetting
+            {
+                Id = Guid.CreateVersion7().ToString(),
+                TenantId = SeedDataConstants.RootTenant.Id,
+                Key = TenantSettingKeys.MunsoftPropertyParquet,
+                Value = "/instances/{InstanceId}/properties?page=1&paginate=0&export=parquet"
+            },
+            new TenantSetting
+            {
+                Id = Guid.CreateVersion7().ToString(),
+                TenantId = SeedDataConstants.RootTenant.Id,
+                Key = TenantSettingKeys.MunsoftPropertySingle,
+                Value = "/instances/{InstanceId}/properties/{AccountNumber}?cached=false"
+            },
+            new TenantSetting
+            {
+                Id = Guid.CreateVersion7().ToString(),
+                TenantId = SeedDataConstants.RootTenant.Id,
+                Key = TenantSettingKeys.MunsoftMeterParquet,
+                Value = "/instances/{InstanceId}/meters?page=1&paginate=0&export=parquet"
+            },
+            new TenantSetting
+            {
+                Id = Guid.CreateVersion7().ToString(),
+                TenantId = SeedDataConstants.RootTenant.Id,
+                Key = TenantSettingKeys.MunsoftMeterSingle,
+                Value = "/instances/{InstanceId}/meters/{AccountNumber}?cached=false"
+            },
+            new TenantSetting
+            {
+                Id = Guid.CreateVersion7().ToString(),
+                TenantId = SeedDataConstants.RootTenant.Id,
+                Key = TenantSettingKeys.MunsoftAgeingParquet,
+                Value = "/instances/{InstanceId}/ageing?page=1&paginate=0&export=parquet"
+            },
+            new TenantSetting
+            {
+                Id = Guid.CreateVersion7().ToString(),
+                TenantId = SeedDataConstants.RootTenant.Id,
+                Key = TenantSettingKeys.MunsoftAgeingSingle,
+                Value = "/instances/{InstanceId}/ageing/{AccountNumber}?cached=false"
+            }
+            #endregion Munsoft API settings
+
         ];
     }
 }

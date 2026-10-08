@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AditiKraft.Krafter.Backend.Migrations.ApplicationDb
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261008102711_Init")]
-    partial class Init
+    [Migration("20261008185818_AddMunsoftInstanceAndIntegrations")]
+    partial class AddMunsoftInstanceAndIntegrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,7 +43,91 @@ namespace AditiKraft.Krafter.Backend.Migrations.ApplicationDb
 
                     b.HasKey("UserId");
 
-                    b.ToTable("UserRefreshTokens");
+                    b.ToTable("UserRefreshTokens", "identity");
+                });
+
+            modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Integrations.Common.ExternalTokenStorage", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
+
+                    b.Property<DateTime?>("ExpiresOnUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(4096)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Key")
+                        .IsUnique();
+
+                    b.ToTable("ExternalTokenStorage", "integration");
+                });
+
+            modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Integrations.Common.MunsoftInstance", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedById")
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("DeleteReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("DemarcationCode")
+                        .IsRequired()
+                        .HasMaxLength(75)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(75)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MunicipalityName")
+                        .IsRequired()
+                        .HasMaxLength(75)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(75)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(75)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(75)");
+
+                    b.Property<string>("UpdatedById")
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("DemarcationCode");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("MunsoftInstance", "munsoft");
                 });
 
             modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Roles.Common.ApplicationRole", b =>
@@ -481,7 +565,7 @@ namespace AditiKraft.Krafter.Backend.Migrations.ApplicationDb
 
                     b.HasIndex("UserId", "CreatedOn");
 
-                    b.ToTable("PasswordHistories");
+                    b.ToTable("PasswordHistories", "identity");
                 });
 
             modelBuilder.Entity("AditiKraft.Krafter.Backend.Infrastructure.Notifications.EmailLog", b =>
@@ -560,7 +644,7 @@ namespace AditiKraft.Krafter.Backend.Migrations.ApplicationDb
 
                     b.HasIndex("TenantId", "Status", "CreatedOn");
 
-                    b.ToTable("EmailLogs");
+                    b.ToTable("EmailLogs", "comms");
                 });
 
             modelBuilder.Entity("AditiKraft.Krafter.Backend.Infrastructure.Notifications.EmailTemplate", b =>
@@ -626,7 +710,24 @@ namespace AditiKraft.Krafter.Backend.Migrations.ApplicationDb
                     b.HasIndex("TenantId", "Key")
                         .IsUnique();
 
-                    b.ToTable("EmailTemplates");
+                    b.ToTable("EmailTemplates", "comms");
+                });
+
+            modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Integrations.Common.MunsoftInstance", b =>
+                {
+                    b.HasOne("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("UpdatedBy");
                 });
 
             modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Roles.Common.ApplicationRole", b =>

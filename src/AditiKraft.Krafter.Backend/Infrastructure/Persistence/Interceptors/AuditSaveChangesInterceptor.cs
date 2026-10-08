@@ -10,12 +10,12 @@ using AditiKraft.Krafter.Backend.Infrastructure.Persistence.Services;
 
 namespace AditiKraft.Krafter.Backend.Infrastructure.Persistence.Interceptors;
 
-public sealed class AuditSaveChangesInterceptor(ICurrentUser currentUser, ITenantGetterService tenantGetterService, AuditMetadataCache metadataCache, IServiceProvider serviceProvider, Microsoft.Extensions.Logging.ILogger<AuditSaveChangesInterceptor> logger) : SaveChangesInterceptor
+public sealed class AuditSaveChangesInterceptor(ICurrentUser currentUser, ITenantGetterService tenantGetterService, AuditMetadataCache metadataCache, IServiceProvider serviceProvider, ILogger<AuditSaveChangesInterceptor> logger) : SaveChangesInterceptor
 {
-    private readonly Microsoft.Extensions.Logging.ILogger<AuditSaveChangesInterceptor> _logger = logger;
+    private readonly ILogger<AuditSaveChangesInterceptor> _logger = logger;
+
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
-        // Build audit entries and enqueue them in the current DbContext's outbox.
         _ = BuildAuditEntries(eventData.Context);
 
         return base.SavingChanges(eventData, result);
@@ -24,7 +24,6 @@ public sealed class AuditSaveChangesInterceptor(ICurrentUser currentUser, ITenan
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData,
         InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {
-        // Build audit entries and enqueue them in the current DbContext's outbox.
         _ = BuildAuditEntries(eventData.Context);
 
         return await base.SavingChangesAsync(eventData, result, cancellationToken).ConfigureAwait(false);
@@ -169,29 +168,59 @@ public sealed class AuditSaveChangesInterceptor(ICurrentUser currentUser, ITenan
             }
         }
 
-        // Convert AuditLog entries into outbox entries so they are saved in the same transaction
-        var outboxEntries = new List<AuditOutbox>();
-        foreach (AuditLog a in result)
+        if (result.Count > 0)
         {
-            outboxEntries.Add(new AuditOutbox { Payload = JsonSerializer.Serialize(a), CreatedOn = DateTime.UtcNow });
+            _logger.LogDebug(
+                "Built {AuditEntryCount} audit entries for {ContextType} with tenant {TenantId} and user {UserId}.",
+                result.Count,
+                context.GetType().Name,
+                tenantGetterService?.Tenant?.Id,
+                currentUser?.GetUserId());
+        }
+
+        List<AuditOutbox> outboxEntries = new();
+        foreach (AuditLog auditLog in result)
+        {
+            outboxEntries.Add(new AuditOutbox
+            {
+                Payload = JsonSerializer.Serialize(auditLog),
+                CreatedOn = DateTime.UtcNow
+            });
         }
 
         if (outboxEntries.Count > 0)
         {
-            // Persist outbox entries to the dedicated AuditDb so they are centrally stored.
-            // We always write to AuditDb here to avoid relying on the current DbContext model.
             try
             {
                 if (serviceProvider.GetService(typeof(AuditDbContext)) is AuditDbContext auditDb)
                 {
                     auditDb.AddRange(outboxEntries);
-                    // Persist immediately since we cannot participate in the caller's transaction
                     auditDb.SaveChanges();
+
+                    _logger.LogInformation(
+                        "Persisted {AuditOutboxCount} audit outbox entries for {ContextType} with tenant {TenantId} and user {UserId}.",
+                        outboxEntries.Count,
+                        context.GetType().Name,
+                        tenantGetterService?.Tenant?.Id,
+                        currentUser?.GetUserId());
+                }
+                else
+                {
+                    _logger.LogWarning(
+                        "AuditDbContext was not available. Dropped {AuditOutboxCount} audit outbox entries for {ContextType}.",
+                        outboxEntries.Count,
+                        context.GetType().Name);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // If resolution fails or save fails, swallow to avoid breaking the primary save operation.
+                _logger.LogError(
+                    ex,
+                    "Failed to persist {AuditOutboxCount} audit outbox entries for {ContextType} with tenant {TenantId} and user {UserId}.",
+                    outboxEntries.Count,
+                    context.GetType().Name,
+                    tenantGetterService?.Tenant?.Id,
+                    currentUser?.GetUserId());
             }
         }
 

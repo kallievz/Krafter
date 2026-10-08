@@ -25,5 +25,6 @@ internal sealed class EmailLogConfiguration(ITenantGetterService tenantGetterSer
             .WithMany(c => c.EmailLogs)
             .HasForeignKey(c => c.EmailTemplateId)
             .OnDelete(DeleteBehavior.SetNull);
+        builder.ToTable("EmailLogs", SchemaConstants.Comms);
     }
 }

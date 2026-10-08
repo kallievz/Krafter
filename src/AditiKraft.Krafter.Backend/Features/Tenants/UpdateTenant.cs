@@ -69,8 +69,9 @@ public sealed class UpdateTenant
                 return Response.BadRequest("Send the expiry time in UTC with a Z suffix.");
             }
 
+            string normalizedIdentifier = request.Identifier.ToUpperInvariant();
             bool identifierExists = await dbContext.Tenants.AsNoTracking()
-                .AnyAsync(c => c.Id != tenant.Id && c.Identifier.Equals(request.Identifier, StringComparison.CurrentCultureIgnoreCase), cancellationToken);
+                .AnyAsync(c => c.Id != tenant.Id && c.Identifier.ToUpper() == normalizedIdentifier, cancellationToken);
             if (identifierExists)
             {
                 return Response.Conflict("Identifier already exists, please try a different identifier.");

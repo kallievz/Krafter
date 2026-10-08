@@ -1,0 +1,18 @@
+@using AditiKraft.Krafter.UI.Web.Client.Common.Permissions
+@attribute [Route(RoutePath)]
+@attribute [MustHavePermission(PermissionAction.View, PermissionResource.Notifications)]
+
+<PageTitle>Telemetry Dashboard</PageTitle>
+
+<RadzenStack Gap="0.75rem" class="rz-p-2">
+    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H1">Grafana Metrics</RadzenText>
+    <RadzenText TextStyle="TextStyle.Body1">
+        View application telemetry in Grafana, backed by Prometheus and prometheus-net.
+    </RadzenText>
+    <RadzenLink Path="@MetricsUrl" Text="Open Grafana in a new tab" Target="_blank" />
+</RadzenStack>
+
+<iframe src="@MetricsUrl"
+        title="Grafana Metrics Dashboard"
+        style="width: 100%; height: calc(100vh - 220px); border: 1px solid var(--rz-base-300); border-radius: 8px;">
+</iframe>

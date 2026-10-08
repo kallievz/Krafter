@@ -18,5 +18,6 @@ internal sealed class PasswordHistoryConfiguration(ITenantGetterService tenantGe
         builder.Property(c => c.PasswordHash).IsRequired();
         builder.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == _tenantGetterService.Tenant.Id);
         builder.HasIndex(c => new { c.UserId, c.CreatedOn });
+        builder.ToTable("PasswordHistories", SchemaConstants.Identity);
     }
 }

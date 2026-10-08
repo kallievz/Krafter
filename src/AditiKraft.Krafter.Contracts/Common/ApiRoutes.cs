@@ -10,6 +10,7 @@ public static class ApiRoutes
     public const string Users = "users";
     public const string AppInfo = "app-info";
     public const string ExternalAuth = "external-auth";
+    public const string Integrations = "integrations";
 }
 
 public static class RouteSegment

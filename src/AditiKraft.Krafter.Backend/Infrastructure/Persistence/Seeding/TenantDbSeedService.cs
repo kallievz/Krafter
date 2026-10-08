@@ -27,7 +27,7 @@ public static class TenantDbSeedService
             .ToListAsync(cancellationToken).ConfigureAwait(false);
 
         IEnumerable<TenantSetting> missingSettings = TenantSettingSeedData.GetSeeds()
-            .Where(seedSetting => existingRootSettings.All(existing => existing.Key != seedSetting.Key && existing.Id != seedSetting.Id));
+            .Where(seedSetting => existingRootSettings.All(existing => existing.Key != seedSetting.Key));
 
         List<TenantSetting> settingsToInsert = missingSettings.ToList();
         if (settingsToInsert.Count > 0)

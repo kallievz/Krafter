@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AditiKraft.Krafter.Backend.Migrations.AuditDb
 {
     [DbContext(typeof(AuditDbContext))]
-    [Migration("20261008103002_Init")]
+    [Migration("20261008114037_Init")]
     partial class Init
     {
         /// <inheritdoc />

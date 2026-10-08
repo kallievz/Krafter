@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using AditiKraft.Krafter.Contracts.Common.Enums;
 using AditiKraft.Krafter.UI.Web.Client.Features.AppInfo;
 using AditiKraft.Krafter.UI.Web.Client.Features.Auth;
+using AditiKraft.Krafter.UI.Web.Client.Features.Integrations;
 using AditiKraft.Krafter.UI.Web.Client.Features.Roles;
 using AditiKraft.Krafter.UI.Web.Client.Features.Tenants;
 using AditiKraft.Krafter.UI.Web.Client.Features.Users;
@@ -46,6 +47,11 @@ public static class RefitServiceExtensions
             .AddHttpMessageHandler<RefitAuthHandler>();
 
         services.AddRefitGeneratedClient<ITenantsApi>(refitSettings)
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri(placeholderUrl))
+            .AddHttpMessageHandler(sp => new RefitTenantHandler(sp.GetRequiredService<TenantIdentifier>(), false))
+            .AddHttpMessageHandler<RefitAuthHandler>();
+
+        services.AddRefitGeneratedClient<IIntegrationsApi>(refitSettings)
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(placeholderUrl))
             .AddHttpMessageHandler(sp => new RefitTenantHandler(sp.GetRequiredService<TenantIdentifier>(), false))
             .AddHttpMessageHandler<RefitAuthHandler>();

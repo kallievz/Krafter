@@ -10,6 +10,9 @@ using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Tenants;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Events;
+using System.Reflection;
 
 namespace AditiKraft.Krafter.Backend;
 
@@ -17,65 +20,129 @@ public static class Program
 {
     private static async Task Main(string[] args)
     {
-        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+        // Configure Serilog early so all startup logs are captured
+        IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: false)
+            .AddEnvironmentVariables();
 
-        // Load local overrides when present (appsettings.Local.json) so local connection strings
-        // and secrets are available during development and when running from solution root.
-        builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: false);
+        IConfiguration configuration = configurationBuilder.Build();
+        Assembly[] loggerAssemblies = [typeof(Program).Assembly, typeof(HostingExtensions).Assembly, typeof(TenantDbContext).Assembly];
 
-        // Forwarded headers (proxy support)
-        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        await LoggerRegistration.EnsureSerilogLogTableAsync(configuration).ConfigureAwait(false);
+        Log.Logger = LoggerRegistration.CreateLogger(configuration, loggerAssemblies);
+
+        try
         {
-            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-            options.KnownIPNetworks.Clear();
-            options.KnownProxies.Clear();
-        });
+            Log.Information("Starting host");
 
-        // Aspire observability + health checks
-        builder.AddServiceDefaults();
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+            builder.Host.UseSerilog();
+            builder.Configuration.AddConfiguration(configuration);
 
-        _ = AppUrls.ParseOrigin(builder.Configuration["Urls:ApiBaseUrl"], "Urls:ApiBaseUrl");
+            // Load local overrides when present (appsettings.Local.json) so local connection strings
+            // and secrets are available during development and when running from solution root.
+            builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: false);
 
-        // CORS (split-host needs cross-origin support)
-        builder.Services.AddCorsConfiguration(builder.Configuration);
+            // Forwarded headers (proxy support)
+            builder.Services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                options.KnownIPNetworks.Clear();
+                options.KnownProxies.Clear();
+            });
 
-        // All backend services (DB, auth, persistence, jobs, SignalR, swagger, validation, routes)
-        builder.AddBackendServices();
+            // Aspire observability + health checks
+            builder.AddServiceDefaults();
 
-        // Build app
-        WebApplication app = builder.Build();
+            _ = AppUrls.ParseOrigin(builder.Configuration["Urls:ApiBaseUrl"], "Urls:ApiBaseUrl");
 
-        await ApplyDatabaseMigrationsAsync(app.Services).ConfigureAwait(false);
+            // CORS (split-host needs cross-origin support)
+            builder.Services.AddCorsConfiguration(builder.Configuration);
 
-        // Middleware Pipeline
-        app.UseForwardedHeaders();
-        app.UseResponseCompression();
-        app.MapDefaultEndpoints();
+            // All backend services (DB, auth, persistence, jobs, SignalR, swagger, validation, routes)
+            builder.AddBackendServices();
 
-        app.UseCorsConfiguration();
-        app.UseSwaggerConfiguration();
-        app.UseHttpsRedirection();
+            // Build app
+            WebApplication app = builder.Build();
 
-        app.UseBackendMiddleware();
+            await ApplyDatabaseMigrationsAsync(app.Services).ConfigureAwait(false);
 
-        // Backend endpoints (VSA routes, SignalR hub, background jobs dashboard)
-        app.MapBackendEndpoints();
+            // Middleware Pipeline
+            app.UseForwardedHeaders();
+            app.UseResponseCompression();
+            app.MapDefaultEndpoints();
 
-        await app.RunAsync().ConfigureAwait(false);
+            // Ensure Serilog request logging
+            app.UseSerilogRequestLogging(options =>
+            {
+                options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
+                options.GetLevel = static (httpContext, elapsed, exception) =>
+                {
+                    if (exception is not null || httpContext.Response.StatusCode >= StatusCodes.Status500InternalServerError)
+                    {
+                        return LogEventLevel.Error;
+                    }
+
+                    if (httpContext.Response.StatusCode >= StatusCodes.Status400BadRequest)
+                    {
+                        return LogEventLevel.Warning;
+                    }
+
+                    if (httpContext.Request.Path.StartsWithSegments("/metrics") ||
+                        httpContext.Request.Path.StartsWithSegments("/health") ||
+                        httpContext.Request.Path.StartsWithSegments("/alive"))
+                    {
+                        return LogEventLevel.Debug;
+                    }
+
+                    return LogEventLevel.Information;
+                };
+                options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+                {
+                    diagnosticContext.Set("Host", httpContext.Request.Host.Value);
+                    diagnosticContext.Set("Scheme", httpContext.Request.Scheme);
+                    diagnosticContext.Set("RemoteIpAddress", httpContext.Connection.RemoteIpAddress?.ToString());
+                    diagnosticContext.Set("UserAgent", httpContext.Request.Headers.UserAgent.ToString());
+                };
+            });
+
+            app.UseCorsConfiguration();
+            app.UseSwaggerConfiguration();
+            app.UseHttpsRedirection();
+
+            app.UseBackendMiddleware();
+
+            // Backend endpoints (VSA routes, SignalR hub, background jobs dashboard)
+            app.MapBackendEndpoints();
+
+            await app.RunAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            // Serilog fatal for unhandled host exceptions
+            Log.Fatal(ex, "Host terminated unexpectedly");
+            throw;
+        }
+        finally
+        {
+            Log.CloseAndFlush();
+        }
     }
 
     private static async Task ApplyDatabaseMigrationsAsync(IServiceProvider services)
     {
         using IServiceScope scope = services.CreateScope();
 
-        var logger = scope.ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger>();
+        ILoggerFactory loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
+        Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger("Program");
 
         try
         {
             logger.LogInformation("Starting database migrations.");
 
             // Tenant DB - root tenant registry and required baseline
-            var tenantDbContext = scope.ServiceProvider.GetRequiredService<TenantDbContext>();
+            TenantDbContext tenantDbContext = scope.ServiceProvider.GetRequiredService<TenantDbContext>();
             logger.LogInformation("Migrating TenantDb...");
             await tenantDbContext.Database.MigrateAsync().ConfigureAwait(false);
             logger.LogInformation("TenantDb migration complete.");
@@ -86,26 +153,30 @@ public static class Program
             logger.LogInformation("Root tenant seeding complete.");
 
             // Background jobs (TickerQ) operational store
-            var backgroundJobsContext = scope.ServiceProvider.GetRequiredService<BackgroundJobsContext>();
+            BackgroundJobsContext backgroundJobsContext = scope.ServiceProvider.GetRequiredService<BackgroundJobsContext>();
             logger.LogInformation("Migrating BackgroundJobs (TickerQ) DB...");
             await backgroundJobsContext.Database.MigrateAsync().ConfigureAwait(false);
             logger.LogInformation("BackgroundJobs migration complete.");
 
             // Audit DB - must be present before application writes via audit interceptor
-            var auditDbContext = scope.ServiceProvider.GetRequiredService<AuditDbContext>();
+            AuditDbContext auditDbContext = scope.ServiceProvider.GetRequiredService<AuditDbContext>();
             logger.LogInformation("Migrating AuditDb...");
             await auditDbContext.Database.MigrateAsync().ConfigureAwait(false);
             logger.LogInformation("AuditDb migration complete.");
 
             // Application DB - main application schema and seed data
-            var applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            ApplicationDbContext applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             logger.LogInformation("Migrating ApplicationDb...");
             await applicationDbContext.Database.MigrateAsync().ConfigureAwait(false);
             logger.LogInformation("ApplicationDb migration complete.");
 
+            logger.LogInformation("Seeding external integration tokens...");
+            await ApplicationDbSeedService.SeedExternalTokensAsync(applicationDbContext, CancellationToken.None).ConfigureAwait(false);
+            logger.LogInformation("External integration token seeding complete.");
+
             // Run application-level seeding
             logger.LogInformation("Starting application data seed...");
-            var dataSeedService = scope.ServiceProvider.GetRequiredService<DataSeedService>();
+            DataSeedService dataSeedService = scope.ServiceProvider.GetRequiredService<DataSeedService>();
             Response seedResponse = await dataSeedService.SeedBasicDataAsync(new SeedDataRequest()).ConfigureAwait(false);
             if (seedResponse.IsError)
             {
@@ -119,10 +190,13 @@ public static class Program
         catch (Exception ex)
         {
             // Re-throw after logging to stop the host startup so failures are visible.
-            var message = "Database migration or seeding failed and prevented application startup.";
-            var logger2 = scope.ServiceProvider.GetService<Microsoft.Extensions.Logging.ILogger>();
+            string message = "Database migration or seeding failed and prevented application startup.";
+            ILoggerFactory? loggerFactory2 = scope.ServiceProvider.GetService<ILoggerFactory>();
+            Microsoft.Extensions.Logging.ILogger? logger2 = loggerFactory2?.CreateLogger("Program");
             logger2?.LogCritical(ex, message);
+            Log.Fatal(ex, "{Message}", message);
             throw;
         }
     }
 }
+

@@ -2,6 +2,7 @@ using AditiKraft.Krafter.Backend.Common.Auth;
 using AditiKraft.Krafter.Backend.Common.Entities;
 using AditiKraft.Krafter.Backend.Common.Tenants;
 using AditiKraft.Krafter.Backend.Features.Auth.Common;
+using AditiKraft.Krafter.Backend.Features.Integrations.Common;
 using AditiKraft.Krafter.Backend.Features.Roles.Common;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Notifications;
@@ -27,6 +28,8 @@ public class ApplicationDbContext(
     public virtual DbSet<PasswordHistory> PasswordHistories { get; set; }
     public virtual DbSet<EmailLog> EmailLogs { get; set; }
     public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
+    public virtual DbSet<ExternalTokenStorage> ExternalTokenStorages { get; set; }
+    public virtual DbSet<MunsoftInstance> MunsoftInstances { get; set; }
     // AuditOutbox moved to AuditDbContext. Kept processing in AuditOutboxProcessor which uses both contexts.
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -41,6 +44,9 @@ public class ApplicationDbContext(
         modelBuilder.ApplyConfiguration(new PasswordHistoryConfiguration(tenantGetterService));
         modelBuilder.ApplyConfiguration(new EmailLogConfiguration(tenantGetterService));
         modelBuilder.ApplyConfiguration(new EmailTemplateConfiguration(tenantGetterService));
+        modelBuilder.ApplyConfiguration(new ExternalTokenStorageConfiguration());
+        modelBuilder.ApplyConfiguration(new MunsoftInstanceConfiguration());
+
         modelBuilder.ApplyConfiguration(new ApplicationUserLoginConfiguration());
         modelBuilder.ApplyConfiguration(new ApplicationUserTokenConfiguration());
         modelBuilder.ApplyConfiguration(new UserRefreshTokenConfiguration());
@@ -73,9 +79,13 @@ public class ApplicationDbContext(
                     break;
 
                 case EntityState.Deleted:
-                    entry.State = EntityState.Modified;
-                    entry.CurrentValues["IsDeleted"] = true;
-                    SetTenantAndHistoryInfo(entry);
+                    if (entry.Entity is ISoftDelete)
+                    {
+                        entry.State = EntityState.Modified;
+                        entry.CurrentValues["IsDeleted"] = true;
+                        SetTenantAndHistoryInfo(entry);
+                    }
+
                     break;
             }
         }

@@ -1,0 +1,31 @@
+@using AditiKraft.Krafter.Contracts.Contracts.Integrations
+@using AditiKraft.Krafter.UI.Web.Client.Common.Models
+@using AditiKraft.Krafter.UI.Web.Client.Common.Permissions
+@attribute [Route(RoutePath)]
+@attribute [MustHavePermission(PermissionAction.View, PermissionResource.Tenants)]
+
+@if (!string.IsNullOrWhiteSpace(_errorMessage))
+{
+    <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" class="rz-mb-2">
+        @_errorMessage
+    </RadzenAlert>
+}
+
+<RadzenDataGrid Responsive="true" ShowCellDataAsTooltip="true"
+                Density="Density.Compact" AllowColumnResize="true" IsLoading="@_isLoading"
+                Count="@(_response?.Data?.TotalCount ?? 0)" LoadData="@LoadDataAsync" AllowSorting="true" Data="@_response?.Data?.Items"
+                AllowFiltering="true" AllowPaging="true" PageSize="@_requestInput.MaxResultCount"
+                PagerHorizontalAlign="HorizontalAlign.Center">
+    <Columns>
+        <RadzenDataGridColumn Property="Id" Title="Id" Width="90px" />
+        <RadzenDataGridColumn Property="Name" Title="Name" />
+        <RadzenDataGridColumn Property="MunicipalityName" Title="Municipality Name" />
+        <RadzenDataGridColumn Property="DemarcationCode" Title="Demarcation Code" />
+        <RadzenDataGridColumn Title="Actions" Filterable="false" Sortable="false" Width="140px" TextAlign="TextAlign.Center">
+            <HeaderTemplate>
+                <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary" Icon="sync" Text="Sync"
+                              Click="@SyncAsync" />
+            </HeaderTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

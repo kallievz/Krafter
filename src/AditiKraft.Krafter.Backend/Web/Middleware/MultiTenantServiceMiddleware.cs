@@ -6,6 +6,7 @@ using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Enums;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using Mapster;
+using Serilog.Context;
 
 namespace AditiKraft.Krafter.Backend.Web.Middleware;
 
@@ -18,6 +19,14 @@ public class MultiTenantServiceMiddleware(
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         AppUrls urls = configuration.GetSection(AppUrls.SectionName).Get<AppUrls>() ?? new AppUrls();
+        if (context.Request.Path.StartsWithSegments("/metrics") ||
+            context.Request.Path.StartsWithSegments("/health") ||
+            context.Request.Path.StartsWithSegments("/alive"))
+        {
+            await next(context).ConfigureAwait(false);
+            return;
+        }
+
         if (TenantSettings.TenancyMode == TenancyMode.Single)
         {
             Tenant tenant = SeedDataConstants.DefaultTenant;
@@ -28,7 +37,13 @@ public class MultiTenantServiceMiddleware(
             currentTenantDetails.Host = $"https://{context.Request.Host.Value}";
             tenantSetterService.SetTenant(currentTenantDetails);
 
-            await next(context).ConfigureAwait(false);
+            using (PushProperty("TenantId", currentTenantDetails.Identifier))
+            using (PushProperty("TenantName", currentTenantDetails.Name))
+            using (PushProperty("TenantHost", currentTenantDetails.Host))
+            {
+                await next(context).ConfigureAwait(false);
+            }
+
             return;
         }
 
@@ -81,8 +96,17 @@ public class MultiTenantServiceMiddleware(
         currentTenant.UserId = currentUser.GetUserId();
         currentTenant.Host = $"https://{context.Request.Host.Value}";
         tenantSetterService.SetTenant(currentTenant);
-        await next(context).ConfigureAwait(false);
+
+        using (PushProperty("TenantId", currentTenant.Identifier))
+        using (PushProperty("TenantName", currentTenant.Name))
+        using (PushProperty("TenantHost", currentTenant.Host))
+        {
+            await next(context).ConfigureAwait(false);
+        }
     }
+
+    private static IDisposable? PushProperty(string propertyName, string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : LogContext.PushProperty(propertyName, value);
 
     private static bool IsConnectionHost(string host, AppUrls urls)
     {

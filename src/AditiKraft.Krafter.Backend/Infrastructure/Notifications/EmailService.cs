@@ -38,10 +38,10 @@ public sealed class EmailService(
         }
 
         string fallbackProvider = string.IsNullOrWhiteSpace(_securitySettings.Provider)
-            ? TenantSettingKeys.NotificationProviderSmtp
+            ? TenantSettingKeys.EmailProviderSmtp
             : _securitySettings.Provider;
         string provider = await tenantSettingService.GetStringValueOrDefaultAsync(
-            TenantSettingKeys.NotificationsProvider,
+            TenantSettingKeys.EmailProvider,
             fallbackProvider,
             cancellationToken).ConfigureAwait(false);
 
@@ -126,22 +126,22 @@ public sealed class EmailService(
     {
         string provider = emailLog.Provider;
 
-        if (provider.Equals(TenantSettingKeys.NotificationProviderSendGrid, StringComparison.OrdinalIgnoreCase))
+        if (provider.Equals(TenantSettingKeys.EmailProviderSendGrid, StringComparison.OrdinalIgnoreCase))
         {
             string senderEmail = await tenantSettingService.GetStringValueOrDefaultAsync(
-                TenantSettingKeys.NotificationsSendGridSenderEmail,
+                TenantSettingKeys.EmailSenderEmail,
                 sendGridEmailSettings.SenderEmail,
                 cancellationToken).ConfigureAwait(false);
             string senderName = await tenantSettingService.GetStringValueOrDefaultAsync(
-                TenantSettingKeys.NotificationsSendGridSenderName,
+                TenantSettingKeys.EmailSenderName,
                 sendGridEmailSettings.SenderName,
                 cancellationToken).ConfigureAwait(false);
             string replyToEmail = await tenantSettingService.GetStringValueOrDefaultAsync(
-                TenantSettingKeys.NotificationsSendGridReplyToEmail,
+                TenantSettingKeys.EmailReplyToEmail,
                 sendGridEmailSettings.ReplyToEmail,
                 cancellationToken).ConfigureAwait(false);
             string apiKey = await tenantSettingService.GetStringValueOrDefaultAsync(
-                TenantSettingKeys.NotificationsSendGridApiKey,
+                TenantSettingKeys.EmailSendGridApiKey,
                 sendGridEmailSettings.ApiKey,
                 cancellationToken).ConfigureAwait(false);
 
@@ -160,7 +160,7 @@ public sealed class EmailService(
                 apiKey);
         }
 
-        if (provider.Equals(TenantSettingKeys.NotificationProviderDummy, StringComparison.OrdinalIgnoreCase))
+        if (provider.Equals(TenantSettingKeys.EmailProviderDummy, StringComparison.OrdinalIgnoreCase))
         {
             return new EmailDeliveryMessage(
                 emailLog.ToEmail,
@@ -178,31 +178,31 @@ public sealed class EmailService(
         }
 
         string host = await tenantSettingService.GetStringValueOrDefaultAsync(
-            TenantSettingKeys.NotificationsSmtpHost,
+            TenantSettingKeys.EmailSmtpHost,
             smtpEmailSettings.Host,
             cancellationToken);
         int port = await tenantSettingService.GetIntValueOrDefaultAsync(
-            TenantSettingKeys.NotificationsSmtpPort,
+            TenantSettingKeys.EmailSmtpPort,
             smtpEmailSettings.Port,
             cancellationToken);
         string userName = await tenantSettingService.GetStringValueOrDefaultAsync(
-            TenantSettingKeys.NotificationsSmtpUserName,
+            TenantSettingKeys.EmailSmtpUserName,
             smtpEmailSettings.UserName,
             cancellationToken);
         string password = await tenantSettingService.GetStringValueOrDefaultAsync(
-            TenantSettingKeys.NotificationsSmtpPassword,
+            TenantSettingKeys.EmailSmtpPassword,
             smtpEmailSettings.Password,
             cancellationToken);
         string smtpSenderEmail = await tenantSettingService.GetStringValueOrDefaultAsync(
-            TenantSettingKeys.NotificationsSmtpSenderEmail,
+            TenantSettingKeys.EmailSenderEmail,
             smtpEmailSettings.SenderEmail,
             cancellationToken);
         string smtpSenderName = await tenantSettingService.GetStringValueOrDefaultAsync(
-            TenantSettingKeys.NotificationsSmtpSenderName,
+            TenantSettingKeys.EmailSenderName,
             smtpEmailSettings.SenderName,
             cancellationToken);
         string smtpReplyToEmail = await tenantSettingService.GetStringValueOrDefaultAsync(
-            TenantSettingKeys.NotificationsSmtpReplyToEmail,
+            TenantSettingKeys.EmailReplyToEmail,
             smtpEmailSettings.ReplyToEmail,
             cancellationToken);
 
@@ -210,7 +210,7 @@ public sealed class EmailService(
             emailLog.ToEmail,
             emailLog.Subject,
             emailLog.Body,
-            TenantSettingKeys.NotificationProviderSmtp,
+            TenantSettingKeys.EmailProviderSmtp,
             smtpSenderEmail,
             smtpSenderName,
             smtpReplyToEmail,

@@ -24,6 +24,18 @@
     <!-- Background Jobs -->
 
     <PackageReference Include="Scalar.AspNetCore.Microsoft" />
+
+    <PackageReference Include="Serilog.AspNetCore" />
+
+    <PackageReference Include="Serilog.Enrichers.Environment" />
+
+    <PackageReference Include="Serilog.Enrichers.Process" />
+
+    <PackageReference Include="Serilog.Enrichers.Thread" />
+
+    <PackageReference Include="Serilog.Sinks.File" />
+
+    <PackageReference Include="Serilog.Sinks.MSSqlServer" />
     <PackageReference Include="TickerQ" />
     <PackageReference Include="TickerQ.Dashboard" />
     <PackageReference Include="TickerQ.EntityFrameworkCore" />
@@ -96,6 +108,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Infrastructure\Integration\Mab\" />
     <Folder Include="Migrations\TenantDb\" />
   </ItemGroup>
 

@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using AditiKraft.Krafter.Backend.Common.Auth;
+using AditiKraft.Krafter.Backend.Common.Tenants;
 using AditiKraft.Krafter.Backend.Errors;
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Models;
@@ -9,7 +10,7 @@ using Microsoft.Data.SqlClient;
 
 namespace AditiKraft.Krafter.Backend.Web.Middleware;
 
-public class ExceptionMiddleware(ICurrentUser currentUser, ILogger<ExceptionMiddleware> logger) : IMiddleware
+public class ExceptionMiddleware(ICurrentUser currentUser, ITenantGetterService tenantGetterService, ILogger<ExceptionMiddleware> logger) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
@@ -27,11 +28,22 @@ public class ExceptionMiddleware(ICurrentUser currentUser, ILogger<ExceptionMidd
                 throw;
             }
 
-            logger.LogError(exception, exception.Message);
             var res = new Response { IsError = true };
             string email = currentUser.GetUserEmail() is string userEmail ? userEmail : "Anonymous";
             string userId = currentUser.GetUserId();
             string errorId = Guid.CreateVersion7().ToString();
+            string tenantId = tenantGetterService.Tenant.Id ?? string.Empty;
+            string tenantName = tenantGetterService.Tenant.Name ?? string.Empty;
+            logger.LogError(
+                exception,
+                "API exception {ErrorId}. Method={Method}, Path={Path}, UserId={UserId}, UserEmail={UserEmail}, TenantId={TenantId}, TenantName={TenantName}",
+                errorId,
+                context.Request.Method,
+                context.Request.Path,
+                userId,
+                email,
+                tenantId,
+                tenantName);
             var errorResult = new ErrorResult { };
             if (exception is not AppException && exception.InnerException != null)
             {

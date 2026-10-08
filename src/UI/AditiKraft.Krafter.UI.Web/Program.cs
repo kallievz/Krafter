@@ -70,13 +70,18 @@ static async Task EnsureSqlCacheTableAsync(IConfiguration configuration)
     }
 
     const string createCacheTableScript = """
+                                         IF SCHEMA_ID(N'cache') IS NULL
+                                         BEGIN
+                                             EXEC(N'CREATE SCHEMA [cache]');
+                                         END
+
                                          IF NOT EXISTS (
                                              SELECT 1
                                              FROM sys.objects
-                                             WHERE object_id = OBJECT_ID(N'[dbo].[Cache]')
+                                             WHERE object_id = OBJECT_ID(N'[cache].[Cache]')
                                                AND type = N'U')
                                          BEGIN
-                                             CREATE TABLE [dbo].[Cache](
+                                             CREATE TABLE [cache].[Cache](
                                                  [Id] NVARCHAR(449) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
                                                  [Value] VARBINARY(MAX) NOT NULL,
                                                  [ExpiresAtTime] DATETIMEOFFSET NOT NULL,
@@ -86,7 +91,7 @@ static async Task EnsureSqlCacheTableAsync(IConfiguration configuration)
                                              );
 
                                              CREATE NONCLUSTERED INDEX [Index_ExpiresAtTime]
-                                                 ON [dbo].[Cache]([ExpiresAtTime] ASC);
+                                                 ON [cache].[Cache]([ExpiresAtTime] ASC);
                                          END
                                          """;
 

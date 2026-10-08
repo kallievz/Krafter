@@ -1,0 +1,25 @@
+apiVersion: 1
+
+datasources:
+  - name: SqlServer
+    uid: sqlserver
+    type: mssql
+    access: proxy
+    url: ${GF_DATASOURCES_DEFAULT_URL}
+    user: ${GF_DATASOURCES_DEFAULT_USER}
+    secureJsonData:
+      password: ${GF_DATASOURCES_DEFAULT_PASSWORD}
+    jsonData:
+      database: ${GF_DATASOURCES_DEFAULT_DATABASE}
+      sslmode: ${GF_DATASOURCES_DEFAULT_SSLMODE}
+      trustServerCertificate: ${GF_DATASOURCES_DEFAULT_TRUSTSERVERCERTIFICATE}
+      encrypt: ${GF_DATASOURCES_DEFAULT_SSLMODE}
+      maxOpenConns: 0
+      maxIdleConns: 2
+      connMaxLifetime: 14400
+      timeInterval: 5s
+      tlsAuth: false
+      tlsAuthWithCACert: false
+      version: 2019
+      isDefault: false
+      editable: false

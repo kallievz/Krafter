@@ -30,12 +30,12 @@ public static class DatabaseConfiguration
                 sp.GetRequiredService<ITenantGetterService>(),
                 sp.GetRequiredService<AuditMetadataCache>(),
                 sp,
-                sp.GetRequiredService<Microsoft.Extensions.Logging.ILogger<AuditSaveChangesInterceptor>>()));
+                sp.GetRequiredService<ILogger<AuditSaveChangesInterceptor>>()));
 
-        // TenantDbContext (root tenant registry) - do not attach audit interceptor
+        // TenantDbContext (root tenant registry) - attach audit interceptor so tenant administration is audited
         services.AddDbContext<TenantDbContext>((sp, opts) =>
             opts.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure())
-                .AddInterceptors(sp.GetRequiredService<EfCommandTimingInterceptor>()));
+                .AddInterceptors(sp.GetRequiredService<EfCommandTimingInterceptor>(), sp.GetRequiredService<AuditSaveChangesInterceptor>()));
 
         // BackgroundJobsContext (TickerQ operational store) - do not attach audit interceptor
         services.AddDbContext<BackgroundJobsContext>((sp, opts) =>

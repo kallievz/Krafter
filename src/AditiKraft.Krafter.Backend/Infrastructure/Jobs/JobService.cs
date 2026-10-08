@@ -1,4 +1,5 @@
 using AditiKraft.Krafter.Backend.Infrastructure.Notifications;
+using AditiKraft.Krafter.Backend.Infrastructure.Telemetry;
 using TickerQ.Utilities;
 using TickerQ.Utilities.Entities;
 using TickerQ.Utilities.Interfaces.Managers;
@@ -15,12 +16,22 @@ public class JobService(ITimeTickerManager<TimeTickerEntity> timeTickerManager) 
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        _ = await timeTickerManager.AddAsync(new TimeTickerEntity
+        try
         {
-            Function = methodName,
-            Request = TickerHelper.CreateTickerRequest(requestInput),
-            ExecutionTime = DateTime.UtcNow
-        }, cancellationToken).ConfigureAwait(false);
+            _ = await timeTickerManager.AddAsync(new TimeTickerEntity
+            {
+                Function = methodName,
+                Request = TickerHelper.CreateTickerRequest(requestInput),
+                ExecutionTime = DateTime.UtcNow
+            }, cancellationToken).ConfigureAwait(false);
+
+            BackendTelemetry.TickerQEnqueueCount.Add(1, new KeyValuePair<string, object?>("method", methodName));
+        }
+        catch (Exception ex)
+        {
+            BackendTelemetry.TickerQEnqueueFailureCount.Add(1, new KeyValuePair<string, object?>("method", methodName));
+            throw new InvalidOperationException($"Failed to enqueue TickerQ job '{methodName}'.", ex);
+        }
     }
 
     public async Task EnqueueByLogIdAsync(string emailLogId, string methodName, CancellationToken cancellationToken)

@@ -19,8 +19,6 @@
                 AllowFiltering="true" AllowPaging="true" PageSize="@_requestInput.MaxResultCount"
                 PagerHorizontalAlign="HorizontalAlign.Center">
     <Columns>
-
-        <RadzenDataGridColumn Property="Name" Title="Name" />
         <RadzenDataGridColumn Property="Identifier" Title="Identifier">
             <Template Context="data">
                 @if (urls.CanUseTenantIdentifier(data.Identifier))
@@ -34,7 +32,7 @@
                 }
             </Template>
         </RadzenDataGridColumn>
-
+        <RadzenDataGridColumn Property="Name" Title="Name" />
         <RadzenDataGridColumn Property="AdminEmail" Title="Admin Email" />
         <RadzenDataGridColumn Property="ValidUpto" Title="Expires (your time)" Filterable="false">
             <Template Context="data">

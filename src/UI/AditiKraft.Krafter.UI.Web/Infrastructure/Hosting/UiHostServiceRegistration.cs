@@ -33,7 +33,7 @@ public static class UiHostServiceRegistration
             services.AddDistributedSqlServerCache(options =>
             {
                 options.ConnectionString = sqlCacheConnectionString;
-                options.SchemaName = "dbo";
+                options.SchemaName = "cache";
                 options.TableName = "Cache";
             });
         }
