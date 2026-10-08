@@ -15,7 +15,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Npgsql;
 
 namespace AditiKraft.Krafter.Tests.Tenants;
 
@@ -275,9 +274,8 @@ public sealed class TenantCreationTests
         {
             if (RejectSave)
             {
-                throw new DbUpdateException("A concurrent request used this identifier.", new PostgresException(
-                    "Duplicate identifier", "ERROR", "ERROR", PostgresErrorCodes.UniqueViolation,
-                    constraintName: TenantDbContext.TenantIdentifierIndexName));
+                throw new DbUpdateException("A concurrent request used this identifier.",
+                    new InvalidOperationException($"Duplicate identifier ({TenantDbContext.TenantIdentifierIndexName})."));
             }
 
             return ValueTask.FromResult(result);

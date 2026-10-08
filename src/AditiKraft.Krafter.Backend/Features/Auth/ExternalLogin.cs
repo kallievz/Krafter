@@ -14,7 +14,7 @@ namespace AditiKraft.Krafter.Backend.Features.Auth;
 
 public sealed class ExternalAuth
 {
-    public class GoogleAuthClient
+    public class GoogleAuthClient(HttpClient httpClient, IConfiguration configuration, ILogger<GoogleAuthClient> logger)
     {
         public class GoogleTokens
         {
@@ -31,22 +31,11 @@ public sealed class ExternalAuth
             [JsonPropertyName("family_name")] public string FamilyName { get; set; } = string.Empty;
         }
 
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<GoogleAuthClient> _logger;
-
-        public GoogleAuthClient(HttpClient httpClient, IConfiguration configuration, ILogger<GoogleAuthClient> logger)
-        {
-            _httpClient = httpClient;
-            _configuration = configuration;
-            _logger = logger;
-        }
-
         public async Task<GoogleTokens?> ExchangeCodeForTokensAsync(string code)
         {
-            string? clientId = _configuration["Authentication:Google:ClientId"];
-            string? clientSecret = _configuration["Authentication:Google:ClientSecret"];
-            AppUrls urls = _configuration.GetSection(AppUrls.SectionName).Get<AppUrls>() ?? new AppUrls();
+            string? clientId = configuration["Authentication:Google:ClientId"];
+            string? clientSecret = configuration["Authentication:Google:ClientSecret"];
+            AppUrls urls = configuration.GetSection(AppUrls.SectionName).Get<AppUrls>() ?? new AppUrls();
             string redirectUri = urls.GetGoogleRedirectUri().AbsoluteUri;
 
             var tokenRequestParams = new Dictionary<string, string?>
@@ -58,21 +47,21 @@ public sealed class ExternalAuth
                 ["redirect_uri"] = redirectUri
             };
 
-            HttpResponseMessage response = await _httpClient.PostAsync(
+            HttpResponseMessage response = await httpClient.PostAsync(
                 "https://oauth2.googleapis.com/token",
                 new FormUrlEncodedContent(tokenRequestParams!));
 
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogError("Error exchanging code for tokens: {StatusCode} {ReasonPhrase}",
+                logger.LogError("Error exchanging code for tokens: {StatusCode} {ReasonPhrase}",
                     response.StatusCode, response.ReasonPhrase);
-                _logger.LogError("Response: {ResponseContent}",
-                    await response.Content.ReadAsStringAsync());
+                logger.LogError("Response: {ResponseContent}",
+                    await response.Content.ReadAsStringAsync().ConfigureAwait(false));
 
                 return null;
             }
 
-            return await response.Content.ReadFromJsonAsync<GoogleTokens>();
+            return await response.Content.ReadFromJsonAsync<GoogleTokens>().ConfigureAwait(false);
         }
 
         public async Task<GoogleUserInfo?> GetUserInfoAsync(string accessToken)
@@ -82,13 +71,13 @@ public sealed class ExternalAuth
             requestMessage.Headers.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 
-            HttpResponseMessage response = await _httpClient.SendAsync(requestMessage);
+            HttpResponseMessage response = await httpClient.SendAsync(requestMessage).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
                 return null;
             }
 
-            return await response.Content.ReadFromJsonAsync<GoogleUserInfo>();
+            return await response.Content.ReadFromJsonAsync<GoogleUserInfo>().ConfigureAwait(false);
         }
     }
 
@@ -104,7 +93,7 @@ public sealed class ExternalAuth
             CancellationToken cancellationToken)
         {
             // Get the auth info using the code
-            GoogleAuthClient.GoogleTokens? tokens = await googleAuthClient.ExchangeCodeForTokensAsync(request.Code);
+            GoogleAuthClient.GoogleTokens? tokens = await googleAuthClient.ExchangeCodeForTokensAsync(request.Code).ConfigureAwait(false);
 
             if (tokens == null)
             {
@@ -112,17 +101,17 @@ public sealed class ExternalAuth
             }
 
             // Get user info from Google
-            GoogleAuthClient.GoogleUserInfo? userInfo = await googleAuthClient.GetUserInfoAsync(tokens.AccessToken);
+            GoogleAuthClient.GoogleUserInfo? userInfo = await googleAuthClient.GetUserInfoAsync(tokens.AccessToken).ConfigureAwait(false);
             if (userInfo == null)
             {
                 return Response<TokenResponse>.Unauthorized("Invalid user info");
             }
 
             // Find or create user based on email
-            ApplicationUser? user = await userManager.FindByEmailAsync(userInfo.Email);
+            ApplicationUser? user = await userManager.FindByEmailAsync(userInfo.Email).ConfigureAwait(false);
             if (user == null)
             {
-                ApplicationRole? basic = await roleManager.FindByNameAsync(RoleConstants.Basic);
+                ApplicationRole? basic = await roleManager.FindByNameAsync(RoleConstants.Basic).ConfigureAwait(false);
                 if (basic is null)
                 {
                     return Response<TokenResponse>.NotFound("Basic Role Not Found.");
@@ -144,17 +133,17 @@ public sealed class ExternalAuth
                     user.UserName = user.Email;
                 }
 
-                IdentityResult result = await userManager.CreateAsync(user);
+                IdentityResult result = await userManager.CreateAsync(user).ConfigureAwait(false);
                 if (!result.Succeeded)
                 {
                     return Response<TokenResponse>.BadRequest("An error occurred while creating user.");
                 }
 
                 db.UserRoles.Add(new ApplicationUserRole { RoleId = basic.Id, UserId = user.Id });
-                await db.SaveChangesAsync(cancellationToken);
+                await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             }
 
-            Response<TokenResponse> res = await tokenService.GenerateTokensAndUpdateUser(user.Id, string.Empty);
+            Response<TokenResponse> res = await tokenService.GenerateTokensAndUpdateUser(user.Id, string.Empty).ConfigureAwait(false);
             return res;
         }
     }
@@ -174,7 +163,7 @@ public sealed class ExternalAuth
                 UserManager<ApplicationUser> userManager,
                 RoleManager<ApplicationRole> roleManager) =>
             {
-                Response<TokenResponse> res = await externalAuthService.GetTokenAsync(request, CancellationToken.None);
+                Response<TokenResponse> res = await externalAuthService.GetTokenAsync(request, CancellationToken.None).ConfigureAwait(false);
                 return Results.Json(res, statusCode: res.StatusCode);
             }).AllowAnonymous();
         }

@@ -9,6 +9,6 @@ public class Jobs(IEmailService emailService)
     public async Task SendEmailJobAsync(TickerFunctionContext<SendEmailLogRequestInput> tickerContext,
         CancellationToken cancellationToken)
     {
-        await emailService.ProcessEmailAsync(tickerContext.Request.EmailLogId, cancellationToken);
+        await emailService.ProcessEmailAsync(tickerContext.Request.EmailLogId, cancellationToken).ConfigureAwait(false);
     }
 }

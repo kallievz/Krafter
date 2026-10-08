@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using AditiKraft.Krafter.Backend.Infrastructure.Jobs;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
+using AditiKraft.Krafter.Backend.Infrastructure.Persistence.Seeding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -27,6 +28,7 @@ public sealed class ApiDbInitializer(
             using IServiceScope scope = serviceProvider.CreateScope();
 
             await MigrateDbContextAsync<TenantDbContext>(scope.ServiceProvider, cancellationToken);
+            await SeedTenantDatabaseAsync(scope.ServiceProvider, cancellationToken);
             await MigrateDbContextAsync<BackgroundJobsContext>(scope.ServiceProvider, cancellationToken);
             await MigrateDbContextAsync<ApplicationDbContext>(scope.ServiceProvider, cancellationToken);
 
@@ -53,6 +55,12 @@ public sealed class ApiDbInitializer(
 
         await EnsureDatabaseAsync(dbContext, cancellationToken);
         await RunMigrationAsync(dbContext, cancellationToken);
+    }
+
+    private static async Task SeedTenantDatabaseAsync(IServiceProvider scopedServices, CancellationToken cancellationToken)
+    {
+        TenantDbContext tenantDbContext = scopedServices.GetRequiredService<TenantDbContext>();
+        await TenantDbSeedService.SeedRootTenantAsync(tenantDbContext, cancellationToken);
     }
 
     private static async Task EnsureDatabaseAsync(DbContext dbContext, CancellationToken cancellationToken)

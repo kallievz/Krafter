@@ -12,10 +12,7 @@ public static class JobsConfiguration
         services.AddScoped<IJobService, JobService>();
         services.AddTickerQ(options =>
         {
-            options.AddOperationalStore(store =>
-            {
-                store.UseApplicationDbContext<BackgroundJobsContext>(ConfigurationType.IgnoreModelCustomizer);
-            });
+            options.AddOperationalStore(store => store.UseApplicationDbContext<BackgroundJobsContext>(ConfigurationType.IgnoreModelCustomizer));
 
             ServiceExtensions.AddDashboard(options, dashboard => dashboard.SetBasePath("tickerq"));
         });

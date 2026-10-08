@@ -31,8 +31,17 @@ public static class ModelBuilderExtensions
             .Where(e => typeof(IHistory).IsAssignableFrom(e.ClrType));
         foreach (IMutableEntityType entityType in historyEntities)
         {
-            builder.Entity(entityType.ClrType).ToTable(entityType.ClrType.Name);
-            builder.Entity(entityType.ClrType).Property("CreatedOn")
+            // Only apply table mapping here when no explicit mapping already exists.
+            // This avoids overwriting ToTable calls defined in individual IEntityTypeConfiguration implementations
+            var entity = builder.Entity(entityType.ClrType);
+            var tableNameAnnotation = entity.Metadata.GetAnnotation("Relational:TableName")?.Value as string;
+            var schemaAnnotation = entity.Metadata.GetAnnotation("Relational:Schema")?.Value as string;
+            if (tableNameAnnotation == null && schemaAnnotation == null)
+            {
+                entity.ToTable(entityType.ClrType.Name);
+            }
+
+            entity.Property("CreatedOn")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
         }
 

@@ -10,4 +10,6 @@ public interface IUserMutationService
     public Task<Response> UpdateAsync(string id, CreateUserRequest request, CancellationToken cancellationToken);
 
     public Task<Response> UpdateEmailAsync(string id, string email, CancellationToken cancellationToken);
+
+    public Task<Response> UpdateTelephoneNumberAsync(string id, string? telephoneNumber, CancellationToken cancellationToken);
 }

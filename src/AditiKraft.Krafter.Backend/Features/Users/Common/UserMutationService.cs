@@ -30,7 +30,7 @@ public sealed class UserMutationService(
             return Response.NotFound("Basic Role Not Found.");
         }
 
-        HashSet<string> roles = (request.Roles ?? []).ToHashSet(StringComparer.Ordinal);
+        var roles = (request.Roles ?? []).ToHashSet(StringComparer.Ordinal);
         roles.Add(basic.Id);
         if (!await RolesExistAsync(roles, cancellationToken))
         {
@@ -78,10 +78,14 @@ public sealed class UserMutationService(
             return Response.BadRequest("One or more roles were not found in the current tenant.");
         }
 
-        user.FirstName = request.FirstName;
-        user.LastName = request.LastName;
-        user.PhoneNumber = request.PhoneNumber;
-        Response result = await SaveUserAsync(user, request.Email, request.UpdateTenantEmail, cancellationToken);
+        Response result = await SaveProfileAsync(
+            user,
+            request.FirstName,
+            request.LastName,
+            request.Email,
+            request.PhoneNumber,
+            request.UpdateTenantEmail,
+            cancellationToken);
         if (result.IsError)
         {
             return result;
@@ -101,28 +105,89 @@ public sealed class UserMutationService(
         ApplicationUser? user = await userManager.FindByIdAsync(id);
         return user is null
             ? Response.NotFound("User Not Found")
-            : await SaveUserAsync(user, email, updateTenantEmail: false, cancellationToken);
+            : await SaveEmailAsync(user, email, updateTenantEmail: false, cancellationToken);
     }
 
-    private async Task<Response> SaveUserAsync(
-        ApplicationUser user, string email, bool updateTenantEmail, CancellationToken cancellationToken)
+    public async Task<Response> UpdateTelephoneNumberAsync(
+        string id,
+        string? telephoneNumber,
+        CancellationToken cancellationToken)
+    {
+        ApplicationUser? user = await userManager.FindByIdAsync(id);
+        return user is null
+            ? Response.NotFound("User Not Found")
+            : await SaveTelephoneNumberAsync(user, telephoneNumber);
+    }
+
+    private async Task<Response> SaveProfileAsync(
+        ApplicationUser user,
+        string firstName,
+        string lastName,
+        string email,
+        string? telephoneNumber,
+        bool updateTenantEmail,
+        CancellationToken cancellationToken)
+    {
+        bool profileChanged = false;
+        if (user.FirstName != firstName)
+        {
+            user.FirstName = firstName;
+            profileChanged = true;
+        }
+
+        if (user.LastName != lastName)
+        {
+            user.LastName = lastName;
+            profileChanged = true;
+        }
+
+        if (profileChanged)
+        {
+            IdentityResult profileResult = await userManager.UpdateAsync(user);
+            if (!profileResult.Succeeded)
+            {
+                return Response.BadRequest(
+                    $"Update profile failed: {string.Join(", ", profileResult.Errors.Select(e => e.Description))}");
+            }
+        }
+
+        Response emailResult = await SaveEmailAsync(user, email, updateTenantEmail, cancellationToken);
+        if (emailResult.IsError)
+        {
+            return emailResult;
+        }
+
+        return await SaveTelephoneNumberAsync(user, telephoneNumber);
+    }
+
+    private async Task<Response> SaveEmailAsync(
+        ApplicationUser user,
+        string email,
+        bool updateTenantEmail,
+        CancellationToken cancellationToken)
     {
         string? previousEmail = user.Email;
         bool emailChanged = email != previousEmail;
-        if (emailChanged)
+        if (!emailChanged)
         {
-            user.Email = email;
-            user.UserName = email;
+            return Response.Success();
         }
 
-        IdentityResult result = await userManager.UpdateAsync(user);
-        if (!result.Succeeded)
+        IdentityResult emailResult = await userManager.SetEmailAsync(user, email);
+        if (!emailResult.Succeeded)
         {
             return Response.BadRequest(
-                $"Update profile failed: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                $"Update email failed: {string.Join(", ", emailResult.Errors.Select(e => e.Description))}");
         }
 
-        if (emailChanged && updateTenantEmail)
+        IdentityResult userNameResult = await userManager.SetUserNameAsync(user, email);
+        if (!userNameResult.Succeeded)
+        {
+            return Response.BadRequest(
+                $"Update user name failed: {string.Join(", ", userNameResult.Errors.Select(e => e.Description))}");
+        }
+
+        if (updateTenantEmail)
         {
             Tenant? tenant = await tenantDbContext.Tenants
                 .FirstOrDefaultAsync(t => t.Id == tenantGetterService.Tenant.Id && t.AdminEmail == previousEmail,
@@ -132,6 +197,23 @@ public sealed class UserMutationService(
                 tenant.AdminEmail = email;
                 await tenantDbContext.SaveChangesAsync(cancellationToken);
             }
+        }
+
+        return Response.Success();
+    }
+
+    private async Task<Response> SaveTelephoneNumberAsync(ApplicationUser user, string? telephoneNumber)
+    {
+        if (user.PhoneNumber == telephoneNumber)
+        {
+            return Response.Success();
+        }
+
+        IdentityResult result = await userManager.SetPhoneNumberAsync(user, telephoneNumber);
+        if (!result.Succeeded)
+        {
+            return Response.BadRequest(
+                $"Update telephone number failed: {string.Join(", ", result.Errors.Select(e => e.Description))}");
         }
 
         return Response.Success();
@@ -151,7 +233,7 @@ public sealed class UserMutationService(
             role.IsDeleted = !requestedRoles.Contains(role.RoleId);
         }
 
-        HashSet<string> existingIds = existingRoles.Select(role => role.RoleId).ToHashSet(StringComparer.Ordinal);
+        var existingIds = existingRoles.Select(role => role.RoleId).ToHashSet(StringComparer.Ordinal);
         db.UserRoles.AddRange(requestedRoles.Where(roleId => !existingIds.Contains(roleId))
             .Select(roleId => new ApplicationUserRole { RoleId = roleId, UserId = userId }));
     }

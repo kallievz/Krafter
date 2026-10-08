@@ -84,8 +84,8 @@ public sealed class GetUsers
                 {
                     string filter = requestInput.Filter.ToLower();
                     query = query.Where(c =>
-                        (c.FirstName ?? "").ToLower().Contains(filter) ||
-                        (c.LastName ?? "").ToLower().Contains(filter));
+                        (c.FirstName ?? "").Contains(filter, StringComparison.CurrentCultureIgnoreCase) ||
+                        (c.LastName ?? "").Contains(filter, StringComparison.CurrentCultureIgnoreCase));
                 }
             }
 

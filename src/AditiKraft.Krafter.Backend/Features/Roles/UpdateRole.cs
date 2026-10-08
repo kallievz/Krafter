@@ -57,7 +57,7 @@ public sealed class UpdateRole
             IdentityResult result = await roleManager.UpdateAsync(role);
             if (!result.Succeeded)
             {
-                return Response.BadRequest($"Update role failed {result.Errors.ToString()}");
+                return Response.BadRequest($"Update role failed {result.Errors}");
             }
 
             if (request.Permissions is not null)

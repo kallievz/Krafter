@@ -12,8 +12,8 @@ using FluentValidation.Results;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 
 namespace AditiKraft.Krafter.Backend.Features.Tenants;
 
@@ -70,7 +70,7 @@ public sealed class UpdateTenant
             }
 
             bool identifierExists = await dbContext.Tenants.AsNoTracking()
-                .AnyAsync(c => c.Id != tenant.Id && c.Identifier.ToLower() == request.Identifier, cancellationToken);
+                .AnyAsync(c => c.Id != tenant.Id && c.Identifier.Equals(request.Identifier, StringComparison.CurrentCultureIgnoreCase), cancellationToken);
             if (identifierExists)
             {
                 return Response.Conflict("Identifier already exists, please try a different identifier.");
@@ -127,12 +127,22 @@ public sealed class UpdateTenant
             {
                 await dbContext.SaveChangesAsync(cancellationToken);
             }
-            catch (DbUpdateException exception) when (exception.InnerException is PostgresException
-            { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: TenantDbContext.TenantIdentifierIndexName })
+            catch (DbUpdateException exception) when (IsDuplicateIdentifierConstraintViolation(exception))
             {
                 return Response.Conflict("Identifier already exists, please try a different identifier.");
             }
             return new Response();
+        }
+
+        private static bool IsDuplicateIdentifierConstraintViolation(DbUpdateException exception)
+        {
+            if (exception.InnerException is SqlException { Number: 2601 or 2627 })
+            {
+                return true;
+            }
+
+            return exception.InnerException?.Message.Contains(TenantDbContext.TenantIdentifierIndexName,
+                StringComparison.OrdinalIgnoreCase) == true;
         }
     }
 

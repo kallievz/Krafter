@@ -1,19 +1,10 @@
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
-// The postgres username and password are provided via parameters (marked secret)
-IResourceBuilder<ParameterResource> username = builder.AddParameter("postgresUsername", true);
-IResourceBuilder<ParameterResource> password = builder.AddParameter("postgresPassword", true);
-
-IResourceBuilder<PostgresServerResource> databaseServer = builder.AddPostgres("postgres", username, password)
-    .WithDataVolume(isReadOnly: false)
-    .WithLifetime(ContainerLifetime.Persistent)
-    .WithContainerName("postgres")
-    .WithPgAdmin();
 
 string solutionRoot = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", ".."));
 string migratorProject = Path.Combine(solutionRoot, "src", "AditiKraft.Krafter.Backend.Migrator",
     "AditiKraft.Krafter.Backend.Migrator.csproj");
 
-IResourceBuilder<PostgresDatabaseResource> database = databaseServer.AddDatabase("appDb");
+IResourceBuilder<IResourceWithConnectionString> database = builder.AddConnectionString("appDb");
 
 IResourceBuilder<ExecutableResource> migrator = builder.AddExecutable(
         "app-migrator",
@@ -35,7 +26,6 @@ builder.AddProject<Projects.AditiKraft_Krafter_UI_Web>("web")
     .WithExternalHttpEndpoints()
     .WithReference(backend)
     .WithReference(database)
-    ;
-
+    .WaitFor(backend);
 
 builder.Build().Run();

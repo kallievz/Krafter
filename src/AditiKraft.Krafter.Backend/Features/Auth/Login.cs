@@ -32,13 +32,13 @@ public sealed class Login
             TokenRequest request, string ipAddress,
             CancellationToken cancellationToken)
         {
-            ApplicationUser? user = await userManager.FindByEmailAsync(request.Email.Trim().Normalize());
+            ApplicationUser? user = await userManager.FindByEmailAsync(request.Email.Trim().Normalize()).ConfigureAwait(false);
             if (user is null)
             {
                 return Response<TokenResponse>.Unauthorized("Invalid Email or Password");
             }
 
-            if (!await userManager.CheckPasswordAsync(user, request.Password))
+            if (!await userManager.CheckPasswordAsync(user, request.Password).ConfigureAwait(false))
             {
                 return Response<TokenResponse>.BadRequest("Invalid Email or Password");
             }
@@ -53,9 +53,9 @@ public sealed class Login
                 return Response<TokenResponse>.BadRequest("E-Mail not confirmed.");
             }
 
-            if (await passwordPolicyService.IsPasswordExpiredAsync(user, cancellationToken))
+            if (await passwordPolicyService.IsPasswordExpiredAsync(user, cancellationToken).ConfigureAwait(false))
             {
-                if (await passwordPolicyService.ShouldSendPasswordExpiryNotificationAsync(user, cancellationToken) &&
+                if (await passwordPolicyService.ShouldSendPasswordExpiryNotificationAsync(user, cancellationToken).ConfigureAwait(false) &&
                     !string.IsNullOrWhiteSpace(user.Email))
                 {
                     string subject = "Password Expired";
@@ -77,16 +77,16 @@ public sealed class Login
                     string emailLogId = await emailService.QueueEmailAsync(
                         new SendEmailRequestInput { Email = user.Email, Subject = subject, HtmlMessage = htmlBody },
                         cancellationToken);
-                    await jobService.EnqueueByLogIdAsync(emailLogId, nameof(Jobs.SendEmailJobAsync), cancellationToken);
+                    await jobService.EnqueueByLogIdAsync(emailLogId, nameof(Jobs.SendEmailJobAsync), cancellationToken).ConfigureAwait(false);
 
                     passwordPolicyService.MarkPasswordExpiryNotificationSent(user);
-                    _ = await userManager.UpdateAsync(user);
+                    _ = await userManager.UpdateAsync(user).ConfigureAwait(false);
                 }
 
                 return Response<TokenResponse>.Forbidden("Password expired. Please reset your password.");
             }
 
-            return Response<TokenResponse>.Success(await tokenService.GenerateTokensAndUpdateUser(user, ipAddress));
+            return Response<TokenResponse>.Success(await tokenService.GenerateTokensAndUpdateUser(user, ipAddress).ConfigureAwait(false));
         }
     }
 
@@ -112,7 +112,7 @@ public sealed class Login
             }).Produces<Response<TokenResponse>>();
         }
 
-        private string? GetIpAddress(HttpContext httpContext)
+        private static string? GetIpAddress(HttpContext httpContext)
         {
             return httpContext.Request.Headers.ContainsKey("X-Forwarded-For")
                 ? httpContext.Request.Headers["X-Forwarded-For"]

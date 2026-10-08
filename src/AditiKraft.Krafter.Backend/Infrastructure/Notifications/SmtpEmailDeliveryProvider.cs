@@ -32,7 +32,7 @@ public sealed class SmtpEmailDeliveryProvider : IEmailDeliveryProvider
         Email fluentEmail = new();
         fluentEmail.Sender = sender;
 
-        FluentEmail.Core.IFluentEmail fluentEmailMessage = fluentEmail
+        IFluentEmail fluentEmailMessage = fluentEmail
             .To(message.ToEmail)
             .SetFrom(message.SenderEmail, message.SenderName)
             .Subject(message.Subject)
@@ -43,7 +43,7 @@ public sealed class SmtpEmailDeliveryProvider : IEmailDeliveryProvider
             _ = fluentEmailMessage.ReplyTo(message.ReplyToEmail);
         }
 
-        FluentEmail.Core.Models.SendResponse response = await fluentEmailMessage.SendAsync(cancellationToken);
+        FluentEmail.Core.Models.SendResponse response = await fluentEmailMessage.SendAsync(cancellationToken).ConfigureAwait(false);
         if (!response.Successful)
         {
             string errors = string.Join(", ", response.ErrorMessages);

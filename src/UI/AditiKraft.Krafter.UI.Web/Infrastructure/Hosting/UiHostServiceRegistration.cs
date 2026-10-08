@@ -4,7 +4,6 @@ using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Refit;
 using AditiKraft.Krafter.UI.Web.Infrastructure.Auth;
 using AditiKraft.Krafter.UI.Web.Infrastructure.Services;
 using Microsoft.AspNetCore.Components.Authorization;
-using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Services;
 
 namespace AditiKraft.Krafter.UI.Web.Infrastructure.Hosting;
 
@@ -19,19 +18,23 @@ public static class UiHostServiceRegistration
             .AddInteractiveWebAssemblyComponents();
         services.AddHttpContextAccessor();
 
-        string? appDbConnectionString = configuration.GetConnectionString("appDb");
-        if (string.IsNullOrWhiteSpace(appDbConnectionString))
+        string? sqlCacheConnectionString = configuration.GetConnectionString("cacheDb");
+        if (string.IsNullOrWhiteSpace(sqlCacheConnectionString))
+        {
+            sqlCacheConnectionString = configuration.GetConnectionString("appDb");
+        }
+
+        if (string.IsNullOrWhiteSpace(sqlCacheConnectionString))
         {
             services.AddDistributedMemoryCache();
         }
         else
         {
-            services.AddDistributedPostgresCache(options =>
+            services.AddDistributedSqlServerCache(options =>
             {
-                options.ConnectionString = appDbConnectionString;
-                options.SchemaName = "public";
-                options.TableName = "cache";
-                options.CreateIfNotExists = true;
+                options.ConnectionString = sqlCacheConnectionString;
+                options.SchemaName = "dbo";
+                options.TableName = "Cache";
             });
         }
 

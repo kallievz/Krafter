@@ -17,7 +17,7 @@ public class RealtimeHub(ILogger<RealtimeHub> logger) : Hub
             throw new HubException(AuthenticationFailedMessage);
         }
 
-        await Clients.Group(group).SendAsync(nameof(SignalRMethods.ReceiveMessage), user, message);
+        await Clients.Group(group).SendAsync(nameof(SignalRMethods.ReceiveMessage), user, message).ConfigureAwait(false);
     }
 
     public override async Task OnConnectedAsync()
@@ -34,8 +34,8 @@ public class RealtimeHub(ILogger<RealtimeHub> logger) : Hub
 
         string group = $"GroupTenant-{tenant.Id}";
         Context.Items[TenantGroupKey] = group;
-        await Groups.AddToGroupAsync(Context.ConnectionId, group);
-        await base.OnConnectedAsync();
+        await Groups.AddToGroupAsync(Context.ConnectionId, group).ConfigureAwait(false);
+        await base.OnConnectedAsync().ConfigureAwait(false);
 
         logger.LogInformation("A client connected to RealtimeHub: {ConnectionId}", Context.ConnectionId);
     }
@@ -44,10 +44,10 @@ public class RealtimeHub(ILogger<RealtimeHub> logger) : Hub
     {
         if (Context.Items.TryGetValue(TenantGroupKey, out object? value) && value is string group)
         {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, group);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, group).ConfigureAwait(false);
         }
 
-        await base.OnDisconnectedAsync(exception);
+        await base.OnDisconnectedAsync(exception).ConfigureAwait(false);
         logger.LogInformation("A client disconnected from RealtimeHub: {ConnectionId}", Context.ConnectionId);
     }
 }

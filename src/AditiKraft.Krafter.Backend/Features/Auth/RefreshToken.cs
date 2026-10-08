@@ -47,14 +47,14 @@ public sealed class RefreshToken
                 return Response<TokenResponse>.Unauthorized("Invalid token.");
             }
 
-            ApplicationUser? user = await userManager.FindByEmailAsync(userEmail);
+            ApplicationUser? user = await userManager.FindByEmailAsync(userEmail).ConfigureAwait(false);
             if (user is null)
             {
                 return Response<TokenResponse>.Unauthorized("Authentication failed.");
             }
 
             UserRefreshToken? refreshToken = await applicationDbContext.UserRefreshTokens
-                .FirstOrDefaultAsync(x => x.UserId == user.Id, cancellationToken);
+                .FirstOrDefaultAsync(x => x.UserId == user.Id, cancellationToken).ConfigureAwait(false);
 
             if (refreshToken is null ||
                 refreshToken.RefreshToken != request.RefreshToken ||
@@ -63,7 +63,7 @@ public sealed class RefreshToken
                 return Response<TokenResponse>.Unauthorized("Invalid or expired refresh token.");
             }
 
-            return Response<TokenResponse>.Success(await tokenService.GenerateTokensAndUpdateUser(user, ipAddress));
+            return Response<TokenResponse>.Success(await tokenService.GenerateTokensAndUpdateUser(user, ipAddress).ConfigureAwait(false));
         }
 
         private ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)
@@ -118,9 +118,8 @@ public sealed class RefreshToken
 
         private static string? GetIpAddress(HttpContext httpContext)
         {
-            return httpContext.Request.Headers.ContainsKey("X-Forwarded-For")
-                ? httpContext.Request.Headers["X-Forwarded-For"]
-                : httpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "N/A";
+            return httpContext.Request.Headers.TryGetValue("X-Forwarded-For", out Microsoft.Extensions.Primitives.StringValues value)
+                ? value : httpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "N/A";
         }
     }
 }

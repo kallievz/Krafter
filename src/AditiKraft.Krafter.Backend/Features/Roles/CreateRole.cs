@@ -31,7 +31,7 @@ public sealed class CreateRole
             IdentityResult result = await roleManager.CreateAsync(role);
             if (!result.Succeeded)
             {
-                return Response.BadRequest($"Register role failed {result.Errors.ToString()}");
+                return Response.BadRequest($"Register role failed {result.Errors}");
             }
 
             if (request.Permissions is not null)

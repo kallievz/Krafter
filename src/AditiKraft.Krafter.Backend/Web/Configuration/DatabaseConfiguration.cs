@@ -18,34 +18,44 @@ public static class DatabaseConfiguration
         services.Configure<EfQueryPerformanceOptions>(configuration.GetSection(EfQueryPerformanceOptions.SectionName));
         services.AddHttpContextAccessor();
         services.AddScoped<EfCommandTimingInterceptor>();
+        services.AddScoped<Infrastructure.Persistence.Interceptors.AuditSaveChangesInterceptor>();
 
-        // TenantDbContext (root tenant registry)
+        // TenantDbContext (root tenant registry) - do not attach audit interceptor
         services.AddDbContext<TenantDbContext>((sp, opts) =>
-            ConfigureDbContext(opts, connectionString, sp.GetRequiredService<EfCommandTimingInterceptor>()));
+            opts.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure())
+                .AddInterceptors(sp.GetRequiredService<EfCommandTimingInterceptor>()));
 
-        // BackgroundJobsContext (TickerQ operational store)
+        // BackgroundJobsContext (TickerQ operational store) - do not attach audit interceptor
         services.AddDbContext<BackgroundJobsContext>((sp, opts) =>
-            ConfigureBackgroundJobsDbContext(opts, connectionString, sp.GetRequiredService<EfCommandTimingInterceptor>()));
+            opts.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure())
+                .AddInterceptors(sp.GetRequiredService<EfCommandTimingInterceptor>())
+                .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning)));
 
-        // ApplicationDbContext (main multi-tenant context)
+        // ApplicationDbContext (main multi-tenant context) - attach audit interceptor here only
         services.AddDbContext<ApplicationDbContext>((sp, opts) =>
-            ConfigureDbContext(opts, connectionString, sp.GetRequiredService<EfCommandTimingInterceptor>()));
+            opts.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure())
+                .AddInterceptors(sp.GetRequiredService<EfCommandTimingInterceptor>(), sp.GetRequiredService<Infrastructure.Persistence.Interceptors.AuditSaveChangesInterceptor>()));
+
+        // AuditDbContext (separate audit store)
+        services.AddDbContext<AuditDbContext>((sp, opts) =>
+            opts.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure())
+                .AddInterceptors(sp.GetRequiredService<EfCommandTimingInterceptor>()));
 
         return services;
     }
 
     private static void ConfigureDbContext(DbContextOptionsBuilder opts, string connectionString,
-        EfCommandTimingInterceptor commandTimingInterceptor)
+        EfCommandTimingInterceptor commandTimingInterceptor, IServiceProvider sp)
     {
-        opts.UseNpgsql(connectionString)
-            .AddInterceptors(commandTimingInterceptor);
+        opts.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure())
+            .AddInterceptors(commandTimingInterceptor, sp.GetRequiredService<Infrastructure.Persistence.Interceptors.AuditSaveChangesInterceptor>());
     }
 
     private static void ConfigureBackgroundJobsDbContext(DbContextOptionsBuilder opts, string connectionString,
-        EfCommandTimingInterceptor commandTimingInterceptor)
+        EfCommandTimingInterceptor commandTimingInterceptor, IServiceProvider sp)
     {
-        opts.UseNpgsql(connectionString)
-            .AddInterceptors(commandTimingInterceptor)
+        opts.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure())
+            .AddInterceptors(commandTimingInterceptor, sp.GetRequiredService<Infrastructure.Persistence.Interceptors.AuditSaveChangesInterceptor>())
             .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
     }
 }

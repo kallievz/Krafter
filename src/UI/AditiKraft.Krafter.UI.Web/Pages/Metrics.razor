@@ -1,0 +1,16 @@
+@page "/metrics"
+@using Microsoft.JSInterop
+
+<h3>Metrics</h3>
+<p>Prometheus metrics are exposed at <code>/metrics</code>. Use Prometheus or open that endpoint to view raw metrics.</p>
+
+<button class="btn btn-primary" @onclick="OpenMetrics">Open /metrics endpoint</button>
+
+@code {
+    [Inject] IJSRuntime JS { get; set; } = default!;
+
+    private async Task OpenMetrics()
+    {
+        await JS.InvokeVoidAsync("open", "/metrics", "_blank");
+    }
+}

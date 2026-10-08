@@ -5,7 +5,7 @@ using AditiKraft.Krafter.Backend.Errors;
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using FluentValidation.Results;
-using Npgsql;
+using Microsoft.Data.SqlClient;
 
 namespace AditiKraft.Krafter.Backend.Web.Middleware;
 
@@ -15,7 +15,7 @@ public class ExceptionMiddleware(ICurrentUser currentUser, ILogger<ExceptionMidd
     {
         try
         {
-            await next(context);
+            await next(context).ConfigureAwait(false);
         }
         catch (Exception exception)
         {
@@ -62,7 +62,7 @@ public class ExceptionMiddleware(ICurrentUser currentUser, ILogger<ExceptionMidd
                     errorResult.Message = e.Message;
                     break;
 
-                case NpgsqlException:
+                case SqlException:
                     res.StatusCode = (int)HttpStatusCode.InternalServerError;
                     errorResult.Message = "A database error occurred.";
                     break;
@@ -86,7 +86,7 @@ public class ExceptionMiddleware(ICurrentUser currentUser, ILogger<ExceptionMidd
             {
                 response.ContentType = "application/json";
                 response.StatusCode = res.StatusCode;
-                await response.WriteAsync(JsonSerializer.Serialize(res));
+                await response.WriteAsync(JsonSerializer.Serialize(res)).ConfigureAwait(false);
             }
             else
             {

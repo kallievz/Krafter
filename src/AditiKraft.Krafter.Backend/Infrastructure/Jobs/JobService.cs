@@ -20,7 +20,7 @@ public class JobService(ITimeTickerManager<TimeTickerEntity> timeTickerManager) 
             Function = methodName,
             Request = TickerHelper.CreateTickerRequest(requestInput),
             ExecutionTime = DateTime.UtcNow
-        }, cancellationToken);
+        }, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task EnqueueByLogIdAsync(string emailLogId, string methodName, CancellationToken cancellationToken)
@@ -30,6 +30,6 @@ public class JobService(ITimeTickerManager<TimeTickerEntity> timeTickerManager) 
             throw new ArgumentException("Email log id is required.", nameof(emailLogId));
         }
 
-        await EnqueueAsync(new SendEmailLogRequestInput { EmailLogId = emailLogId }, methodName, cancellationToken);
+        await EnqueueAsync(new SendEmailLogRequestInput { EmailLogId = emailLogId }, methodName, cancellationToken).ConfigureAwait(false);
     }
 }

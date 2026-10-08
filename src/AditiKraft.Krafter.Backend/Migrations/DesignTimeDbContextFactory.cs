@@ -31,7 +31,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<TenantDbCo
     {
         string connectionString = DesignTimeConnectionStringHelper.GetConnectionString();
         var optionsBuilder = new DbContextOptionsBuilder<TenantDbContext>();
-        optionsBuilder.UseNpgsql(connectionString, npgsql => npgsql.EnableRetryOnFailure());
+        optionsBuilder.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure());
 
         return new TenantDbContext(optionsBuilder.Options);
     }
@@ -43,7 +43,7 @@ public class DesignTimeApplicationDbContextFactory : IDesignTimeDbContextFactory
     {
         string connectionString = DesignTimeConnectionStringHelper.GetConnectionString();
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-        optionsBuilder.UseNpgsql(connectionString, npgsql => npgsql.EnableRetryOnFailure());
+        optionsBuilder.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure());
 
         return new ApplicationDbContext(optionsBuilder.Options, null!, null!);
     }
@@ -55,7 +55,7 @@ public class DesignTimeBackgroundJobsContextDbContextFactory : IDesignTimeDbCont
     {
         string connectionString = DesignTimeConnectionStringHelper.GetConnectionString();
         var optionsBuilder = new DbContextOptionsBuilder<BackgroundJobsContext>();
-        optionsBuilder.UseNpgsql(connectionString, npgsql => npgsql.EnableRetryOnFailure());
+        optionsBuilder.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure());
 
         return new BackgroundJobsContext(optionsBuilder.Options);
     }

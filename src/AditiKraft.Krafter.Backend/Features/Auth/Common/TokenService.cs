@@ -71,7 +71,7 @@ public class TokenService(
     private string GenerateJwt(ApplicationUser user, string ipAddress) =>
         GenerateEncryptedToken(GetSigningCredentials(), GetClaims(user, ipAddress));
 
-    private IEnumerable<Claim> GetClaims(ApplicationUser user, string ipAddress) =>
+    private static IEnumerable<Claim> GetClaims(ApplicationUser user, string ipAddress) =>
         new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id),

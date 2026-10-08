@@ -10,7 +10,7 @@ public sealed class RolePermissionService(ApplicationDbContext db, ITenantGetter
     public async Task SynchronizeAsync(string roleId, IReadOnlyCollection<string> requestedPermissions,
         CancellationToken cancellationToken)
     {
-        HashSet<string> requested = requestedPermissions.Where(p => !string.IsNullOrWhiteSpace(p))
+        var requested = requestedPermissions.Where(p => !string.IsNullOrWhiteSpace(p))
             .ToHashSet(StringComparer.Ordinal);
         List<ApplicationRoleClaim> existing = await db.RoleClaims.IgnoreQueryFilters()
             .Where(claim => claim.TenantId == tenantGetterService.Tenant.Id && claim.RoleId == roleId &&

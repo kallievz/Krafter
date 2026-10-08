@@ -74,7 +74,7 @@ internal class Build : FalloutBuild
     private Target LoginIntoDockerHub => _ => _
         .Executes(() =>
         {
-            if (BranchName == "main" || BranchName == "dev")
+            if (BranchName is "main" or "dev")
             {
                 DockerTasks.DockerLogin(l => l
                     .SetServer("ghcr.io")
@@ -90,7 +90,7 @@ internal class Build : FalloutBuild
         .DependsOn(SetBuildInfo)
         .Executes(() =>
         {
-            if (BranchName == "main" || BranchName == "dev")
+            if (BranchName is "main" or "dev")
             {
                 DotNetTasks.DotNetPublish(s => s
                     .SetProject(BackendProjectPath)
@@ -111,7 +111,7 @@ internal class Build : FalloutBuild
         .DependsOn(BuildAndPublishDockerImage)
         .Executes(async () =>
         {
-            if (BranchName == "main" || BranchName == "dev")
+            if (BranchName is "main" or "dev")
             {
                 //make http post request to the server to restart the container
 
@@ -120,17 +120,15 @@ internal class Build : FalloutBuild
                 string webhookUrl = DeploymentWebhookUrl;
                 if (!string.IsNullOrWhiteSpace(webhookUrl))
                 {
-                    using (var httpClient = new HttpClient())
+                    using var httpClient = new HttpClient();
+                    HttpResponseMessage response = await httpClient.PostAsync(webhookUrl, null);
+                    if (response.IsSuccessStatusCode)
                     {
-                        HttpResponseMessage response = await httpClient.PostAsync(webhookUrl, null);
-                        if (response.IsSuccessStatusCode)
-                        {
-                            Console.WriteLine("Server start request successfully sent.");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Failed to send start request. Status code: {response.StatusCode}");
-                        }
+                        Console.WriteLine("Server start request successfully sent.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Failed to send start request. Status code: {response.StatusCode}");
                     }
                 }
             }

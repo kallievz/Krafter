@@ -150,6 +150,30 @@ public sealed class UserMutationTests
         Assert.Equal("user@example.com", (await context.Db.Users.SingleAsync(u => u.Id == user.Id)).Email);
     }
 
+    [Fact]
+    public async Task TelephoneNumberUpdatePreservesProfileEmailAndRolesAsync()
+    {
+        await using var context = new IdentityTestContext();
+        ApplicationRole admin = await context.AddRoleAsync(RoleConstants.Admin);
+        ApplicationUser user = await context.AddUserAsync();
+        context.Db.UserRoles.Add(new ApplicationUserRole { UserId = user.Id, RoleId = admin.Id });
+        await context.Db.SaveChangesAsync();
+        string? passwordHash = user.PasswordHash;
+
+        Response result = await context.Mutations.UpdateTelephoneNumberAsync(user.Id, "987654", CancellationToken.None);
+
+        Assert.False(result.IsError, result.Message);
+        context.Db.ChangeTracker.Clear();
+        user = await context.Db.Users.SingleAsync();
+        Assert.Equal("First", user.FirstName);
+        Assert.Equal("Last", user.LastName);
+        Assert.Equal("user@example.com", user.Email);
+        Assert.Equal("987654", user.PhoneNumber);
+        Assert.Equal(passwordHash, user.PasswordHash);
+        Assert.Equal(admin.Id, (await context.Db.UserRoles.SingleAsync()).RoleId);
+        Assert.Empty(context.EmailService.QueuedEmails);
+    }
+
     private static string ExtractPassword(string htmlMessage)
     {
         const string start = "Your password is:<br/>";

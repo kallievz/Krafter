@@ -2,7 +2,7 @@ namespace AditiKraft.Krafter.UI.Web.Client.Infrastructure.Services;
 
 public interface IRequestContextAccessor
 {
-    Uri? GetRequestBaseUri();
+    public Uri? GetRequestBaseUri();
 
-    bool TryRedirectToLogin();
+    public bool TryRedirectToLogin();
 }

@@ -1,11 +1,11 @@
 using AditiKraft.Krafter.Aspire.ServiceDefaults;
 using AditiKraft.Krafter.Contracts.Common;
-using AditiKraft.Krafter.UI.Web.Client.Features.Auth;
 using AditiKraft.Krafter.UI.Web.Components;
 using AditiKraft.Krafter.UI.Web.Infrastructure.Auth;
 using AditiKraft.Krafter.UI.Web.Infrastructure.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -20,6 +20,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddUiHostServices(builder.Configuration);
 WebApplication app = builder.Build();
+
+await EnsureSqlCacheTableAsync(builder.Configuration);
 
 app.MapDefaultEndpoints();
 app.MapUiUrlConfiguration();
@@ -53,6 +55,46 @@ app.MapRazorComponents<App>()
 MapAuthTokenEndpoints(app);
 
 app.Run();
+
+static async Task EnsureSqlCacheTableAsync(IConfiguration configuration)
+{
+    string? sqlCacheConnectionString = configuration.GetConnectionString("cacheDb");
+    if (string.IsNullOrWhiteSpace(sqlCacheConnectionString))
+    {
+        sqlCacheConnectionString = configuration.GetConnectionString("appDb");
+    }
+
+    if (string.IsNullOrWhiteSpace(sqlCacheConnectionString))
+    {
+        return;
+    }
+
+    const string createCacheTableScript = """
+                                         IF NOT EXISTS (
+                                             SELECT 1
+                                             FROM sys.objects
+                                             WHERE object_id = OBJECT_ID(N'[dbo].[Cache]')
+                                               AND type = N'U')
+                                         BEGIN
+                                             CREATE TABLE [dbo].[Cache](
+                                                 [Id] NVARCHAR(449) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
+                                                 [Value] VARBINARY(MAX) NOT NULL,
+                                                 [ExpiresAtTime] DATETIMEOFFSET NOT NULL,
+                                                 [SlidingExpirationInSeconds] BIGINT NULL,
+                                                 [AbsoluteExpiration] DATETIMEOFFSET NULL,
+                                                 CONSTRAINT [PK_Cache] PRIMARY KEY CLUSTERED ([Id] ASC)
+                                             );
+
+                                             CREATE NONCLUSTERED INDEX [Index_ExpiresAtTime]
+                                                 ON [dbo].[Cache]([ExpiresAtTime] ASC);
+                                         END
+                                         """;
+
+    await using SqlConnection connection = new(sqlCacheConnectionString);
+    await connection.OpenAsync();
+    await using SqlCommand command = new(createCacheTableScript, connection);
+    _ = await command.ExecuteNonQueryAsync();
+}
 
 static void MapAuthTokenEndpoints(WebApplication app)
 {

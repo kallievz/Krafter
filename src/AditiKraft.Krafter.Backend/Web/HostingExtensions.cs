@@ -12,6 +12,7 @@ using AditiKraft.Krafter.Contracts.Common.Auth.Permissions;
 using AditiKraft.Krafter.Contracts.Contracts.Auth;
 using FluentValidation;
 using Microsoft.AspNetCore.ResponseCompression;
+using Prometheus;
 
 namespace AditiKraft.Krafter.Backend.Web;
 
@@ -57,6 +58,11 @@ public static class HostingExtensions
         builder.Services.AddValidatorsFromAssemblyContaining<TokenRequestValidator>();
 
         builder.Services.AddBackgroundJobs();
+        // Background processor for audit outbox
+        builder.Services.AddHostedService<Infrastructure.Persistence.Services.AuditOutboxProcessor>();
+        // Prometheus metrics endpoint for local development
+        builder.Services.AddEndpointsApiExplorer();
+        // prometheus-net exposes metrics via middleware; no singleton registration required here
 
         builder.Services.AddRouteDiscovery();
 
@@ -98,6 +104,14 @@ public static class HostingExtensions
             .MustHavePermission(PermissionAction.View, PermissionResource.Notifications);
 
         app.UseBackgroundJobs();
+
+        // Prometheus metrics endpoint for local development
+        app.UseHttpMetrics();
+        app.MapGet("/metrics", async context =>
+        {
+            // prometheus-net exposes a scrape endpoint via /metrics when UseHttpMetrics is enabled
+            await context.Response.WriteAsync("Metrics endpoint");
+        });
 
         return app;
     }

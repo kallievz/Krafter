@@ -28,7 +28,7 @@ public class MultiTenantServiceMiddleware(
             currentTenantDetails.Host = $"https://{context.Request.Host.Value}";
             tenantSetterService.SetTenant(currentTenantDetails);
 
-            await next(context);
+            await next(context).ConfigureAwait(false);
             return;
         }
 
@@ -37,7 +37,7 @@ public class MultiTenantServiceMiddleware(
         if (!isConnectionHost && urls.IsInvalidUiTenantHost(host))
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
-            await context.Response.WriteAsJsonAsync(new { error = "Tenant not found" });
+            await context.Response.WriteAsJsonAsync(new { error = "Tenant not found" }).ConfigureAwait(false);
             return;
         }
 
@@ -65,12 +65,12 @@ public class MultiTenantServiceMiddleware(
             return;
         }
 
-        Response<Tenant> tenantResponse = await tenantFinderService.Find(tenantIdentifier);
+        Response<Tenant> tenantResponse = await tenantFinderService.Find(tenantIdentifier).ConfigureAwait(false);
         if (tenantResponse.IsError || tenantResponse.Data is null)
         {
             context.Response.StatusCode = tenantResponse.StatusCode;
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsJsonAsync(new { error = tenantResponse.Message });
+            await context.Response.WriteAsJsonAsync(new { error = tenantResponse.Message }).ConfigureAwait(false);
             return;
         }
 
@@ -81,7 +81,7 @@ public class MultiTenantServiceMiddleware(
         currentTenant.UserId = currentUser.GetUserId();
         currentTenant.Host = $"https://{context.Request.Host.Value}";
         tenantSetterService.SetTenant(currentTenant);
-        await next(context);
+        await next(context).ConfigureAwait(false);
     }
 
     private static bool IsConnectionHost(string host, AppUrls urls)

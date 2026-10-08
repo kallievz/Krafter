@@ -32,9 +32,9 @@ public static class RequestExtensions
             }
         }
 
-        if (origin.EndsWith("/"))
+        if (origin.EndsWith('/'))
         {
-            origin = origin.Substring(0, origin.Length - 1);
+            origin = origin[..^1];
         }
 
         return origin;
@@ -45,8 +45,7 @@ public static class RequestExtensions
 
     public static string? GetIpAddress(this HttpContext httpContext)
     {
-        return httpContext.Request.Headers.ContainsKey("X-Forwarded-For")
-            ? httpContext.Request.Headers["X-Forwarded-For"]
-            : httpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "N/A";
+        return httpContext.Request.Headers.TryGetValue("X-Forwarded-For", out StringValues value)
+            ? value : httpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "N/A";
     }
 }

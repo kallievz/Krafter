@@ -14,9 +14,9 @@ using AditiKraft.Krafter.Contracts.Contracts.Tenants;
 using FluentValidation.Results;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Npgsql;
 
 namespace AditiKraft.Krafter.Backend.Features.Tenants;
 
@@ -70,8 +70,7 @@ public sealed class CreateTenant
             {
                 await dbContext.SaveChangesAsync(cancellationToken);
             }
-            catch (DbUpdateException exception) when (exception.InnerException is PostgresException
-            { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: TenantDbContext.TenantIdentifierIndexName })
+            catch (DbUpdateException exception) when (IsDuplicateIdentifierConstraintViolation(exception))
             {
                 return Response.Conflict("Identifier already exists, please try a different identifier.");
             }
@@ -87,6 +86,17 @@ public sealed class CreateTenant
             await seedService.SeedBasicDataAsync(new SeedDataRequest());
 
             return new Response();
+        }
+
+        private static bool IsDuplicateIdentifierConstraintViolation(DbUpdateException exception)
+        {
+            if (exception.InnerException is SqlException { Number: 2601 or 2627 })
+            {
+                return true;
+            }
+
+            return exception.InnerException?.Message.Contains(TenantDbContext.TenantIdentifierIndexName,
+                StringComparison.OrdinalIgnoreCase) == true;
         }
 
         private static List<TenantSetting> CreateDefaultSettings(

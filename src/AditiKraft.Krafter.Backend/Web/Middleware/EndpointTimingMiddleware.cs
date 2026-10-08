@@ -14,13 +14,13 @@ public sealed class EndpointTimingMiddleware(
     {
         if (_options.EnableTiming == false)
         {
-            await next(context);
+            await next(context).ConfigureAwait(false);
             return;
         }
 
         if (_options.ApiOnly && !context.Request.Path.StartsWithSegments($"/{ApiRoutes.ApiPrefix}"))
         {
-            await next(context);
+            await next(context).ConfigureAwait(false);
             return;
         }
 
@@ -28,7 +28,7 @@ public sealed class EndpointTimingMiddleware(
 
         try
         {
-            await next(context);
+            await next(context).ConfigureAwait(false);
         }
         finally
         {

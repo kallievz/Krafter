@@ -5,6 +5,7 @@ using AditiKraft.Krafter.Backend.Features.Auth.Common;
 using AditiKraft.Krafter.Backend.Features.Roles.Common;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Notifications;
+using AditiKraft.Krafter.Backend.Infrastructure.Persistence.Configuration.Application;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -26,143 +27,26 @@ public class ApplicationDbContext(
     public virtual DbSet<PasswordHistory> PasswordHistories { get; set; }
     public virtual DbSet<EmailLog> EmailLogs { get; set; }
     public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
+    public virtual DbSet<AuditLog> AuditLogs { get; set; }
+    public virtual DbSet<AuditOutbox> AuditOutbox { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<ApplicationRole>(entity =>
-        {
-            entity.Property(c => c.Id).HasMaxLength(36);
-            entity.Property(c => c.CreatedById).HasMaxLength(36);
-            entity
-                .HasIndex(r => new { r.NormalizedName, r.TenantId })
-                .IsUnique();
-
-            entity.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == tenantGetterService.Tenant.Id);
-
-            entity.HasMany(e => e.UserRoles)
-                .WithOne(e => e.Role)
-                .HasForeignKey(ur => ur.RoleId)
-                .OnDelete(DeleteBehavior.Restrict);
-        });
-
-        modelBuilder.Entity<ApplicationRoleClaim>(entity =>
-        {
-            entity.Property(c => c.Id).HasMaxLength(36);
-            entity.Property(c => c.CreatedById).HasMaxLength(36);
-            entity.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == tenantGetterService.Tenant.Id);
-        });
-
-        modelBuilder.Entity<ApplicationUser>(entity =>
-        {
-            entity.Property(c => c.Id).HasMaxLength(36);
-            entity.Property(c => c.CreatedById).HasMaxLength(36);
-
-            entity.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == tenantGetterService.Tenant.Id);
-
-            entity.HasMany(e => e.UserRoles)
-                .WithOne(e => e.User)
-                .HasForeignKey(ur => ur.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasMany(e => e.PasswordHistories)
-                .WithOne(e => e.User)
-                .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasIndex(e => e.NormalizedEmail).IsUnique(false);
-            entity.HasIndex(e => new { e.NormalizedEmail, e.TenantId }).IsUnique();
-
-            entity.HasIndex(e => e.NormalizedUserName).IsUnique(false);
-            entity.HasIndex(e => new { e.NormalizedUserName, e.TenantId }).IsUnique();
-        });
-
-        modelBuilder.Entity<ApplicationUserClaim>(entity =>
-        {
-            entity.Property(c => c.Id).HasMaxLength(36);
-            entity.Property(c => c.CreatedById).HasMaxLength(36);
-            entity.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == tenantGetterService.Tenant.Id);
-        });
-
-        modelBuilder.Entity<ApplicationUserRole>(entity =>
-        {
-            // Configure the relationship with Role
-            entity.HasOne(ur => ur.Role)
-                .WithMany(r => r.UserRoles)
-                .HasForeignKey(ur => ur.RoleId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Configure the relationship with User
-            entity.HasOne(ur => ur.User)
-                .WithMany(u => u.UserRoles)
-                .HasForeignKey(ur => ur.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.Property(c => c.CreatedById).HasMaxLength(36);
-            entity.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == tenantGetterService.Tenant.Id);
-        });
-
-        modelBuilder.Entity<PasswordHistory>(entity =>
-        {
-            entity.Property(c => c.Id).HasMaxLength(36);
-            entity.Property(c => c.CreatedById).HasMaxLength(36).IsRequired(false);
-            entity.Property(c => c.UserId).HasMaxLength(36);
-            entity.Property(c => c.PasswordHash).IsRequired();
-            entity.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == tenantGetterService.Tenant.Id);
-
-            entity.HasIndex(c => new { c.UserId, c.CreatedOn });
-        });
-
-        modelBuilder.Entity<EmailLog>(entity =>
-        {
-            entity.Property(c => c.Id).HasMaxLength(36);
-            entity.Property(c => c.CreatedById).HasMaxLength(36).IsRequired(false);
-            entity.Property(c => c.ToEmail).HasMaxLength(256);
-            entity.Property(c => c.Subject).HasMaxLength(500);
-            entity.Property(c => c.Provider).HasMaxLength(50);
-            entity.Property(c => c.Status).HasMaxLength(50);
-            entity.Property(c => c.TemplateKey).HasMaxLength(128);
-            entity.Property(c => c.EmailTemplateId).HasMaxLength(36);
-            entity.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == tenantGetterService.Tenant.Id);
-
-            entity.HasIndex(c => new { c.TenantId, c.Status, c.CreatedOn });
-
-            entity.HasOne(c => c.EmailTemplate)
-                .WithMany(c => c.EmailLogs)
-                .HasForeignKey(c => c.EmailTemplateId)
-                .OnDelete(DeleteBehavior.SetNull);
-        });
-
-        modelBuilder.Entity<EmailTemplate>(entity =>
-        {
-            entity.Property(c => c.Id).HasMaxLength(36);
-            entity.Property(c => c.CreatedById).HasMaxLength(36).IsRequired(false);
-            entity.Property(c => c.Key).HasMaxLength(128).IsRequired();
-            entity.Property(c => c.Name).HasMaxLength(200).IsRequired();
-            entity.Property(c => c.SubjectTemplate).HasMaxLength(1000).IsRequired();
-            entity.Property(c => c.BodyTemplate).IsRequired();
-            entity.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == tenantGetterService.Tenant.Id);
-
-            entity.HasIndex(c => new { c.TenantId, c.Key }).IsUnique();
-        });
-
-        modelBuilder.Entity<ApplicationUserLogin>(entity =>
-        {
-            // Configure primary keys for custom user login and token classes
-            entity
-                .HasKey(l => new { l.LoginProvider, l.ProviderKey });
-        });
-
-        modelBuilder.Entity<ApplicationUserToken>(entity =>
-        {
-            entity
-                .HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
-        });
+        modelBuilder.ApplyConfiguration(new ApplicationRoleConfiguration(tenantGetterService));
+        modelBuilder.ApplyConfiguration(new ApplicationRoleClaimConfiguration(tenantGetterService));
+        modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration(tenantGetterService));
+        modelBuilder.ApplyConfiguration(new ApplicationUserClaimConfiguration(tenantGetterService));
+        modelBuilder.ApplyConfiguration(new ApplicationUserRoleConfiguration(tenantGetterService));
+        modelBuilder.ApplyConfiguration(new PasswordHistoryConfiguration(tenantGetterService));
+        modelBuilder.ApplyConfiguration(new EmailLogConfiguration(tenantGetterService));
+        modelBuilder.ApplyConfiguration(new EmailTemplateConfiguration(tenantGetterService));
+        modelBuilder.ApplyConfiguration(new ApplicationUserLoginConfiguration());
+        modelBuilder.ApplyConfiguration(new ApplicationUserTokenConfiguration());
+        modelBuilder.ApplyConfiguration(new UserRefreshTokenConfiguration());
 
         modelBuilder.ApplyCommonConfigureAcrossEntity();
-
-        modelBuilder.Entity<UserRefreshToken>(entity => { entity.HasKey(c => c.UserId); });
     }
 
     public override int SaveChanges()

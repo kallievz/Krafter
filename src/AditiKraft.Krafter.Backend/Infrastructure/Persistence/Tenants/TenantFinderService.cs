@@ -18,7 +18,7 @@ public class TenantFinderService(TenantDbContext tenantDbContext) : ITenantFinde
         }
 
         Tenant? tenant = await tenantDbContext.Tenants.AsNoTracking()
-            .SingleOrDefaultAsync(c => c.Identifier.ToLower() == identifier.ToLower());
+            .SingleOrDefaultAsync(c => c.Identifier.ToLower() == identifier.ToLower()).ConfigureAwait(false);
         if (tenant is null)
         {
             return identifier.Equals(DefaultTenantConstants.Identifier, StringComparison.OrdinalIgnoreCase)

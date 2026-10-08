@@ -46,7 +46,7 @@ internal class PermissionAuthorizationHandler(
         tenantSetter.SetTenant(tenant);
 
         IUserService userService = scope.ServiceProvider.GetRequiredService<IUserService>();
-        if ((await userService.HasPermissionAsync(userId, requirement.Permission)).Data)
+        if ((await userService.HasPermissionAsync(userId, requirement.Permission).ConfigureAwait(false)).Data)
         {
             context.Succeed(requirement);
         }

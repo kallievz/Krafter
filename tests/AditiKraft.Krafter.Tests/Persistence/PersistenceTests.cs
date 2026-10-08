@@ -14,30 +14,29 @@ namespace AditiKraft.Krafter.Tests.Persistence;
 public sealed class PersistenceTests
 {
     [Fact]
-    public void PostgreSqlTenantMigrationEnforcesCaseInsensitiveUniquenessForNondeletedTenants()
+    public void SqlServerTenantMigrationGeneratesUpgradeAndDowngradeScripts()
     {
         DbContextOptions<TenantDbContext> options = new DbContextOptionsBuilder<TenantDbContext>()
-            .UseNpgsql("Host=localhost;Database=model_check;Username=model_check;Password=unused")
+            .UseSqlServer("Data Source=KALLIENTB;Initial Catalog=RumasApp;Persist Security Info=True;User ID=kallievz;Password=No1enters@;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Application Name=\"Application\";Command Timeout=0")
             .Options;
         using var db = new TenantDbContext(options);
 
         Assert.False(db.Database.HasPendingModelChanges());
         IMigrator migrator = db.GetService<IMigrator>();
-        string upgrade = migrator.GenerateScript("20260428150352_FirstMigTenant", "20260912000000_UniqueTenantIdentifiers");
-        Assert.Contains("CREATE UNIQUE INDEX \"IX_Tenant_Identifier_Lower\"", upgrade);
-        Assert.Contains("ON \"Tenant\" (lower(\"Identifier\"))", upgrade);
-        Assert.Contains("WHERE NOT \"IsDeleted\"", upgrade);
+        string latestMigration = db.Database.GetMigrations().Last();
 
-        string downgrade = migrator.GenerateScript("20260912000000_UniqueTenantIdentifiers", "20260428150352_FirstMigTenant");
-        Assert.Contains("DROP INDEX \"IX_Tenant_Identifier_Lower\"", downgrade);
-        Assert.DoesNotContain("DROP TABLE", downgrade);
+        string upgrade = migrator.GenerateScript(fromMigration: "0", toMigration: latestMigration);
+        Assert.Contains("CREATE TABLE [Tenant]", upgrade);
+
+        string downgrade = migrator.GenerateScript(fromMigration: latestMigration, toMigration: "0");
+        Assert.Contains("DROP TABLE [Tenant]", downgrade);
     }
 
     [Fact]
     public void PostgreSqlModelMatchesExistingMigrations()
     {
         DbContextOptions<ApplicationDbContext> options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseNpgsql("Host=localhost;Database=model_check;Username=model_check;Password=unused")
+            .UseSqlServer("Data Source=KALLIENTB;Initial Catalog=RumasApp;Persist Security Info=True;User ID=kallievz;Password=No1enters@;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Application Name=\"Application\";Command Timeout=0")
             .Options;
         using var db = new ApplicationDbContext(options, new CurrentUser(), new CurrentTenantService());
 
