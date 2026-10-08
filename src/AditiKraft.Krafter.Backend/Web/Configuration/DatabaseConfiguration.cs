@@ -29,7 +29,8 @@ public static class DatabaseConfiguration
                 sp.GetRequiredService<ICurrentUser>(),
                 sp.GetRequiredService<ITenantGetterService>(),
                 sp.GetRequiredService<AuditMetadataCache>(),
-                sp));
+                sp,
+                sp.GetRequiredService<Microsoft.Extensions.Logging.ILogger<AuditSaveChangesInterceptor>>()));
 
         // TenantDbContext (root tenant registry) - do not attach audit interceptor
         services.AddDbContext<TenantDbContext>((sp, opts) =>
