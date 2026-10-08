@@ -69,22 +69,6 @@ namespace AditiKraft.Krafter.Backend.Migrations.ApplicationDb
                 });
 
             migrationBuilder.CreateTable(
-                name: "AuditOutbox",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProcessedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    FailureCount = table.Column<int>(type: "int", nullable: false),
-                    LastError = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AuditOutbox", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserRefreshTokens",
                 columns: table => new
                 {
@@ -641,9 +625,6 @@ namespace AditiKraft.Krafter.Backend.Migrations.ApplicationDb
             migrationBuilder.DropTable(
                 name: "AppUserToken",
                 schema: "identity");
-
-            migrationBuilder.DropTable(
-                name: "AuditOutbox");
 
             migrationBuilder.DropTable(
                 name: "EmailLogs");

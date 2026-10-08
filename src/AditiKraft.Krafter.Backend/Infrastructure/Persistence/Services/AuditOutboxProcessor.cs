@@ -152,8 +152,8 @@ public sealed class AuditOutboxProcessor : BackgroundService
                     }
                     try
                     {
-                        appDb.AuditOutbox.UpdateRange(processedItems);
-                        await appDb.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+                        auditDb.AuditOutbox.UpdateRange(processedItems);
+                        await auditDb.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
                     }
                     catch
                     {
