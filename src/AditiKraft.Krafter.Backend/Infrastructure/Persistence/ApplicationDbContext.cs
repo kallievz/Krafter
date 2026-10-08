@@ -27,7 +27,6 @@ public class ApplicationDbContext(
     public virtual DbSet<PasswordHistory> PasswordHistories { get; set; }
     public virtual DbSet<EmailLog> EmailLogs { get; set; }
     public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
-    public virtual DbSet<AuditLog> AuditLogs { get; set; }
     public virtual DbSet<AuditOutbox> AuditOutbox { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
