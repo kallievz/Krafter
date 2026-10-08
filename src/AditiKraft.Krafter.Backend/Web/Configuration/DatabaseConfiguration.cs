@@ -21,7 +21,12 @@ public static class DatabaseConfiguration
         services.AddScoped<EfCommandTimingInterceptor>();
         // Metadata cache used by audit interceptor - singleton for concurrent access
         services.AddSingleton<AuditMetadataCache>();
-        services.AddScoped<Infrastructure.Persistence.Interceptors.AuditSaveChangesInterceptor>();
+        services.AddScoped<Infrastructure.Persistence.Interceptors.AuditSaveChangesInterceptor>(sp =>
+            new Infrastructure.Persistence.Interceptors.AuditSaveChangesInterceptor(
+                sp.GetRequiredService<ICurrentUser>(),
+                sp.GetRequiredService<ITenantGetterService>(),
+                sp.GetRequiredService<AuditMetadataCache>(),
+                sp));
 
         // TenantDbContext (root tenant registry) - do not attach audit interceptor
         services.AddDbContext<TenantDbContext>((sp, opts) =>

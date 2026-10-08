@@ -10,7 +10,7 @@ using AditiKraft.Krafter.Backend.Infrastructure.Persistence.Services;
 
 namespace AditiKraft.Krafter.Backend.Infrastructure.Persistence.Interceptors;
 
-public sealed class AuditSaveChangesInterceptor(ICurrentUser currentUser, ITenantGetterService tenantGetterService, AuditMetadataCache metadataCache) : SaveChangesInterceptor
+public sealed class AuditSaveChangesInterceptor(ICurrentUser currentUser, ITenantGetterService tenantGetterService, AuditMetadataCache metadataCache, IServiceProvider serviceProvider) : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
@@ -187,10 +187,9 @@ public sealed class AuditSaveChangesInterceptor(ICurrentUser currentUser, ITenan
             }
             else
             {
-                // Resolve AuditDbContext from the current DbContext's internal service provider
+                // Resolve AuditDbContext from the application service provider injected into the interceptor.
                 try
                 {
-                    var serviceProvider = ((Microsoft.EntityFrameworkCore.Infrastructure.IInfrastructure<IServiceProvider>)context).Instance;
                     var auditDb = serviceProvider.GetService(typeof(AuditDbContext)) as AuditDbContext;
                     if (auditDb != null)
                     {
