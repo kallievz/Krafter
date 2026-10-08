@@ -68,7 +68,7 @@ public static class Program
     {
         using IServiceScope scope = services.CreateScope();
 
-        var logger = scope.ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Program>>();
+        var logger = scope.ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger>();
 
         try
         {
@@ -120,7 +120,7 @@ public static class Program
         {
             // Re-throw after logging to stop the host startup so failures are visible.
             var message = "Database migration or seeding failed and prevented application startup.";
-            var logger2 = scope.ServiceProvider.GetService<Microsoft.Extensions.Logging.ILogger<Program>>();
+            var logger2 = scope.ServiceProvider.GetService<Microsoft.Extensions.Logging.ILogger>();
             logger2?.LogCritical(ex, message);
             throw;
         }
