@@ -60,3 +60,15 @@ public class DesignTimeBackgroundJobsContextDbContextFactory : IDesignTimeDbCont
         return new BackgroundJobsContext(optionsBuilder.Options);
     }
 }
+
+public class DesignTimeAuditDbContextFactory : IDesignTimeDbContextFactory<AuditDbContext>
+{
+    public AuditDbContext CreateDbContext(string[] args)
+    {
+        string connectionString = DesignTimeConnectionStringHelper.GetConnectionString();
+        var optionsBuilder = new DbContextOptionsBuilder<AuditDbContext>();
+        optionsBuilder.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure());
+
+        return new AuditDbContext(optionsBuilder.Options);
+    }
+}
