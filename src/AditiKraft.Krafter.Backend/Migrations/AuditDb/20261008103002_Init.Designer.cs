@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AditiKraft.Krafter.Backend.Migrations.AuditDb
 {
     [DbContext(typeof(AuditDbContext))]
-    [Migration("20261008101723_Init")]
+    [Migration("20261008103002_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -62,6 +62,36 @@ namespace AditiKraft.Krafter.Backend.Migrations.AuditDb
                     b.HasKey("Id");
 
                     b.ToTable("AuditLog", "audit");
+                });
+
+            modelBuilder.Entity("AditiKraft.Krafter.Backend.Common.Entities.AuditOutbox", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<int>("FailureCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("LastError")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ProcessedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditOutbox", "audit");
                 });
 #pragma warning restore 612, 618
         }
