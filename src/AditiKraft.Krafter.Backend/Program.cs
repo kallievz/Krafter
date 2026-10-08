@@ -19,6 +19,10 @@ public static class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+        // Load local overrides when present (appsettings.Local.json) so local connection strings
+        // and secrets are available during development and when running from solution root.
+        builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: false);
+
         // Forwarded headers (proxy support)
         builder.Services.Configure<ForwardedHeadersOptions>(options =>
         {
