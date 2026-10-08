@@ -6,6 +6,7 @@ namespace AditiKraft.Krafter.Backend.Infrastructure.Persistence;
 public class AuditDbContext(DbContextOptions<AuditDbContext> options) : DbContext(options)
 {
     public virtual DbSet<AuditLog> AuditLogs { get; set; }
+    public virtual DbSet<AuditOutbox> AuditOutbox { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
