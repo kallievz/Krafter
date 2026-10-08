@@ -2,6 +2,7 @@ using AditiKraft.Krafter.Backend.Common.Entities;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AditiKraft.Krafter.Backend.Infrastructure.Persistence;
 
@@ -33,9 +34,9 @@ public static class ModelBuilderExtensions
         {
             // Only apply table mapping here when no explicit mapping already exists.
             // This avoids overwriting ToTable calls defined in individual IEntityTypeConfiguration implementations
-            var entity = builder.Entity(entityType.ClrType);
-            var tableNameAnnotation = entity.Metadata.GetAnnotation("Relational:TableName")?.Value as string;
-            var schemaAnnotation = entity.Metadata.GetAnnotation("Relational:Schema")?.Value as string;
+            EntityTypeBuilder entity = builder.Entity(entityType.ClrType);
+            string? tableNameAnnotation = entity.Metadata.FindAnnotation("Relational:TableName")?.Value as string;
+            string? schemaAnnotation = entity.Metadata.FindAnnotation("Relational:Schema")?.Value as string;
             if (tableNameAnnotation == null && schemaAnnotation == null)
             {
                 entity.ToTable(entityType.ClrType.Name);
