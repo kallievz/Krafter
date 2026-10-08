@@ -1,5 +1,6 @@
 using AditiKraft.Krafter.Backend.Infrastructure.Jobs;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
+using AditiKraft.Krafter.Backend.Infrastructure.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -18,6 +19,8 @@ public static class DatabaseConfiguration
         services.Configure<EfQueryPerformanceOptions>(configuration.GetSection(EfQueryPerformanceOptions.SectionName));
         services.AddHttpContextAccessor();
         services.AddScoped<EfCommandTimingInterceptor>();
+        // Metadata cache used by audit interceptor - singleton for concurrent access
+        services.AddSingleton<AuditMetadataCache>();
         services.AddScoped<Infrastructure.Persistence.Interceptors.AuditSaveChangesInterceptor>();
 
         // TenantDbContext (root tenant registry) - do not attach audit interceptor
