@@ -41,10 +41,9 @@ public sealed class AuditOutboxProcessor : BackgroundService
             try
             {
                 using IServiceScope scope = _scopeFactory.CreateScope();
-                ApplicationDbContext appDb = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 AuditDbContext auditDb = scope.ServiceProvider.GetRequiredService<AuditDbContext>();
 
-                List<AuditOutbox> pending = await appDb.AuditOutbox
+                List<AuditOutbox> pending = await auditDb.AuditOutbox
                     .Where(o => o.ProcessedOn == null)
                     .OrderBy(o => o.CreatedOn)
                     .Take(100)
@@ -104,8 +103,8 @@ public sealed class AuditOutboxProcessor : BackgroundService
                             item.LastError = null;
                         }
 
-                        appDb.AuditOutbox.UpdateRange(processedItems);
-                        await appDb.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+                        auditDb.AuditOutbox.UpdateRange(processedItems);
+                        await auditDb.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
                         _processedCounter.Add(processedItems.Count);
 
                         success = true;
@@ -115,8 +114,8 @@ public sealed class AuditOutboxProcessor : BackgroundService
                         attempts++;
                         lastEx = ex;
                         _logger.LogWarning(ex, "Attempt {Attempt} failed to deliver audit batch", attempts);
+
                         auditDb.ChangeTracker.Clear();
-                        appDb.ChangeTracker.Clear();
 
                         // Increment failure counters on outbox rows so they can be dead-lettered
                         foreach (AuditOutbox item in processedItems)
@@ -126,8 +125,8 @@ public sealed class AuditOutboxProcessor : BackgroundService
                         }
                         try
                         {
-                            appDb.AuditOutbox.UpdateRange(processedItems);
-                            await appDb.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+                            auditDb.AuditOutbox.UpdateRange(processedItems);
+                            await auditDb.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
                         }
                         catch
                         {
