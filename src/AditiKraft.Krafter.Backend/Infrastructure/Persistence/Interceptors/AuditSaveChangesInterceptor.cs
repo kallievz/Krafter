@@ -177,8 +177,33 @@ public sealed class AuditSaveChangesInterceptor(ICurrentUser currentUser, ITenan
 
         if (outboxEntries.Count > 0)
         {
-            // Add outbox entries to the same DbContext to participate in the current transaction
-            context.AddRange(outboxEntries);
+            // If the current DbContext has an AuditOutbox entity, add there so it participates in the
+            // current transaction. Otherwise attempt to resolve AuditDbContext from the current
+            // context's service provider and persist the outbox entries there.
+            var modelHasOutbox = context.Model.FindEntityType(typeof(AuditOutbox)) != null;
+            if (modelHasOutbox)
+            {
+                context.AddRange(outboxEntries);
+            }
+            else
+            {
+                // Resolve AuditDbContext from the current DbContext's internal service provider
+                try
+                {
+                    var serviceProvider = ((Microsoft.EntityFrameworkCore.Infrastructure.IInfrastructure<IServiceProvider>)context).Instance;
+                    var auditDb = serviceProvider.GetService(typeof(AuditDbContext)) as AuditDbContext;
+                    if (auditDb != null)
+                    {
+                        auditDb.AddRange(outboxEntries);
+                        // Persist immediately since we cannot participate in the caller's transaction
+                        auditDb.SaveChanges();
+                    }
+                }
+                catch
+                {
+                    // If resolution fails, swallow to avoid breaking the primary save operation.
+                }
+            }
         }
 
         return result;
