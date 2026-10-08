@@ -68,27 +68,61 @@ public static class Program
     {
         using IServiceScope scope = services.CreateScope();
 
-        TenantDbContext tenantDbContext = scope.ServiceProvider.GetRequiredService<TenantDbContext>();
-        await tenantDbContext.Database.MigrateAsync().ConfigureAwait(false);
-        await TenantDbSeedService.SeedRootTenantAsync(tenantDbContext, CancellationToken.None).ConfigureAwait(false);
+        var logger = scope.ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Program>>();
 
-        BackgroundJobsContext backgroundJobsContext = scope.ServiceProvider.GetRequiredService<BackgroundJobsContext>();
-        await backgroundJobsContext.Database.MigrateAsync().ConfigureAwait(false);
-
-        // Ensure AuditDb is migrated before applying ApplicationDb migrations. The audit interceptor
-        // may attempt to persist outbox rows during ApplicationDb save operations; ensure the audit
-        // tables exist to avoid runtime errors.
-        AuditDbContext auditDbContext = scope.ServiceProvider.GetRequiredService<AuditDbContext>();
-        await auditDbContext.Database.MigrateAsync().ConfigureAwait(false);
-
-        ApplicationDbContext applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        await applicationDbContext.Database.MigrateAsync().ConfigureAwait(false);
-
-        DataSeedService dataSeedService = scope.ServiceProvider.GetRequiredService<DataSeedService>();
-        Response seedResponse = await dataSeedService.SeedBasicDataAsync(new SeedDataRequest()).ConfigureAwait(false);
-        if (seedResponse.IsError)
+        try
         {
-            throw new InvalidOperationException(seedResponse.Message ?? "Failed to seed basic data.");
+            logger.LogInformation("Starting database migrations.");
+
+            // Tenant DB - root tenant registry and required baseline
+            var tenantDbContext = scope.ServiceProvider.GetRequiredService<TenantDbContext>();
+            logger.LogInformation("Migrating TenantDb...");
+            await tenantDbContext.Database.MigrateAsync().ConfigureAwait(false);
+            logger.LogInformation("TenantDb migration complete.");
+
+            // Seed root tenant immediately after tenant migrations
+            logger.LogInformation("Seeding root tenant...");
+            await TenantDbSeedService.SeedRootTenantAsync(tenantDbContext, CancellationToken.None).ConfigureAwait(false);
+            logger.LogInformation("Root tenant seeding complete.");
+
+            // Background jobs (TickerQ) operational store
+            var backgroundJobsContext = scope.ServiceProvider.GetRequiredService<BackgroundJobsContext>();
+            logger.LogInformation("Migrating BackgroundJobs (TickerQ) DB...");
+            await backgroundJobsContext.Database.MigrateAsync().ConfigureAwait(false);
+            logger.LogInformation("BackgroundJobs migration complete.");
+
+            // Audit DB - must be present before application writes via audit interceptor
+            var auditDbContext = scope.ServiceProvider.GetRequiredService<AuditDbContext>();
+            logger.LogInformation("Migrating AuditDb...");
+            await auditDbContext.Database.MigrateAsync().ConfigureAwait(false);
+            logger.LogInformation("AuditDb migration complete.");
+
+            // Application DB - main application schema and seed data
+            var applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            logger.LogInformation("Migrating ApplicationDb...");
+            await applicationDbContext.Database.MigrateAsync().ConfigureAwait(false);
+            logger.LogInformation("ApplicationDb migration complete.");
+
+            // Run application-level seeding
+            logger.LogInformation("Starting application data seed...");
+            var dataSeedService = scope.ServiceProvider.GetRequiredService<DataSeedService>();
+            Response seedResponse = await dataSeedService.SeedBasicDataAsync(new SeedDataRequest()).ConfigureAwait(false);
+            if (seedResponse.IsError)
+            {
+                logger.LogError("Application data seed failed: {Message}", seedResponse.Message);
+                throw new InvalidOperationException(seedResponse.Message ?? "Failed to seed basic data.");
+            }
+            logger.LogInformation("Application data seed complete.");
+
+            logger.LogInformation("All database migrations and seed operations completed successfully.");
+        }
+        catch (Exception ex)
+        {
+            // Re-throw after logging to stop the host startup so failures are visible.
+            var message = "Database migration or seeding failed and prevented application startup.";
+            var logger2 = scope.ServiceProvider.GetService<Microsoft.Extensions.Logging.ILogger<Program>>();
+            logger2?.LogCritical(ex, message);
+            throw;
         }
     }
 }
