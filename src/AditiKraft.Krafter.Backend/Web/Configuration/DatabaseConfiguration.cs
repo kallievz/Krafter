@@ -55,19 +55,4 @@ public static class DatabaseConfiguration
 
         return services;
     }
-
-    private static void ConfigureDbContext(DbContextOptionsBuilder opts, string connectionString,
-        EfCommandTimingInterceptor commandTimingInterceptor, IServiceProvider sp)
-    {
-        opts.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure())
-            .AddInterceptors(commandTimingInterceptor, sp.GetRequiredService<AuditSaveChangesInterceptor>());
-    }
-
-    private static void ConfigureBackgroundJobsDbContext(DbContextOptionsBuilder opts, string connectionString,
-        EfCommandTimingInterceptor commandTimingInterceptor, IServiceProvider sp)
-    {
-        opts.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure())
-            .AddInterceptors(commandTimingInterceptor, sp.GetRequiredService<AuditSaveChangesInterceptor>())
-            .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
-    }
 }
