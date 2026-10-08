@@ -95,4 +95,8 @@
     <ContainerLabel Include="org.opencontainers.image.source" Value="https://github.com/AditiKraft/Krafter" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\TenantDb\" />
+  </ItemGroup>
+
 </Project>
