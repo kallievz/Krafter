@@ -75,6 +75,12 @@ public static class Program
         BackgroundJobsContext backgroundJobsContext = scope.ServiceProvider.GetRequiredService<BackgroundJobsContext>();
         await backgroundJobsContext.Database.MigrateAsync().ConfigureAwait(false);
 
+        // Ensure AuditDb is migrated before applying ApplicationDb migrations. The audit interceptor
+        // may attempt to persist outbox rows during ApplicationDb save operations; ensure the audit
+        // tables exist to avoid runtime errors.
+        AuditDbContext auditDbContext = scope.ServiceProvider.GetRequiredService<AuditDbContext>();
+        await auditDbContext.Database.MigrateAsync().ConfigureAwait(false);
+
         ApplicationDbContext applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await applicationDbContext.Database.MigrateAsync().ConfigureAwait(false);
 

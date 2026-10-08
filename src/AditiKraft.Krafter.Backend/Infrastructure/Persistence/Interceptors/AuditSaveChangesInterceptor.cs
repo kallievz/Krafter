@@ -177,31 +177,20 @@ public sealed class AuditSaveChangesInterceptor(ICurrentUser currentUser, ITenan
 
         if (outboxEntries.Count > 0)
         {
-            // If the current DbContext has an AuditOutbox entity, add there so it participates in the
-            // current transaction. Otherwise attempt to resolve AuditDbContext from the current
-            // context's service provider and persist the outbox entries there.
-            var modelHasOutbox = context.Model.FindEntityType(typeof(AuditOutbox)) != null;
-            if (modelHasOutbox)
+            // Persist outbox entries to the dedicated AuditDb so they are centrally stored.
+            // We always write to AuditDb here to avoid relying on the current DbContext model.
+            try
             {
-                context.AddRange(outboxEntries);
+                if (serviceProvider.GetService(typeof(AuditDbContext)) is AuditDbContext auditDb)
+                {
+                    auditDb.AddRange(outboxEntries);
+                    // Persist immediately since we cannot participate in the caller's transaction
+                    auditDb.SaveChanges();
+                }
             }
-            else
+            catch
             {
-                // Resolve AuditDbContext from the application service provider injected into the interceptor.
-                try
-                {
-                    var auditDb = serviceProvider.GetService(typeof(AuditDbContext)) as AuditDbContext;
-                    if (auditDb != null)
-                    {
-                        auditDb.AddRange(outboxEntries);
-                        // Persist immediately since we cannot participate in the caller's transaction
-                        auditDb.SaveChanges();
-                    }
-                }
-                catch
-                {
-                    // If resolution fails, swallow to avoid breaking the primary save operation.
-                }
+                // If resolution fails or save fails, swallow to avoid breaking the primary save operation.
             }
         }
 
