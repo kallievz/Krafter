@@ -12,6 +12,7 @@ namespace AditiKraft.Krafter.Backend.Infrastructure.Persistence.Interceptors;
 
 public sealed class AuditSaveChangesInterceptor(ICurrentUser currentUser, ITenantGetterService tenantGetterService, AuditMetadataCache metadataCache, IServiceProvider serviceProvider, Microsoft.Extensions.Logging.ILogger<AuditSaveChangesInterceptor> logger) : SaveChangesInterceptor
 {
+    private readonly Microsoft.Extensions.Logging.ILogger<AuditSaveChangesInterceptor> _logger = logger;
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
         // Build audit entries and enqueue them in the current DbContext's outbox.
