@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<coreProperties xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.openxmlformats.org/package/2006/metadata/core-properties">
+  <dc:creator>Albert Kunushevci</dc:creator>
+  <dc:description>Simple utilities for queuing and executing cron/time-based jobs in the background.</dc:description>
+  <dc:identifier>TickerQ.Utilities</dc:identifier>
+  <version>10.4.0</version>
+  <keywords>ticker queue cron time scheduler fire-and-forget</keywords>
+  <lastModifiedBy>NuGet.Packaging, Version=7.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35;.NET 8.0</lastModifiedBy>
+</coreProperties>

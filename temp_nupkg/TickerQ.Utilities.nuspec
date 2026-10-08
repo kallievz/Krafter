@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>TickerQ.Utilities</id>
+    <version>10.4.0</version>
+    <authors>Albert Kunushevci</authors>
+    <license type="expression">MIT OR Apache-2.0</license>
+    <licenseUrl>https://licenses.nuget.org/MIT%20OR%20Apache-2.0</licenseUrl>
+    <icon>icon.jpg</icon>
+    <readme>README.md</readme>
+    <projectUrl>https://tickerq.net/</projectUrl>
+    <description>Simple utilities for queuing and executing cron/time-based jobs in the background.</description>
+    <copyright>Copyright © 2025 Arcenox LLC</copyright>
+    <tags>ticker queue cron time scheduler fire-and-forget</tags>
+    <repository type="git" url="https://github.com/arcenox-co/TickerQ" branch="refs/heads/main" commit="c6ed1e7daa90ab3f4c65b40319a153126a910093" />
+    <dependencies>
+      <group targetFramework="net10.0">
+        <dependency id="Microsoft.Extensions.Caching.Abstractions" version="[10.0.0, 11.0.0)" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Configuration.Abstractions" version="[10.0.0, 11.0.0)" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="[10.0.0, 11.0.0)" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="[10.0.0, 11.0.0)" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="[10.0.0, 11.0.0)" exclude="Build,Analyzers" />
+        <dependency id="NCrontab" version="3.3.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

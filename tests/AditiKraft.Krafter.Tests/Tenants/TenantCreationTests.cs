@@ -69,7 +69,8 @@ public sealed class TenantCreationTests
             currentUser,
             _urls,
             Options.Create(new SecuritySettings()),
-            new SMTPEmailSettings());
+            new SMTPEmailSettings(),
+            new SendGridEmailSettings());
 
         DateTime before = DateTime.UtcNow;
         Response created = await create.CreateAsync(request, CancellationToken.None);
@@ -125,7 +126,8 @@ public sealed class TenantCreationTests
             null!,
             _urls,
             Options.Create(new SecuritySettings()),
-            new SMTPEmailSettings());
+            new SMTPEmailSettings(),
+            new SendGridEmailSettings());
 
         Response response = await handler.CreateAsync(request, CancellationToken.None);
 
@@ -157,7 +159,8 @@ public sealed class TenantCreationTests
             null!,
             _urls,
             Options.Create(new SecuritySettings()),
-            new SMTPEmailSettings());
+            new SMTPEmailSettings(),
+            new SendGridEmailSettings());
 
         Response response = await handler.CreateAsync(ValidRequest("blue"), CancellationToken.None);
 
@@ -247,7 +250,8 @@ public sealed class TenantCreationTests
                     new CurrentUser(),
                     _urls,
                     Options.Create(new SecuritySettings()),
-                    new SMTPEmailSettings())
+                    new SMTPEmailSettings(),
+                    new SendGridEmailSettings())
                 .CreateAsync(ValidRequest("blue"), CancellationToken.None);
 
         Assert.Equal(409, response.StatusCode);
@@ -302,6 +306,9 @@ public sealed class TenantCreationTests
     private sealed class NoExternalJobs : IJobService
     {
         public Task EnqueueAsync<T>(T requestInput, string methodName, CancellationToken cancellationToken) =>
+            Task.CompletedTask;
+
+        public Task EnqueueByLogIdAsync(string emailLogId, string methodName, CancellationToken cancellationToken) =>
             Task.CompletedTask;
     }
 }

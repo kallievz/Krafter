@@ -192,6 +192,14 @@ namespace AditiKraft.Krafter.Backend.Migrations.TenantDb
                         new
                         {
                             Id = "c8a78156-8e6c-4f55-8841-7de7ea101011",
+                            IsSensitive = false,
+                            Key = "Notifications:Smtp:ReplyToEmail",
+                            TenantId = "root",
+                            Value = ""
+                        },
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101012",
                             IsSensitive = true,
                             Key = "Notifications:SendGrid:ApiKey",
                             TenantId = "root",
@@ -199,7 +207,7 @@ namespace AditiKraft.Krafter.Backend.Migrations.TenantDb
                         },
                         new
                         {
-                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101012",
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101013",
                             IsSensitive = false,
                             Key = "Notifications:SendGrid:SenderEmail",
                             TenantId = "root",
@@ -207,9 +215,17 @@ namespace AditiKraft.Krafter.Backend.Migrations.TenantDb
                         },
                         new
                         {
-                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101013",
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101014",
                             IsSensitive = false,
                             Key = "Notifications:SendGrid:SenderName",
+                            TenantId = "root",
+                            Value = ""
+                        },
+                        new
+                        {
+                            Id = "c8a78156-8e6c-4f55-8841-7de7ea101015",
+                            IsSensitive = false,
+                            Key = "Notifications:SendGrid:ReplyToEmail",
                             TenantId = "root",
                             Value = ""
                         });

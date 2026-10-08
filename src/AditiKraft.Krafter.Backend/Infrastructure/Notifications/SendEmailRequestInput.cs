@@ -5,4 +5,7 @@ public class SendEmailRequestInput
     public string Email { get; set; } = string.Empty;
     public string Subject { get; set; } = string.Empty;
     public string HtmlMessage { get; set; } = string.Empty;
+    public string? TemplateKey { get; set; }
+    public string? EmailTemplateId { get; set; }
+    public string? TenantId { get; set; }
 }

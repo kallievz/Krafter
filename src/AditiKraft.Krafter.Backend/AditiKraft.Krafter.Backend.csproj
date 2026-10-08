@@ -58,8 +58,13 @@
     <!-- External Integrations -->
     <PackageReference Include="Refit" />
     <PackageReference Include="Refit.HttpClientFactory" />
+    <PackageReference Include="FluentEmail.Core" />
+    <PackageReference Include="FluentEmail.Smtp" />
+    <PackageReference Include="FluentEmail.SendGrid" />
+    <PackageReference Include="starkbank-ecdsa" />
 
     <!-- Utilities -->
+    <PackageReference Include="Handlebars.Net" />
     <PackageReference Include="Mapster" />
   </ItemGroup>
 
@@ -87,6 +92,10 @@
 
   <ItemGroup>
     <ContainerLabel Include="org.opencontainers.image.source" Value="https://github.com/AditiKraft/Krafter" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="temp\ilspy_tickerq_util\" />
   </ItemGroup>
 
 </Project>

@@ -19,7 +19,8 @@ public sealed class UserMutationService(
     ITenantGetterService tenantGetterService,
     TenantDbContext tenantDbContext,
     ApplicationDbContext db,
-    IJobService jobService) : IUserMutationService, IScopedService
+    IJobService jobService,
+    IEmailService emailService) : IUserMutationService, IScopedService
 {
     public async Task<Response> CreateAsync(CreateUserRequest request, CancellationToken cancellationToken)
     {
@@ -169,8 +170,9 @@ public sealed class UserMutationService(
                            $"Your password is:<br/>{password}<br/><br/>" +
                            $"Please <a href='{loginUrl}'>click here</a> to log in.<br/><br/>" +
                            $"Regards,<br/>{tenantGetterService.Tenant.Name} Team";
-        await jobService.EnqueueAsync(
+        string emailLogId = await emailService.QueueEmailAsync(
             new SendEmailRequestInput { Email = user.Email, Subject = "Account Created", HtmlMessage = emailBody },
-            nameof(Jobs.SendEmailJobAsync), cancellationToken);
+            cancellationToken);
+        await jobService.EnqueueByLogIdAsync(emailLogId, nameof(Jobs.SendEmailJobAsync), cancellationToken);
     }
 }

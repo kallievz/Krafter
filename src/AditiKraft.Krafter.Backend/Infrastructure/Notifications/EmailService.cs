@@ -1,33 +1,193 @@
-using System.Net;
-using System.Net.Mail;
+using AditiKraft.Krafter.Backend.Common.Tenants;
 using AditiKraft.Krafter.Backend.Features.Tenants.Common;
+using AditiKraft.Krafter.Backend.Features.Users.Common;
+using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
 using AditiKraft.Krafter.Backend.Web.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace AditiKraft.Krafter.Backend.Infrastructure.Notifications;
 
 public sealed class EmailService(
+    ApplicationDbContext applicationDbContext,
     ITenantSettingService tenantSettingService,
+    ITenantGetterService tenantGetterService,
+    IEnumerable<IEmailDeliveryProvider> deliveryProviders,
     SMTPEmailSettings smtpEmailSettings,
+    SendGridEmailSettings sendGridEmailSettings,
     IOptions<SecuritySettings> securitySettings) : IEmailService
 {
     private readonly SecuritySettings _securitySettings = securitySettings.Value;
 
-    public async Task SendEmailAsync(string email, string subject, string htmlMessage,
-        CancellationToken cancellationToken)
+    public async Task<string> QueueEmailAsync(SendEmailRequestInput request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+        if (string.IsNullOrWhiteSpace(request.Email))
+        {
+            throw new ArgumentException("Email recipient is required.", nameof(request));
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Subject))
+        {
+            throw new ArgumentException("Email subject is required.", nameof(request));
+        }
+
+        if (string.IsNullOrWhiteSpace(request.HtmlMessage))
+        {
+            throw new ArgumentException("Email body is required.", nameof(request));
+        }
+
         string fallbackProvider = string.IsNullOrWhiteSpace(_securitySettings.Provider)
-            ? "smtp"
+            ? TenantSettingKeys.NotificationProviderSmtp
             : _securitySettings.Provider;
         string provider = await tenantSettingService.GetStringValueOrDefaultAsync(
             TenantSettingKeys.NotificationsProvider,
             fallbackProvider,
             cancellationToken);
 
-        if (provider.Equals("sendgrid", StringComparison.OrdinalIgnoreCase))
+        string tenantId = string.IsNullOrWhiteSpace(request.TenantId)
+            ? tenantGetterService.Tenant.Id ?? SeedDataConstants.RootTenant.Id
+            : request.TenantId;
+
+        EmailLog emailLog = new()
         {
-            throw new InvalidOperationException(
-                "SendGrid provider is configured for this tenant, but SendGrid delivery is not implemented.");
+            TenantId = tenantId,
+            ToEmail = request.Email,
+            Subject = request.Subject,
+            Body = request.HtmlMessage,
+            Provider = provider,
+            Status = "Pending",
+            TemplateKey = request.TemplateKey,
+            EmailTemplateId = request.EmailTemplateId
+        };
+
+        applicationDbContext.EmailLogs.Add(emailLog);
+        _ = await applicationDbContext.SaveChangesAsync(cancellationToken);
+
+        return emailLog.Id;
+    }
+
+    public async Task ProcessEmailAsync(string emailLogId, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(emailLogId))
+        {
+            throw new ArgumentException("Email log id is required.", nameof(emailLogId));
+        }
+
+        EmailLog? emailLog = await applicationDbContext.EmailLogs
+            .FirstOrDefaultAsync(log => log.Id == emailLogId, cancellationToken);
+
+        if (emailLog is null)
+        {
+            throw new InvalidOperationException($"Email log not found for id '{emailLogId}'.");
+        }
+
+        if (!emailLog.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        try
+        {
+            EmailDeliveryMessage deliveryMessage = await BuildDeliveryMessageAsync(emailLog, cancellationToken);
+            IEmailDeliveryProvider deliveryProvider = ResolveProvider(deliveryMessage.Provider);
+
+            await deliveryProvider.SendAsync(deliveryMessage, cancellationToken);
+
+            emailLog.Status = "Sent";
+            emailLog.SentOn = DateTime.UtcNow;
+            emailLog.ErrorMessage = null;
+        }
+        catch (Exception ex)
+        {
+            emailLog.Status = "Failed";
+            emailLog.ErrorMessage = ex.Message;
+            throw;
+        }
+        finally
+        {
+            _ = await applicationDbContext.SaveChangesAsync(cancellationToken);
+        }
+    }
+
+    public async Task SendEmailAsync(string email, string subject, string htmlMessage, CancellationToken cancellationToken)
+    {
+        string emailLogId = await QueueEmailAsync(new SendEmailRequestInput
+        {
+            Email = email,
+            Subject = subject,
+            HtmlMessage = htmlMessage
+        }, cancellationToken);
+
+        await ProcessEmailAsync(emailLogId, cancellationToken);
+    }
+
+    private IEmailDeliveryProvider ResolveProvider(string provider)
+    {
+        IEmailDeliveryProvider? deliveryProvider = deliveryProviders.FirstOrDefault(
+            item => item.Name.Equals(provider, StringComparison.OrdinalIgnoreCase));
+
+        if (deliveryProvider is null)
+        {
+            throw new InvalidOperationException($"Email provider '{provider}' is not supported.");
+        }
+
+        return deliveryProvider;
+    }
+
+    private async Task<EmailDeliveryMessage> BuildDeliveryMessageAsync(EmailLog emailLog, CancellationToken cancellationToken)
+    {
+        string provider = emailLog.Provider;
+
+        if (provider.Equals(TenantSettingKeys.NotificationProviderSendGrid, StringComparison.OrdinalIgnoreCase))
+        {
+            string senderEmail = await tenantSettingService.GetStringValueOrDefaultAsync(
+                TenantSettingKeys.NotificationsSendGridSenderEmail,
+                sendGridEmailSettings.SenderEmail,
+                cancellationToken);
+            string senderName = await tenantSettingService.GetStringValueOrDefaultAsync(
+                TenantSettingKeys.NotificationsSendGridSenderName,
+                sendGridEmailSettings.SenderName,
+                cancellationToken);
+            string replyToEmail = await tenantSettingService.GetStringValueOrDefaultAsync(
+                TenantSettingKeys.NotificationsSendGridReplyToEmail,
+                sendGridEmailSettings.ReplyToEmail,
+                cancellationToken);
+            string apiKey = await tenantSettingService.GetStringValueOrDefaultAsync(
+                TenantSettingKeys.NotificationsSendGridApiKey,
+                sendGridEmailSettings.ApiKey,
+                cancellationToken);
+
+            return new EmailDeliveryMessage(
+                emailLog.ToEmail,
+                emailLog.Subject,
+                emailLog.Body,
+                provider,
+                senderEmail,
+                senderName,
+                replyToEmail,
+                null,
+                null,
+                null,
+                null,
+                apiKey);
+        }
+
+        if (provider.Equals(TenantSettingKeys.NotificationProviderDummy, StringComparison.OrdinalIgnoreCase))
+        {
+            return new EmailDeliveryMessage(
+                emailLog.ToEmail,
+                emailLog.Subject,
+                emailLog.Body,
+                provider,
+                string.Empty,
+                string.Empty,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
         }
 
         string host = await tenantSettingService.GetStringValueOrDefaultAsync(
@@ -46,27 +206,31 @@ public sealed class EmailService(
             TenantSettingKeys.NotificationsSmtpPassword,
             smtpEmailSettings.Password,
             cancellationToken);
-        string senderEmail = await tenantSettingService.GetStringValueOrDefaultAsync(
+        string smtpSenderEmail = await tenantSettingService.GetStringValueOrDefaultAsync(
             TenantSettingKeys.NotificationsSmtpSenderEmail,
             smtpEmailSettings.SenderEmail,
             cancellationToken);
-        string senderName = await tenantSettingService.GetStringValueOrDefaultAsync(
+        string smtpSenderName = await tenantSettingService.GetStringValueOrDefaultAsync(
             TenantSettingKeys.NotificationsSmtpSenderName,
             smtpEmailSettings.SenderName,
             cancellationToken);
+        string smtpReplyToEmail = await tenantSettingService.GetStringValueOrDefaultAsync(
+            TenantSettingKeys.NotificationsSmtpReplyToEmail,
+            smtpEmailSettings.ReplyToEmail,
+            cancellationToken);
 
-        using SmtpClient smtpClient = new(host, port)
-        {
-            Credentials = new NetworkCredential(userName, password),
-            EnableSsl = true
-        };
-
-        using MailMessage message = new();
-        message.From = new MailAddress(senderEmail, senderName);
-        message.To.Add(new MailAddress(email));
-        message.Subject = subject;
-        message.Body = htmlMessage;
-        message.IsBodyHtml = true;
-        await smtpClient.SendMailAsync(message, cancellationToken);
+        return new EmailDeliveryMessage(
+            emailLog.ToEmail,
+            emailLog.Subject,
+            emailLog.Body,
+            TenantSettingKeys.NotificationProviderSmtp,
+            smtpSenderEmail,
+            smtpSenderName,
+            smtpReplyToEmail,
+            host,
+            port,
+            userName,
+            password,
+            null);
     }
 }

@@ -7,10 +7,17 @@ public static class NotificationsConfiguration
         IConfiguration configuration)
     {
         SMTPEmailSettings smtpSettings = configuration.GetSection("SMTPEmailSettings").Get<SMTPEmailSettings>()
-                                         ?? throw new InvalidOperationException("SMTP settings must be configured");
+                                         ?? new SMTPEmailSettings();
+        SendGridEmailSettings sendGridSettings =
+            configuration.GetSection("SendGridEmailSettings").Get<SendGridEmailSettings>()
+            ?? new SendGridEmailSettings();
 
         services.AddSingleton(smtpSettings);
+        services.AddSingleton(sendGridSettings);
 
+        services.AddScoped<IEmailDeliveryProvider, SmtpEmailDeliveryProvider>();
+        services.AddScoped<IEmailDeliveryProvider, SendGridEmailDeliveryProvider>();
+        services.AddScoped<IEmailDeliveryProvider, DummyEmailDeliveryProvider>();
         services.AddScoped<IEmailService, EmailService>();
 
         return services;

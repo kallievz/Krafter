@@ -136,22 +136,36 @@ public class TenantDbContext(DbContextOptions<TenantDbContext> options)
             {
                 Id = "c8a78156-8e6c-4f55-8841-7de7ea101011",
                 TenantId = SeedDataConstants.RootTenant.Id,
+                Key = TenantSettingKeys.NotificationsSmtpReplyToEmail,
+                Value = string.Empty
+            },
+            new TenantSetting
+            {
+                Id = "c8a78156-8e6c-4f55-8841-7de7ea101012",
+                TenantId = SeedDataConstants.RootTenant.Id,
                 Key = TenantSettingKeys.NotificationsSendGridApiKey,
                 Value = string.Empty,
                 IsSensitive = true
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101012",
+                Id = "c8a78156-8e6c-4f55-8841-7de7ea101013",
                 TenantId = SeedDataConstants.RootTenant.Id,
                 Key = TenantSettingKeys.NotificationsSendGridSenderEmail,
                 Value = string.Empty
             },
             new TenantSetting
             {
-                Id = "c8a78156-8e6c-4f55-8841-7de7ea101013",
+                Id = "c8a78156-8e6c-4f55-8841-7de7ea101014",
                 TenantId = SeedDataConstants.RootTenant.Id,
                 Key = TenantSettingKeys.NotificationsSendGridSenderName,
+                Value = string.Empty
+            },
+            new TenantSetting
+            {
+                Id = "c8a78156-8e6c-4f55-8841-7de7ea101015",
+                TenantId = SeedDataConstants.RootTenant.Id,
+                Key = TenantSettingKeys.NotificationsSendGridReplyToEmail,
                 Value = string.Empty
             }
         ];

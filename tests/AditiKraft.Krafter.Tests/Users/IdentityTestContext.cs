@@ -34,6 +34,8 @@ internal sealed class IdentityTestContext : IAsyncDisposable
             .AddEntityFrameworkStores<ApplicationDbContext>();
         services.AddSingleton<RecordingJobService>();
         services.AddSingleton<IJobService>(p => p.GetRequiredService<RecordingJobService>());
+        services.AddSingleton<FakeEmailService>();
+        services.AddSingleton<IEmailService>(p => p.GetRequiredService<FakeEmailService>());
         services.Configure<SecuritySettings>(settings =>
         {
             settings.PasswordReusePreventionWindowInDays = 90;
@@ -56,6 +58,7 @@ internal sealed class IdentityTestContext : IAsyncDisposable
     public IPasswordPolicyService PasswordPolicies => _scope.ServiceProvider.GetRequiredService<IPasswordPolicyService>();
     public CurrentTenantService Tenant => _provider.GetRequiredService<CurrentTenantService>();
     public RecordingJobService Jobs => _provider.GetRequiredService<RecordingJobService>();
+    public FakeEmailService EmailService => _provider.GetRequiredService<FakeEmailService>();
 
     public void SetTenant(string id)
         => Tenant.SetTenant(new CurrentTenantDetails { Id = id, Name = id, TenantLink = $"https://{id}.example.com" });
@@ -93,12 +96,18 @@ internal sealed class IdentityTestContext : IAsyncDisposable
 
     internal sealed class RecordingJobService : IJobService
     {
-        public List<SendEmailRequestInput> Emails { get; } = [];
+        public List<string> QueuedEmailLogIds { get; } = [];
 
         public Task EnqueueAsync<T>(T requestInput, string methodName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            Emails.Add(Assert.IsType<SendEmailRequestInput>(requestInput));
+            return Task.CompletedTask;
+        }
+
+        public Task EnqueueByLogIdAsync(string emailLogId, string methodName, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            QueuedEmailLogIds.Add(emailLogId);
             return Task.CompletedTask;
         }
     }

@@ -28,7 +28,8 @@ public sealed class CreateTenant
         ICurrentUser currentUser,
         AppUrls urls,
         IOptions<SecuritySettings> securitySettings,
-        SMTPEmailSettings smtpEmailSettings) : IScopedHandler
+        SMTPEmailSettings smtpEmailSettings,
+        SendGridEmailSettings sendGridEmailSettings) : IScopedHandler
     {
         public async Task<Response> CreateAsync(CreateOrUpdateTenantRequest request, CancellationToken cancellationToken)
         {
@@ -63,7 +64,8 @@ public sealed class CreateTenant
             entity.CreatedById = currentUser.GetUserId();
 
             dbContext.Tenants.Add(entity);
-            dbContext.TenantSettings.AddRange(CreateDefaultSettings(entity.Id!, securitySettings.Value, smtpEmailSettings));
+            dbContext.TenantSettings.AddRange(CreateDefaultSettings(entity.Id!, securitySettings.Value, smtpEmailSettings,
+                sendGridEmailSettings));
             try
             {
                 await dbContext.SaveChangesAsync(cancellationToken);
@@ -90,7 +92,8 @@ public sealed class CreateTenant
         private static List<TenantSetting> CreateDefaultSettings(
             string tenantId,
             SecuritySettings securitySettings,
-            SMTPEmailSettings smtpEmailSettings)
+            SMTPEmailSettings smtpEmailSettings,
+            SendGridEmailSettings sendGridEmailSettings)
         {
             return
             [
@@ -169,8 +172,15 @@ public sealed class CreateTenant
                 {
                     Id = Guid.CreateVersion7().ToString(),
                     TenantId = tenantId,
+                    Key = TenantSettingKeys.NotificationsSmtpReplyToEmail,
+                    Value = smtpEmailSettings.ReplyToEmail
+                },
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
                     Key = TenantSettingKeys.NotificationsSendGridApiKey,
-                    Value = string.Empty,
+                    Value = sendGridEmailSettings.ApiKey,
                     IsSensitive = true
                 },
                 new TenantSetting
@@ -178,14 +188,21 @@ public sealed class CreateTenant
                     Id = Guid.CreateVersion7().ToString(),
                     TenantId = tenantId,
                     Key = TenantSettingKeys.NotificationsSendGridSenderEmail,
-                    Value = string.Empty
+                    Value = sendGridEmailSettings.SenderEmail
                 },
                 new TenantSetting
                 {
                     Id = Guid.CreateVersion7().ToString(),
                     TenantId = tenantId,
                     Key = TenantSettingKeys.NotificationsSendGridSenderName,
-                    Value = string.Empty
+                    Value = sendGridEmailSettings.SenderName
+                },
+                new TenantSetting
+                {
+                    Id = Guid.CreateVersion7().ToString(),
+                    TenantId = tenantId,
+                    Key = TenantSettingKeys.NotificationsSendGridReplyToEmail,
+                    Value = sendGridEmailSettings.ReplyToEmail
                 }
             ];
         }

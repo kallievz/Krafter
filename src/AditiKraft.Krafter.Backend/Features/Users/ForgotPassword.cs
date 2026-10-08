@@ -17,7 +17,8 @@ public sealed class ForgotPassword
     internal sealed class Handler(
         UserManager<ApplicationUser> userManager,
         ITenantGetterService tenantGetterService,
-        IJobService jobService) : IScopedHandler
+        IJobService jobService,
+        IEmailService emailService) : IScopedHandler
     {
         public async Task<Response> ForgotPasswordAsync(ForgotPasswordRequest request)
         {
@@ -42,10 +43,10 @@ public sealed class ForgotPassword
 
             if (!string.IsNullOrWhiteSpace(user.Email))
             {
-                await jobService.EnqueueAsync(
+                string emailLogId = await emailService.QueueEmailAsync(
                     new SendEmailRequestInput { Email = user.Email, Subject = emailSubject, HtmlMessage = emailBody },
-                    nameof(Jobs.SendEmailJobAsync),
                     CancellationToken.None);
+                await jobService.EnqueueByLogIdAsync(emailLogId, nameof(Jobs.SendEmailJobAsync), CancellationToken.None);
             }
 
             return new Response();

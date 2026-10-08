@@ -19,6 +19,7 @@ public sealed class ChangePassword
         ICurrentUser currentUser,
         ITenantGetterService tenantGetterService,
         IJobService jobService,
+        IEmailService emailService,
         IPasswordPolicyService passwordPolicyService) : IScopedHandler
     {
         public async Task<Response> ChangePasswordAsync(ChangePasswordRequest request, CancellationToken cancellationToken)
@@ -67,10 +68,10 @@ public sealed class ChangePassword
 </html>";
             if (!string.IsNullOrWhiteSpace(user.Email))
             {
-                await jobService.EnqueueAsync(
+                string emailLogId = await emailService.QueueEmailAsync(
                     new SendEmailRequestInput { Email = user.Email, Subject = emailSubject, HtmlMessage = emailBody },
-                    nameof(Jobs.SendEmailJobAsync),
                     cancellationToken);
+                await jobService.EnqueueByLogIdAsync(emailLogId, nameof(Jobs.SendEmailJobAsync), cancellationToken);
             }
 
             return new Response();

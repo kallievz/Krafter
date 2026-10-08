@@ -22,6 +22,7 @@ public sealed class Login
         ITenantGetterService tenantGetterService,
         IPasswordPolicyService passwordPolicyService,
         IJobService jobService,
+        IEmailService emailService,
         IOptions<SecuritySettings> securitySettings
     ) : IScopedHandler
     {
@@ -73,10 +74,10 @@ public sealed class Login
 </body>
 </html>";
 
-                    await jobService.EnqueueAsync(
+                    string emailLogId = await emailService.QueueEmailAsync(
                         new SendEmailRequestInput { Email = user.Email, Subject = subject, HtmlMessage = htmlBody },
-                        nameof(Jobs.SendEmailJobAsync),
                         cancellationToken);
+                    await jobService.EnqueueByLogIdAsync(emailLogId, nameof(Jobs.SendEmailJobAsync), cancellationToken);
 
                     passwordPolicyService.MarkPasswordExpiryNotificationSent(user);
                     _ = await userManager.UpdateAsync(user);

@@ -4,6 +4,7 @@ using AditiKraft.Krafter.Backend.Common.Tenants;
 using AditiKraft.Krafter.Backend.Features.Auth.Common;
 using AditiKraft.Krafter.Backend.Features.Roles.Common;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
+using AditiKraft.Krafter.Backend.Infrastructure.Notifications;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,8 @@ public class ApplicationDbContext(
 #pragma warning restore CS0108, CS0114
     public virtual DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
     public virtual DbSet<PasswordHistory> PasswordHistories { get; set; }
+    public virtual DbSet<EmailLog> EmailLogs { get; set; }
+    public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -109,6 +112,39 @@ public class ApplicationDbContext(
             entity.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == tenantGetterService.Tenant.Id);
 
             entity.HasIndex(c => new { c.UserId, c.CreatedOn });
+        });
+
+        modelBuilder.Entity<EmailLog>(entity =>
+        {
+            entity.Property(c => c.Id).HasMaxLength(36);
+            entity.Property(c => c.CreatedById).HasMaxLength(36).IsRequired(false);
+            entity.Property(c => c.ToEmail).HasMaxLength(256);
+            entity.Property(c => c.Subject).HasMaxLength(500);
+            entity.Property(c => c.Provider).HasMaxLength(50);
+            entity.Property(c => c.Status).HasMaxLength(50);
+            entity.Property(c => c.TemplateKey).HasMaxLength(128);
+            entity.Property(c => c.EmailTemplateId).HasMaxLength(36);
+            entity.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == tenantGetterService.Tenant.Id);
+
+            entity.HasIndex(c => new { c.TenantId, c.Status, c.CreatedOn });
+
+            entity.HasOne(c => c.EmailTemplate)
+                .WithMany(c => c.EmailLogs)
+                .HasForeignKey(c => c.EmailTemplateId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<EmailTemplate>(entity =>
+        {
+            entity.Property(c => c.Id).HasMaxLength(36);
+            entity.Property(c => c.CreatedById).HasMaxLength(36).IsRequired(false);
+            entity.Property(c => c.Key).HasMaxLength(128).IsRequired();
+            entity.Property(c => c.Name).HasMaxLength(200).IsRequired();
+            entity.Property(c => c.SubjectTemplate).HasMaxLength(1000).IsRequired();
+            entity.Property(c => c.BodyTemplate).IsRequired();
+            entity.HasQueryFilter(c => c.IsDeleted == false && c.TenantId == tenantGetterService.Tenant.Id);
+
+            entity.HasIndex(c => new { c.TenantId, c.Key }).IsUnique();
         });
 
         modelBuilder.Entity<ApplicationUserLogin>(entity =>

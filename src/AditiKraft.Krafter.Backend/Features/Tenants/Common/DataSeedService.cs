@@ -19,6 +19,7 @@ namespace AditiKraft.Krafter.Backend.Features.Tenants.Common;
 public class DataSeedService(
     ITenantGetterService tenantGetterService,
     IJobService jobService,
+    IEmailService emailService,
     ApplicationDbContext applicationDbContext,
     TenantDbContext dbContext,
     RoleManager<ApplicationRole> roleManager,
@@ -168,7 +169,7 @@ public class DataSeedService(
                 {
                     string loginUrl = $"{tenantGetterService.Tenant.TenantLink}/login";
 
-                    await jobService.EnqueueAsync(new SendEmailRequestInput
+                    string emailLogId = await emailService.QueueEmailAsync(new SendEmailRequestInput
                     {
                         Email = tenant.AdminEmail,
                         Subject = "Welcome to Krafter",
@@ -180,7 +181,8 @@ public class DataSeedService(
                                       "We recommend changing your password after your first login for security reasons.<br><br>" +
                                       "Best Regards,<br>" +
                                       "The Krafter Team"
-                    }, nameof(Jobs.SendEmailJobAsync), CancellationToken.None);
+                    }, CancellationToken.None);
+                    await jobService.EnqueueByLogIdAsync(emailLogId, nameof(Jobs.SendEmailJobAsync), CancellationToken.None);
                 }
             }
         }

@@ -1,0 +1,1 @@
+using FluentEmail.Core; using System.Reflection; foreach(var p in typeof(Email).GetProperties(BindingFlags.Public|BindingFlags.Instance)){ Console.WriteLine($"PROP: {p.Name} {p.PropertyType.FullName} CanWrite={p.CanWrite}"); }

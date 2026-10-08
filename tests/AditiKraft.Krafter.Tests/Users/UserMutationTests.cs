@@ -31,7 +31,7 @@ public sealed class UserMutationTests
         ApplicationUser user = await context.Db.Users.SingleAsync();
         Assert.Equal("new@example.com", user.UserName);
         Assert.True(await context.Users.CheckPasswordAsync(user,
-            ExtractPassword(Assert.Single(context.Jobs.Emails).HtmlMessage)));
+            ExtractPassword(Assert.Single(context.EmailService.QueuedEmails).HtmlMessage)));
         ApplicationUserRole assignment = await context.Db.UserRoles.SingleAsync();
         Assert.Equal(user.Id, assignment.UserId);
         Assert.Equal(basic.Id, assignment.RoleId);
@@ -78,7 +78,7 @@ public sealed class UserMutationTests
         Assert.False(assignments.Single(role => role.RoleId == editor.Id).IsDeleted);
         Assert.Equal("changed@example.com", (await context.TenantDb.Tenants.SingleAsync(t => t.Id == "tenant-a")).AdminEmail);
         Assert.Equal("user@example.com", (await context.TenantDb.Tenants.SingleAsync(t => t.Id == "tenant-b")).AdminEmail);
-        Assert.Empty(context.Jobs.Emails);
+        Assert.Empty(context.EmailService.QueuedEmails);
     }
 
     [Fact]
@@ -104,7 +104,7 @@ public sealed class UserMutationTests
         Assert.Equal("ADMIN.CHANGED@EXAMPLE.COM", user.NormalizedUserName);
         Assert.Equal(passwordHash, user.PasswordHash);
         Assert.Equal(admin.Id, (await context.Db.UserRoles.SingleAsync()).RoleId);
-        Assert.Empty(context.Jobs.Emails);
+        Assert.Empty(context.EmailService.QueuedEmails);
     }
 
     [Fact]

@@ -477,6 +477,155 @@ namespace AditiKraft.Krafter.Backend.Migrations
                     b.ToTable("PasswordHistory", (string)null);
                 });
 
+            modelBuilder.Entity("AditiKraft.Krafter.Backend.Infrastructure.Notifications.EmailLog", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedById")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("DeleteReason")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EmailTemplateId")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("SentOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("TemplateKey")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<string>("ToEmail")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("EmailTemplateId");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("TenantId", "Status", "CreatedOn");
+
+                    b.ToTable("EmailLog", (string)null);
+                });
+
+            modelBuilder.Entity("AditiKraft.Krafter.Backend.Infrastructure.Notifications.EmailTemplate", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<string>("BodyTemplate")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedById")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("DeleteReason")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("SubjectTemplate")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("TenantId", "Key")
+                        .IsUnique();
+
+                    b.ToTable("EmailTemplate", (string)null);
+                });
+
             modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Roles.Common.ApplicationRole", b =>
                 {
                     b.HasOne("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUser", "CreatedBy")
@@ -633,6 +782,47 @@ namespace AditiKraft.Krafter.Backend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("AditiKraft.Krafter.Backend.Infrastructure.Notifications.EmailLog", b =>
+                {
+                    b.HasOne("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("AditiKraft.Krafter.Backend.Infrastructure.Notifications.EmailTemplate", "EmailTemplate")
+                        .WithMany("EmailLogs")
+                        .HasForeignKey("EmailTemplateId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("EmailTemplate");
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("AditiKraft.Krafter.Backend.Infrastructure.Notifications.EmailTemplate", b =>
+                {
+                    b.HasOne("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("AditiKraft.Krafter.Backend.Features.Users.Common.ApplicationUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("UpdatedBy");
+                });
+
             modelBuilder.Entity("AditiKraft.Krafter.Backend.Features.Roles.Common.ApplicationRole", b =>
                 {
                     b.Navigation("UserRoles");
@@ -643,6 +833,11 @@ namespace AditiKraft.Krafter.Backend.Migrations
                     b.Navigation("PasswordHistories");
 
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("AditiKraft.Krafter.Backend.Infrastructure.Notifications.EmailTemplate", b =>
+                {
+                    b.Navigation("EmailLogs");
                 });
 #pragma warning restore 612, 618
         }
