@@ -69,25 +69,6 @@ namespace AditiKraft.Krafter.Backend.Migrations.ApplicationDb
                 });
 
             migrationBuilder.CreateTable(
-                name: "AuditLogs",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TableName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    KeyValues = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OldValues = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NewValues = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AuditLogs", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AuditOutbox",
                 columns: table => new
                 {
@@ -660,9 +641,6 @@ namespace AditiKraft.Krafter.Backend.Migrations.ApplicationDb
             migrationBuilder.DropTable(
                 name: "AppUserToken",
                 schema: "identity");
-
-            migrationBuilder.DropTable(
-                name: "AuditLogs");
 
             migrationBuilder.DropTable(
                 name: "AuditOutbox");
