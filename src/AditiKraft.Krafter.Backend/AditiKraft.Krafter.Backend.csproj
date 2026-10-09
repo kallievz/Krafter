@@ -21,6 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Copy Radzen localization strings to output directory -->
+    <Content Include="Infrastructure\Persistence\Seeding\RadzenStrings.resx" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Background Jobs -->
 
     <PackageReference Include="Scalar.AspNetCore.Microsoft" />

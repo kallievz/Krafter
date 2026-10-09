@@ -75,6 +75,8 @@ public sealed class EndpointPermissionCoverageTests
         EndpointSignature.Create("GET", "/api/users/permissions"),
         EndpointSignature.Create("POST", "/api/users/change-password"),
         EndpointSignature.Create("POST", "/api/users/profile/language"),
+        EndpointSignature.Create("POST", "/api/users/localization/values/resolve"),
+        EndpointSignature.Create("POST", "/api/users/localization/values/resolve/batch"),
         EndpointSignature.Create("GET", "/api/users/grid-states"),
         EndpointSignature.Create("POST", "/api/users/grid-states"),
         EndpointSignature.Create("PUT", "/api/users/grid-states/{id}"),

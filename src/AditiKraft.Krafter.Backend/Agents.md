@@ -20,6 +20,8 @@
 - Use Shared contracts; do not create backend-only DTOs.
 - GET list endpoints accept `[AsParameters] GetRequestInput` and return `PaginationResponse<T>`.
 - DELETE endpoints use `MapDelete($"/{RouteSegment.ById}", ...)` with route parameter name matching the placeholder.
+- For secured features, keep permission coverage complete: every entity must have a `PermissionResource` constant and every `PermissionResource` must include `PermissionAction.Manage` in `PermissionCatalog`.
+- Every gated endpoint must use `.MustHavePermission(...)` with the relevant `PermissionAction` and `PermissionResource` (do not leave gated endpoints on bare `.RequireAuthorization()` unless explicitly documented as auth-only).
 
 ## File Placement
 - Feature operation: `src/AditiKraft.Krafter.Backend/Features/<Feature>/<Operation>.cs`
@@ -106,6 +108,11 @@ public sealed class GetUsers
 
 - Update this file when backend routing patterns or response conventions change.
 - Add feature-specific Agents when a feature grows beyond 5 operations.
+
+## Build Error Recurrence Rule
+- When a build error is encountered, fix the root cause instead of applying a symptom-only workaround.
+- Update the relevant `Agents.md` file(s) with the missing rule/pattern that would have prevented the error.
+- Proceed only after the fix and instruction update are both applied to avoid repeating the same error.
 
 ---
 Last Updated: 2026-09-12

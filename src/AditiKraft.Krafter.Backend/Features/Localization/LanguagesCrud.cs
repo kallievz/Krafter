@@ -13,7 +13,9 @@ namespace AditiKraft.Krafter.Backend.Features.Localization;
 
 public sealed class LanguagesCrud
 {
-    internal sealed class Handler(LocalizationDbContext localizationDbContext) : IScopedHandler
+    internal sealed class Handler(
+        LocalizationDbContext localizationDbContext,
+        ILocalizationTextResolver localizationTextResolver) : IScopedHandler
     {
         public async Task<Response<List<LanguageDto>>> GetAsync(CancellationToken cancellationToken)
         {
@@ -68,6 +70,7 @@ public sealed class LanguagesCrud
 
             await localizationDbContext.Languages.AddAsync(entity, cancellationToken).ConfigureAwait(false);
             await localizationDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            localizationTextResolver.InvalidateAll();
 
             LanguageDto dto = new()
             {
@@ -126,6 +129,7 @@ public sealed class LanguagesCrud
             entity.UpdatedOn = DateTime.UtcNow;
 
             await localizationDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            localizationTextResolver.InvalidateAll();
 
             LanguageDto dto = new()
             {
@@ -158,6 +162,7 @@ public sealed class LanguagesCrud
 
             localizationDbContext.Languages.Remove(entity);
             await localizationDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            localizationTextResolver.InvalidateAll();
 
             return Response.Success();
         }

@@ -13,7 +13,9 @@ namespace AditiKraft.Krafter.Backend.Features.Localization;
 
 public sealed class ResourceTranslationsCrud
 {
-    internal sealed class Handler(LocalizationDbContext localizationDbContext) : IScopedHandler
+    internal sealed class Handler(
+        LocalizationDbContext localizationDbContext,
+        ILocalizationTextResolver localizationTextResolver) : IScopedHandler
     {
         public async Task<Response<List<ResourceTranslationDto>>> GetAsync(CancellationToken cancellationToken)
         {
@@ -84,6 +86,8 @@ public sealed class ResourceTranslationsCrud
 
             await localizationDbContext.ResourceTranslations.AddAsync(entity, cancellationToken).ConfigureAwait(false);
             await localizationDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await localizationTextResolver.InvalidateByResourceIdAsync(entity.ResourceId, cancellationToken)
+                .ConfigureAwait(false);
 
             ResourceTranslationDto dto = new()
             {
@@ -152,12 +156,17 @@ public sealed class ResourceTranslationsCrud
                 return Response<ResourceTranslationDto>.BadRequest("A translation for this resource and language already exists.");
             }
 
+            string previousResourceId = entity.ResourceId;
             entity.ResourceId = request.ResourceId;
             entity.LanguageId = request.LanguageId;
             entity.Value = request.Value?.Trim() ?? string.Empty;
             entity.UpdatedOn = DateTime.UtcNow;
 
             await localizationDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await localizationTextResolver.InvalidateByResourceIdAsync(previousResourceId, cancellationToken)
+                .ConfigureAwait(false);
+            await localizationTextResolver.InvalidateByResourceIdAsync(entity.ResourceId, cancellationToken)
+                .ConfigureAwait(false);
 
             ResourceTranslationDto dto = new()
             {
@@ -188,8 +197,11 @@ public sealed class ResourceTranslationsCrud
                 return Response.NotFound("Resource translation not found.");
             }
 
+            string deletedResourceId = entity.ResourceId;
             localizationDbContext.ResourceTranslations.Remove(entity);
             await localizationDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await localizationTextResolver.InvalidateByResourceIdAsync(deletedResourceId, cancellationToken)
+                .ConfigureAwait(false);
 
             return Response.Success();
         }

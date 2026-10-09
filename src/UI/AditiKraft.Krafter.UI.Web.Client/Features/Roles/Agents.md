@@ -8,6 +8,7 @@
 - Use `ApiCallService` for all role API calls.
 - Await each `DialogService.OpenAsync` result. Reload only when the result is `true`.
 - Build grouped permissions from `PermissionCatalog.All` in the dialog.
+- Treat `PermissionAction.Manage` as the capability that controls management UI availability, while `PermissionAction.View` can remain for read-only/lookup scenarios.
 - Existing roles cannot be saved until their permissions load successfully. Keep Save and the permission selector disabled while loading or after a failed load. Show a retry action on failure.
 - An empty permission list from a successful load is valid. A failed response, missing role, or null permission list is not an empty selection.
 - Use a Task-returning submit handler and check `CanSave` inside it as well as on the Save button.
@@ -63,6 +64,11 @@ permissionsLoaded = true;
 ## 6. Evolution Triggers
 - Permission model changes.
 - Role permission UI changes.
+
+## 7. Build Error Recurrence Rule
+- When a build error is encountered, fix the root cause instead of applying a symptom-only workaround.
+- Update the relevant `Agents.md` file(s) with the missing rule/pattern that would have prevented the error.
+- Proceed only after the fix and instruction update are both applied to avoid repeating the same error.
 
 ## References (real code)
 - `src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Roles/Roles.razor.cs`

@@ -125,6 +125,11 @@ public partial class Users(
 
 - Update this file when ApiCallService or UI lifecycle patterns change.
 
+## Build Error Recurrence Rule
+- When a build error is encountered, fix the root cause instead of applying a symptom-only workaround.
+- Update the relevant `Agents.md` file(s) with the missing rule/pattern that would have prevented the error.
+- Proceed only after the fix and instruction update are both applied to avoid repeating the same error.
+
 ---
 Last Updated: 2026-09-28
 Verified Against: src/UI/AditiKraft.Krafter.UI.Web.Client/wwwroot/app.css, src/UI/AditiKraft.Krafter.UI.Web.Client/wwwroot/404.svg, src/UI/AditiKraft.Krafter.UI.Web.Client/wwwroot/404-dark.svg, src/UI/AditiKraft.Krafter.UI.Web.Client/wwwroot/favicon.svg, src/UI/AditiKraft.Krafter.UI.Web.Client/wwwroot/brand/logos, src/UI/AditiKraft.Krafter.UI.Web.Client/wwwroot/brand/loading-indicators, src/UI/AditiKraft.Krafter.UI.Web.Client/wwwroot/svg, src/UI/AditiKraft.Krafter.UI.Web/Components/App.razor, src/UI/AditiKraft.Krafter.UI.Web.Client/Routes.razor, src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Auth/Login.razor.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Auth/GoogleCallback.razor.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Users/Users.razor.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Roles/Roles.razor.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Tenants/Tenants.razor.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Users/IUsersApi.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Roles/IRolesApi.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Tenants/ITenantsApi.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Auth/IAuthApi.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/_Imports.razor, src/AditiKraft.Krafter.Contracts/Common/ApiRoutes.cs, docs/url-configuration.md, src/AditiKraft.Krafter.Contracts/Common/AppUrls.cs, src/UI/AditiKraft.Krafter.UI.Web/Infrastructure/Hosting/UiUrlConfiguration.cs

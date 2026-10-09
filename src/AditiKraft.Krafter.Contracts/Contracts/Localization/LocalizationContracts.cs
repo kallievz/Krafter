@@ -68,3 +68,25 @@ public sealed class UpdateResourceTranslationRequest
     public string LanguageId { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
 }
+
+public sealed class LocalizeTextRequest
+{
+    public string Key { get; set; } = string.Empty;
+    public string FallbackValue { get; set; } = string.Empty;
+    public List<string> Arguments { get; set; } = [];
+}
+
+public sealed class LocalizeBatchRequest
+{
+    public List<LocalizeTextRequest> Entries { get; set; } = [];
+}
+
+public sealed class LocalizedTextDto
+{
+    public string Key { get; set; } = string.Empty;
+    public string Value { get; set; } = string.Empty;
+    public string LanguageCode { get; set; } = "en";
+    public bool UsedFallback { get; set; }
+    public bool AutoCreatedEnglishResource { get; set; }
+    public bool AutoCreatedEnglishTranslation { get; set; }
+}

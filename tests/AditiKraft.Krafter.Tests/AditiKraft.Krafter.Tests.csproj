@@ -27,4 +27,8 @@
     <ProjectReference Include="../../src/UI/AditiKraft.Krafter.UI.Web/AditiKraft.Krafter.UI.Web.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UI\Localization\" />
+  </ItemGroup>
+
 </Project>

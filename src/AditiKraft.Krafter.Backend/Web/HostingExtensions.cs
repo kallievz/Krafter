@@ -52,6 +52,7 @@ public static class HostingExtensions
         builder.Services.AddAuthServices(builder.Configuration);
 
         builder.Services.AddApplicationServices();
+        builder.Services.AddMemoryCache();
 
         builder.Services.AddHttpClient(ExternalIntegrationHttpClientNames.MunsoftTokenClient, client =>
         {

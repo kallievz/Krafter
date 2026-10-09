@@ -1,3 +1,4 @@
+using AditiKraft.Krafter.UI.Web.Client.Features.Localization;
 using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Auth;
 using AditiKraft.Krafter.UI.Web.Client.Infrastructure.SignalR;
 using Blazored.SessionStorage;
@@ -26,5 +27,7 @@ public static class RegisterUIServices
         service.TryAddScoped<TokenRefreshCoordinator>();
         service.AddScoped<NotificationService>();
         service.AddScoped<ApiCallService>();
+        service.AddScoped<ILocalizationService, LocalizationService>();
+        service.AddScoped<Radzen.ILocalizer, Localizer>();
     }
 }

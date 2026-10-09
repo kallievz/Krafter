@@ -182,7 +182,7 @@ public static class Program
             logger.LogInformation("Localization language seeding complete.");
 
             logger.LogInformation("Seeding localization resources...");
-            await LocalizationDbSeedService.SeedResourcesAsync(localizationDbContext, CancellationToken.None).ConfigureAwait(false);
+            await LocalizationDbSeedService.SeedResourcesAsync(localizationDbContext, CancellationToken.None, logger).ConfigureAwait(false);
             logger.LogInformation("Localization resource seeding complete.");
 
             // Audit DB - must be present before application writes via audit interceptor

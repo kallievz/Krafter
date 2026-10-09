@@ -1,6 +1,7 @@
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Contracts.Integrations;
 using AditiKraft.Krafter.UI.Web.Client.Common.Models;
+using AditiKraft.Krafter.UI.Web.Client.Features.Localization;
 
 namespace AditiKraft.Krafter.UI.Web.Client.Features.Integrations;
 
@@ -9,6 +10,8 @@ public partial class MunsoftInstances(
     IIntegrationsApi integrationsApi
 ) : ComponentBase
 {
+    [Inject]
+    private Radzen.ILocalizer L { get; set; } = null!;
     public const string RoutePath = $"{ApiRoutes.Integrations}/munsoft";
 
     private readonly GetRequestInput _requestInput = new();
@@ -25,7 +28,7 @@ public partial class MunsoftInstances(
 
     protected override async Task OnInitializedAsync()
     {
-        LocalAppState.CurrentPageTitle = "Munsoft Instances";
+        LocalAppState.CurrentPageTitle = L.Localize("Nav_MunsoftInstances", "Munsoft Instances") ;
         await GetListAsync().ConfigureAwait(false);
     }
 

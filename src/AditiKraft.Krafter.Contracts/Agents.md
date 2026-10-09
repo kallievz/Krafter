@@ -72,7 +72,8 @@ return Response<UserDto>.Success(dto);
 1. Add the contract file under `Contracts/<Feature>/` with `AditiKraft.Krafter.Contracts.Contracts.<Feature>` namespace.
 2. Add a validator for request DTOs in the same file.
 3. Use `default!` for non-nullable properties.
-4. Build: `dotnet build src/AditiKraft.Krafter.Contracts/AditiKraft.Krafter.Contracts.csproj`.
+4. For permission changes, keep `PermissionCatalog` grouped by entity and ensure every `PermissionResource` has a `PermissionAction.Manage` entry.
+5. Build: `dotnet build src/AditiKraft.Krafter.Contracts/AditiKraft.Krafter.Contracts.csproj`.
 
 ## 5. Common Mistakes
 - Putting business logic in Shared.
@@ -84,6 +85,11 @@ return Response<UserDto>.Success(dto);
 - New shared pattern discovered in code.
 - Shared contracts or constants change structure.
 - New permissions or routes added.
+
+## 7. Build Error Recurrence Rule
+- When a build error is encountered, fix the root cause instead of applying a symptom-only workaround.
+- Update the relevant `Agents.md` file(s) with the missing rule/pattern that would have prevented the error.
+- Proceed only after the fix and instruction update are both applied to avoid repeating the same error.
 
 ---
 Last Updated: 2026-09-12

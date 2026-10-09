@@ -3,6 +3,7 @@ using AditiKraft.Krafter.Contracts.Common.Auth;
 using AditiKraft.Krafter.Contracts.Contracts.Localization;
 using AditiKraft.Krafter.UI.Web.Client.Common.Models;
 using AditiKraft.Krafter.UI.Web.Client.Features.AppInfo;
+using AditiKraft.Krafter.UI.Web.Client.Features.Localization;
 using AditiKraft.Krafter.UI.Web.Client.Features.Users;
 using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Auth;
 
@@ -17,17 +18,21 @@ public partial class MainLayout(
     MenuService menuService,
     LayoutService layoutService,
     IAuthenticationService authenticationService,
+#pragma warning disable CS9113 // Parameter is unread.
     ThemeService themeService,
     TooltipService tooltipService,
+#pragma warning restore CS9113 // Parameter is unread.
     ThemeManager themeManager,
     IAuthStorageService authStorageService,
     IUsersApi usersApi
 ) : IDisposable
 {
-    [CascadingParameter] public bool IsMobileDevice { get; set; }
+    [Inject]
+    private Radzen.ILocalizer L { get; set; } = null!;
 
-    private RadzenButton _wcagColorsInfo = default!;
-    private RadzenButton _rtlInfo = default!;
+    [CascadingParameter]
+    public bool IsMobileDevice { get; set; }
+
     private bool _sidebarExpanded = true;
     private bool _configSidebarExpanded = false;
     private bool _rendered;
@@ -54,6 +59,7 @@ public partial class MainLayout(
         _menus = menuService.Menus;
         await LoadLanguagesAsync();
         await LoadSelectedLanguageFromTokenAsync();
+    
         layoutService.HeadingChanged += HeadingChanged;
         authenticationService.LoginChange += async name =>
         {
@@ -121,7 +127,7 @@ public partial class MainLayout(
 
         Response response = await api.CallAsync(
             () => usersApi.UpdatePreferredLanguageAsync(new UpdatePreferredLanguageRequest { PreferredLanguageCode = code }),
-            successMessage: "Language updated successfully");
+            successMessage: L.Localize("Notification_Success", "Record updated successfully"));
 
         if (response.IsError)
         {
@@ -135,6 +141,12 @@ public partial class MainLayout(
         }
 
         _selectedLanguageCode = code;
+
+        // Invalidate localizer cache for new language
+        var localizer = L as Features.Localization.Localizer;
+        localizer?.InvalidateCache();
+       
+
         await InvokeAsync(StateHasChanged);
     }
 

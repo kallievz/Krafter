@@ -78,6 +78,11 @@ services.AddRefitClient<IUsersApi>(refitSettings)
 - Refit registration or handler chain changes.
 - New API client conventions added (e.g., BFF vs direct).
 
+## 7. Build Error Recurrence Rule
+- When a build error is encountered, fix the root cause instead of applying a symptom-only workaround.
+- Update the relevant `Agents.md` file(s) with the missing rule/pattern that would have prevented the error.
+- Proceed only after the fix and instruction update are both applied to avoid repeating the same error.
+
 ---
 Last Updated: 2026-09-12
 Verified Against: src/UI/AditiKraft.Krafter.UI.Web.Client/Infrastructure/Refit/UiDateTimeJsonConverter.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Users/IUsersApi.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Roles/IRolesApi.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Tenants/ITenantsApi.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Auth/IAuthApi.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/Features/AppInfo/IAppInfoApi.cs, src/UI/AditiKraft.Krafter.UI.Web.Client/Infrastructure/Refit/RefitServiceExtensions.cs, src/AditiKraft.Krafter.Contracts/Common/ApiRoutes.cs, docs/url-configuration.md, src/AditiKraft.Krafter.Contracts/Common/AppUrls.cs, src/UI/AditiKraft.Krafter.UI.Web/Infrastructure/Hosting/UiUrlConfiguration.cs

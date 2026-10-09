@@ -74,6 +74,11 @@ modelBuilder.Entity<Tenant>(entity =>
 - Changes to `ApplicationDbContext` soft-delete behavior.
 - New cross-entity configuration added in `ModelBuilderExtensions`.
 
+## 7. Build Error Recurrence Rule
+- When a build error is encountered, fix the root cause instead of applying a symptom-only workaround.
+- Update the relevant `Agents.md` file(s) with the missing rule/pattern that would have prevented the error.
+- Proceed only after the fix and instruction update are both applied to avoid repeating the same error.
+
 ---
 Last Updated: 2026-09-09
 Verified Against: src/AditiKraft.Krafter.Backend/Infrastructure/Persistence/ApplicationDbContext.cs, src/AditiKraft.Krafter.Backend/Infrastructure/Persistence/TenantDbContext.cs, src/AditiKraft.Krafter.Backend/Infrastructure/Persistence/ModelBuilderExtensions.cs, src/AditiKraft.Krafter.Backend/Features/Users/Common/UserService.cs, src/AditiKraft.Krafter.Backend.Migrator/Program.cs, src/AditiKraft.Krafter.Backend.Migrator/ApiDbInitializer.cs, aspire/AditiKraft.Krafter.Aspire.AppHost/Program.cs

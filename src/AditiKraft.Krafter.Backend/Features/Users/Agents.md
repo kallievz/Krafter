@@ -46,9 +46,17 @@ Role synchronization checks that requested roles belong to the current tenant. N
 ## 7. Permission Expansion Rule
 When adding new entities or feature endpoints, always update permission coverage in the same change:
 1. Add new resource constants to `PermissionResource`.
-2. Add matching `PermissionCatalog` entries (View/Create/Update/Delete as applicable).
-3. Apply `MustHavePermission(...)` on new/updated backend routes.
-4. Ensure seed/sync path grants missing permissions (admin/root via `DataSeedService` + `PermissionCatalog`).
+2. Ensure every entity has a `PermissionResource` entry.
+3. Add `PermissionAction.Manage` for every `PermissionResource` in `PermissionCatalog`.
+4. Add matching `PermissionCatalog` entries for other actions (View/Create/Update/Delete/Search as applicable).
+5. Keep `PermissionCatalog` entries grouped by entity using `#region` blocks or `//` section comments.
+6. Apply `MustHavePermission(...)` on every gated backend route with the relevant permission action/resource.
+7. Ensure seed/sync path grants missing permissions (admin/root via `DataSeedService` + `PermissionCatalog`).
+
+## 8. Build Error Recurrence Rule
+- When a build error is encountered, fix the root cause instead of applying a symptom-only workaround.
+- Update the relevant `Agents.md` file(s) with the missing rule/pattern that would have prevented the error.
+- Proceed only after the fix and instruction update are both applied to avoid repeating the same error.
 
 ## References (real code)
 - `src/AditiKraft.Krafter.Backend/Features/Users/Common/UserMutationService.cs`

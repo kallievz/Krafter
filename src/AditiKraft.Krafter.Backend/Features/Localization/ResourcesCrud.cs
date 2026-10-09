@@ -13,7 +13,9 @@ namespace AditiKraft.Krafter.Backend.Features.Localization;
 
 public sealed class ResourcesCrud
 {
-    internal sealed class Handler(LocalizationDbContext localizationDbContext) : IScopedHandler
+    internal sealed class Handler(
+        LocalizationDbContext localizationDbContext,
+        ILocalizationTextResolver localizationTextResolver) : IScopedHandler
     {
         public async Task<Response<List<ResourceDto>>> GetAsync(CancellationToken cancellationToken)
         {
@@ -61,6 +63,7 @@ public sealed class ResourcesCrud
 
             await localizationDbContext.Resources.AddAsync(entity, cancellationToken).ConfigureAwait(false);
             await localizationDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            localizationTextResolver.InvalidateByResourceKey(entity.Key);
 
             ResourceDto dto = new()
             {
@@ -97,6 +100,7 @@ public sealed class ResourcesCrud
 
             string key = request.Key.Trim();
             string description = request.Description?.Trim() ?? string.Empty;
+            string previousKey = entity.Key;
 
             int duplicateCount = await localizationDbContext.Resources.AsNoTracking()
                 .CountAsync(resource => resource.Id != id && resource.Key == key, cancellationToken)
@@ -112,6 +116,8 @@ public sealed class ResourcesCrud
             entity.UpdatedOn = DateTime.UtcNow;
 
             await localizationDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            localizationTextResolver.InvalidateByResourceKey(previousKey);
+            localizationTextResolver.InvalidateByResourceKey(entity.Key);
 
             ResourceDto dto = new()
             {
@@ -141,8 +147,10 @@ public sealed class ResourcesCrud
                 return Response.NotFound("Resource not found.");
             }
 
+            string deletedKey = entity.Key;
             localizationDbContext.Resources.Remove(entity);
             await localizationDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            localizationTextResolver.InvalidateByResourceKey(deletedKey);
 
             return Response.Success();
         }

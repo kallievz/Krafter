@@ -20,28 +20,28 @@
                   ShowCellDataAsTooltip="LocalAppState.ShowCellDataAsTooltip"
                   AllowColumnResize="LocalAppState.AllowColumnResize"
                   FilterMode="FilterMode.CheckBoxList"
-                  GroupPanelText="Drag a column header here to group results"
+                  GroupPanelText="@L.Localize("DataGrid_GroupPanelText", "Drag a column header here and drop it to group by that column")"
                   ExportFileBaseName="munsoft-instances"
                   ExportTitle="Munsoft instances"
                   ComponentKey="@RoutePath"
                   PageSizeOptions="new[] { 10, 20, 50, 100, 500 }"
                   PageNumbersCount="7"
                   PagerAlwaysVisible="true"
-                  PagingSummaryFormat="Showing {0}-{1} of {2} instances"
+                  PagingSummaryFormat="@L.Localize("Pager_PagingSummaryFormat", "Page {0} of {1} ({2} items)")"
                   OnFilterCleared="@OnGridFilterClearedAsync"
                   OnGridReset="@OnGridResetAsync">
     <ToolbarActions>
-        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary" Icon="sync" Text="Sync"
+        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary" Icon="sync" Text="@L.Localize("Button_Sync", "Syncronize")"
                       Click="@SyncAsync" Disabled="@_isLoading" />
     </ToolbarActions>
     <Columns>
-        <RadzenDataGridColumn TItem="MunsoftInstanceDto" Property="Id" Title="Id" Width="90px" TextAlign="TextAlign.Center"
+        <RadzenDataGridColumn TItem="MunsoftInstanceDto" Property="Id" Title="@L.Localize("MunsoftInstance_Id", "Id")" Width="90px" TextAlign="TextAlign.Center"
                               FilterLookupData="@_idLookupOptions" FilterLookupTextProperty="Text" FilterLookupValueProperty="Value" />
-        <RadzenDataGridColumn TItem="MunsoftInstanceDto" Property="Name" Title="Name"
+        <RadzenDataGridColumn TItem="MunsoftInstanceDto" Property="Name" Title="@L.Localize("MunsoftInstance_Name", "Name")"
                               FilterLookupData="@_nameLookupOptions" FilterLookupTextProperty="Text" FilterLookupValueProperty="Value" />
-        <RadzenDataGridColumn TItem="MunsoftInstanceDto" Property="MunicipalityName" Title="Municipality Name"
+        <RadzenDataGridColumn TItem="MunsoftInstanceDto" Property="MunicipalityName" Title="@L.Localize("MunsoftInstance_MunicipalityName", "Municipality Name")"
                               FilterLookupData="@_municipalityLookupOptions" FilterLookupTextProperty="Text" FilterLookupValueProperty="Value" />
-        <RadzenDataGridColumn TItem="MunsoftInstanceDto" Property="DemarcationCode" Title="Demarcation Code"
+        <RadzenDataGridColumn TItem="MunsoftInstanceDto" Property="DemarcationCode" Title="@L.Localize("MunsoftInstance_DemarcationCode", "Demarcation Code")"
                               FilterLookupData="@_demarcationLookupOptions" FilterLookupTextProperty="Text" FilterLookupValueProperty="Value" />
     </Columns>
 </AdvancedDataGrid>

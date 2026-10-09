@@ -2,6 +2,7 @@ namespace AditiKraft.Krafter.Contracts.Common.Auth.Permissions;
 
 public static class PermissionAction
 {
+    public const string Manage = nameof(Manage);
     public const string View = nameof(View);
     public const string Search = nameof(Search);
     public const string Create = nameof(Create);

@@ -52,6 +52,7 @@ await seedService.SeedBasicData(new SeedDataRequest());
 2. Persist related updates in `ApplicationDbContext` when needed.
 3. Prevent root tenant deletion (`SeedDataConstants.RootTenant.Id`).
 4. Seed new tenant data after creation.
+5. Apply `.MustHavePermission(...)` on every gated tenant endpoint with the relevant permission action/resource.
 
 ## 5. Common Mistakes
 - Skipping identifier uniqueness check.
@@ -62,6 +63,11 @@ await seedService.SeedBasicData(new SeedDataRequest());
 - Tenant link calculation changes.
 - Seed data flow changes.
 - Tenant admin email sync changes.
+
+## 7. Build Error Recurrence Rule
+- When a build error is encountered, fix the root cause instead of applying a symptom-only workaround.
+- Update the relevant `Agents.md` file(s) with the missing rule/pattern that would have prevented the error.
+- Proceed only after the fix and instruction update are both applied to avoid repeating the same error.
 
 ## References (real code)
 - `src/AditiKraft.Krafter.Backend/Migrations/TenantDb/20260912000000_UniqueTenantIdentifiers.cs`

@@ -45,6 +45,7 @@ if (basic is null)
 2. Use `RouteSegment.Refresh` for refresh.
 3. Use `ApiRoutes.ExternalAuth` + `RouteSegment.Google` for Google login.
 4. Pull IP from `X-Forwarded-For` when available.
+5. For every gated auth endpoint, apply `.MustHavePermission(...)` with the relevant permission pair; keep `.AllowAnonymous()` only on explicitly public flows.
 
 ## 5. Common Mistakes
 - Issuing tokens without validating user activation or confirmed email settings.
@@ -55,6 +56,11 @@ if (basic is null)
 - Token service or JWT settings change.
 - External provider flow changes.
 - Refresh token storage schema changes.
+
+## 7. Build Error Recurrence Rule
+- When a build error is encountered, fix the root cause instead of applying a symptom-only workaround.
+- Update the relevant `Agents.md` file(s) with the missing rule/pattern that would have prevented the error.
+- Proceed only after the fix and instruction update are both applied to avoid repeating the same error.
 
 ## References (real code)
 - `src/AditiKraft.Krafter.Backend/Features/Auth/Login.cs`

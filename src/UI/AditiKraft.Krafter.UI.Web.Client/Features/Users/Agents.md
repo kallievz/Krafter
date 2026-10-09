@@ -57,9 +57,17 @@ if (confirmed == true)
 
 ## 7. Permission Alignment Rule
 When new secured entities/features are introduced:
-1. Ensure menu/page permission keys use the new `PermissionResource` + `PermissionAction` combinations.
-2. Keep UI route/page policies aligned with backend `MustHavePermission(...)` checks.
-3. Validate that seeded admin permissions include any new capability before testing the UI.
+1. Ensure each entity has a `PermissionResource` entry.
+2. Ensure `PermissionCatalog` includes `PermissionAction.Manage` for every `PermissionResource`.
+3. Use `PermissionAction.Manage` for menu availability toggles; use `PermissionAction.View` for read-only/lookup access where management is not required.
+4. Ensure menu/page permission keys use the correct `PermissionResource` + `PermissionAction` combinations.
+5. Keep UI route/page policies aligned with backend `MustHavePermission(...)` checks.
+6. Validate that seeded admin permissions include any new capability before testing the UI.
+
+## 8. Build Error Recurrence Rule
+- When a build error is encountered, fix the root cause instead of applying a symptom-only workaround.
+- Update the relevant `Agents.md` file(s) with the missing rule/pattern that would have prevented the error.
+- Proceed only after the fix and instruction update are both applied to avoid repeating the same error.
 
 ## References (real code)
 - `src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Users/Users.razor.cs`

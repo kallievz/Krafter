@@ -1,11 +1,13 @@
 using AditiKraft.Krafter.Backend.Features.Localization.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace AditiKraft.Krafter.Backend.Infrastructure.Persistence.Seeding;
 
 public static class LocalizationDbSeedService
 {
+    private static ILogger? _logger;
     public static async Task SeedLanguagesAsync(LocalizationDbContext dbContext, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(dbContext);
@@ -25,9 +27,11 @@ public static class LocalizationDbSeedService
         }
     }
 
-    public static async Task SeedResourcesAsync(LocalizationDbContext dbContext, CancellationToken cancellationToken)
+    public static async Task SeedResourcesAsync(LocalizationDbContext dbContext, CancellationToken cancellationToken, ILogger? logger = null)
     {
         ArgumentNullException.ThrowIfNull(dbContext);
+
+        _logger = logger;
 
         List<Language> languages = await dbContext.Languages
             .AsNoTracking()
@@ -44,12 +48,16 @@ public static class LocalizationDbSeedService
             .AsNoTracking()
             .ToListAsync(cancellationToken).ConfigureAwait(false);
 
-        IEnumerable<Resource> missingResources = LocalizationResourceSeedData.GetResources()
+        IEnumerable<Resource> seedResources = LocalizationResourceSeedData.GetResources(logger);
+        _logger?.LogInformation("Discovered {Count} total localization resources (entity properties, buttons, navigation)", seedResources.Count());
+
+        IEnumerable<Resource> missingResources = seedResources
             .Where(seedResource => existingResources.All(existingResource => existingResource.Key != seedResource.Key));
 
         List<Resource> resourcesToInsert = missingResources.ToList();
         if (resourcesToInsert.Count() > 0)
         {
+            _logger?.LogInformation("Inserting {Count} missing localization resources", resourcesToInsert.Count());
             await dbContext.Resources.AddRangeAsync(resourcesToInsert, cancellationToken).ConfigureAwait(false);
             await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -71,8 +79,11 @@ public static class LocalizationDbSeedService
         List<ResourceTranslation> translationsToInsert = missingTranslations.ToList();
         if (translationsToInsert.Count() > 0)
         {
+            _logger?.LogInformation("Inserting {Count} missing localization translations", translationsToInsert.Count());
             await dbContext.ResourceTranslations.AddRangeAsync(translationsToInsert, cancellationToken).ConfigureAwait(false);
             await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
+
+        _logger?.LogInformation("Localization resources and translations seeding complete");
     }
 }

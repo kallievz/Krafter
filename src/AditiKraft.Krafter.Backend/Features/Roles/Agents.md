@@ -37,6 +37,7 @@ if (role.Name == RoleConstants.Admin)
 3. Store permission claims with `ClaimType = AppClaimTypes.Permission`.
 4. Keep admin-role permission protection intact.
 5. Keep empty-list clearing, soft-delete restoration, and tenant boundaries intact.
+6. Apply `.MustHavePermission(...)` on every gated role endpoint with the matching action/resource.
 
 ## 5. Common Mistakes
 - Allowing permission edits for the Admin role.
@@ -48,6 +49,11 @@ if (role.Name == RoleConstants.Admin)
 - Role permission storage changes.
 - Admin/basic role protection rules change.
 - Role read/write flows split into additional slices.
+
+## 7. Build Error Recurrence Rule
+- When a build error is encountered, fix the root cause instead of applying a symptom-only workaround.
+- Update the relevant `Agents.md` file(s) with the missing rule/pattern that would have prevented the error.
+- Proceed only after the fix and instruction update are both applied to avoid repeating the same error.
 
 ## References (real code)
 - `src/AditiKraft.Krafter.Backend/Features/Roles/Common/RolePermissionService.cs`

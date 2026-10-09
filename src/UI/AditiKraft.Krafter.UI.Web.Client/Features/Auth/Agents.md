@@ -68,6 +68,11 @@ bool isSuccess = await authenticationService.LoginAsync(new TokenRequest
 - Auth service or token storage logic changes.
 - External provider (Google) flow changes.
 
+## 7. Build Error Recurrence Rule
+- When a build error is encountered, fix the root cause instead of applying a symptom-only workaround.
+- Update the relevant `Agents.md` file(s) with the missing rule/pattern that would have prevented the error.
+- Proceed only after the fix and instruction update are both applied to avoid repeating the same error.
+
 ## References (real code)
 - `src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Auth/Login.razor`
 - `src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Auth/Login.razor.cs`

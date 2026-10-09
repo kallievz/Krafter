@@ -1,18 +1,17 @@
-﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AditiKraft.Krafter.Backend.Migrations.BackgroundJobs
+namespace AditiKraft.Krafter.Backend.Migrations.BackgroundJobs;
+
+/// <inheritdoc />
+public partial class Init_BackgroundJobs : Migration
 {
     /// <inheritdoc />
-    public partial class Init_BackgroundJobs : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.EnsureSchema(
-                name: "ticker");
+        migrationBuilder.EnsureSchema(
+            name: "ticker");
 
             migrationBuilder.CreateTable(
                 name: "CronTickers",
@@ -175,6 +174,5 @@ namespace AditiKraft.Krafter.Backend.Migrations.BackgroundJobs
             migrationBuilder.DropTable(
                 name: "CronTickers",
                 schema: "ticker");
-        }
     }
 }

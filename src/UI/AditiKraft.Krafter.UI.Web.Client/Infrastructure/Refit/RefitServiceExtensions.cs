@@ -5,6 +5,7 @@ using AditiKraft.Krafter.UI.Web.Client.Features.AppInfo;
 using AditiKraft.Krafter.UI.Web.Client.Features.Auth;
 using AditiKraft.Krafter.UI.Web.Client.Features.GridStates;
 using AditiKraft.Krafter.UI.Web.Client.Features.Integrations;
+using AditiKraft.Krafter.UI.Web.Client.Features.Localization;
 using AditiKraft.Krafter.UI.Web.Client.Features.Roles;
 using AditiKraft.Krafter.UI.Web.Client.Features.Tenants;
 using AditiKraft.Krafter.UI.Web.Client.Features.Users;
@@ -65,6 +66,11 @@ public static class RefitServiceExtensions
         services.AddRefitGeneratedClient<IAppInfoApi>(refitSettings)
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(placeholderUrl))
             .AddHttpMessageHandler(sp => new RefitTenantHandler(sp.GetRequiredService<TenantIdentifier>(), false));
+
+        services.AddRefitGeneratedClient<ILocalizationApi>(refitSettings)
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri(placeholderUrl))
+            .AddHttpMessageHandler(sp => new RefitTenantHandler(sp.GetRequiredService<TenantIdentifier>(), false))
+            .AddHttpMessageHandler<RefitAuthHandler>();
 
         return services;
     }
