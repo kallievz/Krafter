@@ -8,6 +8,7 @@ using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Http;
 using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Refit;
 using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Services;
+using AditiKraft.Krafter.UI.Web.Infrastructure.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -198,10 +199,12 @@ public sealed class TenantUrlRoutingTests
             context.Request.Scheme = uri.Scheme;
             context.Request.Host = HostString.FromUriComponent(uri);
             services.AddSingleton<IHttpContextAccessor>(new HttpContextAccessor { HttpContext = context });
+            services.AddSingleton<IRequestContextAccessor, ServerRequestContextAccessor>();
         }
         else
         {
             services.AddSingleton<NavigationManager>(new TestNavigationManager(origin));
+            services.AddSingleton<IRequestContextAccessor, BrowserRequestContextAccessor>();
         }
 
         return services.BuildServiceProvider();

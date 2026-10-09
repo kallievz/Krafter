@@ -53,6 +53,13 @@ if (confirmed == true)
 ## 6. Evolution Triggers
 - User role/permission UI changes.
 - Password flow UI changes.
+- New backend entities/features are added and need UI permission alignment.
+
+## 7. Permission Alignment Rule
+When new secured entities/features are introduced:
+1. Ensure menu/page permission keys use the new `PermissionResource` + `PermissionAction` combinations.
+2. Keep UI route/page policies aligned with backend `MustHavePermission(...)` checks.
+3. Validate that seeded admin permissions include any new capability before testing the UI.
 
 ## References (real code)
 - `src/UI/AditiKraft.Krafter.UI.Web.Client/Features/Users/Users.razor.cs`

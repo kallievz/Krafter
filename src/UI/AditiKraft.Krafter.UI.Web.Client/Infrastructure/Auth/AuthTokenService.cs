@@ -44,7 +44,7 @@ public sealed class AuthTokenService(
             }
 
             var request = new RefreshTokenRequest { Token = token, RefreshToken = refreshToken };
-            Response<TokenResponse> response = await apiService.RefreshTokenAsync(request, cancellationToken);
+            Response<TokenResponse> response = await apiService.RefreshTokenAsync(request, CancellationToken.None);
             return await SaveTokensAsync(response);
         }, cancellationToken);
 

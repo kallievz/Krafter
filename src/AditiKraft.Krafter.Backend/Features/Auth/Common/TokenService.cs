@@ -62,16 +62,31 @@ public class TokenService(
             applicationDbContext.UserRefreshTokens.Update(tokenResponse);
         }
 
+        string preferredLanguageCode = string.IsNullOrWhiteSpace(user.PreferredLanguageCode)
+            ? "en"
+            : user.PreferredLanguageCode.Trim().ToLowerInvariant();
+
+        if (user.PreferredLanguageCode != preferredLanguageCode)
+        {
+            user.PreferredLanguageCode = preferredLanguageCode;
+        }
+
         Response<List<string>>? permissions = await userService.GetPermissionsAsync(user.Id, CancellationToken.None);
         await applicationDbContext.SaveChangesAsync();
         return new TokenResponse(token, tokenResponse.RefreshToken, tokenResponse.RefreshTokenExpiryTime,
-            tokenResponse.TokenExpiryTime, permissions?.Data ?? new List<string>());
+            tokenResponse.TokenExpiryTime, permissions?.Data ?? new List<string>(), preferredLanguageCode);
     }
 
-    private string GenerateJwt(ApplicationUser user, string ipAddress) =>
-        GenerateEncryptedToken(GetSigningCredentials(), GetClaims(user, ipAddress));
+    private string GenerateJwt(ApplicationUser user, string ipAddress)
+    {
+        string preferredLanguageCode = string.IsNullOrWhiteSpace(user.PreferredLanguageCode)
+            ? "en"
+            : user.PreferredLanguageCode.Trim().ToLowerInvariant();
 
-    private static IEnumerable<Claim> GetClaims(ApplicationUser user, string ipAddress) =>
+        return GenerateEncryptedToken(GetSigningCredentials(), GetClaims(user, ipAddress, preferredLanguageCode));
+    }
+
+    private static IEnumerable<Claim> GetClaims(ApplicationUser user, string ipAddress, string preferredLanguageCode) =>
         new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id),
@@ -80,7 +95,8 @@ public class TokenService(
             new(ClaimTypes.Name, user.FirstName ?? string.Empty),
             new(ClaimTypes.Surname, user.LastName ?? string.Empty),
             new(AppClaimTypes.IpAddress, ipAddress),
-            new(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty)
+            new(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty),
+            new(AppClaimTypes.PreferredLanguageCode, preferredLanguageCode)
         };
 
     private static string GenerateRefreshToken()

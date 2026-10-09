@@ -1,8 +1,6 @@
-using System.Net;
-using System.Security.Cryptography;
 using System.Text;
 using AditiKraft.Krafter.UI.Web.Client.Features.Auth;
-using Microsoft.Extensions.Caching.Hybrid;
+using Microsoft.Extensions.Caching.Distributed;
 using Refit;
 
 namespace AditiKraft.Krafter.UI.Web.Infrastructure.Auth;
@@ -10,16 +8,9 @@ namespace AditiKraft.Krafter.UI.Web.Infrastructure.Auth;
 public class ServerAuthApiService(
     IAuthApi authApi,
     IAuthStorageService localStorage,
-    HybridCache cache,
+    IDistributedCache cache,
     ILogger<ServerAuthApiService> logger) : IAuthApiService
 {
-    private static readonly HybridCacheEntryOptions _refreshCacheOptions = new()
-    {
-        Expiration = TimeSpan.FromSeconds(5),
-        LocalCacheExpiration = TimeSpan.FromSeconds(5),
-        Flags = HybridCacheEntryFlags.DisableDistributedCache
-    };
-
     public async Task<Response<TokenResponse>> CreateTokenAsync(TokenRequest request,
         CancellationToken cancellation)
     {
@@ -44,7 +35,7 @@ public class ServerAuthApiService(
             {
                 IsError = true,
                 Message = "Failed to create token. Please log in again.",
-                StatusCode = (int)HttpStatusCode.InternalServerError
+                StatusCode = (int)System.Net.HttpStatusCode.InternalServerError
             };
         }
     }
@@ -72,7 +63,7 @@ public class ServerAuthApiService(
             {
                 IsError = true,
                 Message = "Failed to register user. Please try again.",
-                StatusCode = (int)HttpStatusCode.InternalServerError
+                StatusCode = (int)System.Net.HttpStatusCode.InternalServerError
             };
         }
     }
@@ -82,27 +73,36 @@ public class ServerAuthApiService(
     {
         try
         {
-            // Handler scopes and HTTP requests share the result only for this exact token pair.
-            // Hash credentials to keep them out of cache keys; never write tokens to the distributed cache.
             string key = "auth-refresh:" + Convert.ToHexString(
-                SHA256.HashData(Encoding.UTF8.GetBytes($"{request.Token}\0{request.RefreshToken}")));
-            return await cache.GetOrCreateAsync(key, async cancel =>
-            {
-                Response<TokenResponse> response = await authApi.RefreshTokenAsync(request, cancel);
-                if (response is not { IsError: false, Data: not null } ||
-                    string.IsNullOrWhiteSpace(response.Data.Token) ||
-                    string.IsNullOrWhiteSpace(response.Data.RefreshToken))
-                {
-                    // A failed attempt must not prevent a later retry with the same credentials.
-                    throw new RefreshRejectedException(response);
-                }
+                System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes($"{request.Token}\0{request.RefreshToken}")));
 
+            byte[]? cachedBytes = await cache.GetAsync(key, cancellation);
+            if (cachedBytes is not null)
+            {
+                string cachedJson = Encoding.UTF8.GetString(cachedBytes);
+                Response<TokenResponse>? cachedResponse = System.Text.Json.JsonSerializer.Deserialize<Response<TokenResponse>>(cachedJson);
+                if (cachedResponse is not null)
+                {
+                    return cachedResponse;
+                }
+            }
+
+            Response<TokenResponse> response = await authApi.RefreshTokenAsync(request, cancellation);
+            if (response is not { IsError: false, Data: not null } ||
+                string.IsNullOrWhiteSpace(response.Data.Token) ||
+                string.IsNullOrWhiteSpace(response.Data.RefreshToken))
+            {
                 return response;
-            }, _refreshCacheOptions, cancellationToken: cancellation);
-        }
-        catch (RefreshRejectedException ex)
-        {
-            return ex.Response;
+            }
+
+            string serialized = System.Text.Json.JsonSerializer.Serialize(response);
+            DistributedCacheEntryOptions entryOptions = new()
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(5)
+            };
+
+            await cache.SetAsync(key, Encoding.UTF8.GetBytes(serialized), entryOptions, cancellation);
+            return response;
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
         {
@@ -125,7 +125,7 @@ public class ServerAuthApiService(
             {
                 IsError = true,
                 Message = "Failed to refresh token. Please log in again.",
-                StatusCode = (int)HttpStatusCode.InternalServerError
+                StatusCode = (int)System.Net.HttpStatusCode.InternalServerError
             };
         }
     }
@@ -135,7 +135,7 @@ public class ServerAuthApiService(
     {
         try
         {
-            var googleRequest = new GoogleAuthRequest { Code = request.Code ?? string.Empty };
+            GoogleAuthRequest googleRequest = new() { Code = request.Code ?? string.Empty };
             return await authApi.GoogleAuthAsync(googleRequest, cancellation);
         }
         catch (ApiException ex)
@@ -155,7 +155,7 @@ public class ServerAuthApiService(
             {
                 IsError = true,
                 Message = "Failed to authenticate. Please try again.",
-                StatusCode = (int)HttpStatusCode.InternalServerError
+                StatusCode = (int)System.Net.HttpStatusCode.InternalServerError
             };
         }
     }
@@ -172,6 +172,23 @@ public class ServerAuthApiService(
 
             if (!string.IsNullOrWhiteSpace(token) && !string.IsNullOrWhiteSpace(refreshToken))
             {
+                string preferredLanguageCode = "en";
+                try
+                {
+                    JwtSecurityToken jwtToken =
+                        new JwtSecurityTokenHandler().ReadJwtToken(token);
+                    string? tokenLanguageCode = jwtToken.Claims
+                        .FirstOrDefault(claim => claim.Type == AppClaimTypes.PreferredLanguageCode)?.Value;
+                    if (!string.IsNullOrWhiteSpace(tokenLanguageCode))
+                    {
+                        preferredLanguageCode = tokenLanguageCode.Trim().ToLowerInvariant();
+                    }
+                }
+                catch
+                {
+                    preferredLanguageCode = "en";
+                }
+
                 return new Response<TokenResponse>
                 {
                     Data = new TokenResponse(
@@ -179,8 +196,9 @@ public class ServerAuthApiService(
                         refreshToken,
                         refreshTokenExpiry,
                         authTokenExpiryDate,
-                        permissions?.ToList() ?? []),
-                    StatusCode = (int)HttpStatusCode.OK
+                        permissions?.ToList() ?? [],
+                        preferredLanguageCode),
+                    StatusCode = (int)System.Net.HttpStatusCode.OK
                 };
             }
 
@@ -188,7 +206,7 @@ public class ServerAuthApiService(
             {
                 IsError = true,
                 Message = "No valid token found. Please log in again.",
-                StatusCode = (int)HttpStatusCode.Unauthorized
+                StatusCode = (int)System.Net.HttpStatusCode.Unauthorized
             };
         }
         catch (Exception ex)
@@ -198,15 +216,10 @@ public class ServerAuthApiService(
             {
                 IsError = true,
                 Message = "Failed to get current token.",
-                StatusCode = (int)HttpStatusCode.InternalServerError
+                StatusCode = (int)System.Net.HttpStatusCode.InternalServerError
             };
         }
     }
 
     public Task LogoutAsync(CancellationToken cancellation) => localStorage.ClearCacheAsync();
-
-    private sealed class RefreshRejectedException(Response<TokenResponse> response) : Exception
-    {
-        public Response<TokenResponse> Response { get; } = response;
-    }
 }

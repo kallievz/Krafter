@@ -1,5 +1,9 @@
+using System.IdentityModel.Tokens.Jwt;
+using AditiKraft.Krafter.Contracts.Common.Auth;
+using AditiKraft.Krafter.Contracts.Contracts.Localization;
 using AditiKraft.Krafter.UI.Web.Client.Common.Models;
 using AditiKraft.Krafter.UI.Web.Client.Features.AppInfo;
+using AditiKraft.Krafter.UI.Web.Client.Features.Users;
 using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Auth;
 
 namespace AditiKraft.Krafter.UI.Web.Client.Common.Components.Layout;
@@ -16,7 +20,8 @@ public partial class MainLayout(
     ThemeService themeService,
     TooltipService tooltipService,
     ThemeManager themeManager,
-    IAuthStorageService authStorageService
+    IAuthStorageService authStorageService,
+    IUsersApi usersApi
 ) : IDisposable
 {
     [CascadingParameter] public bool IsMobileDevice { get; set; }
@@ -28,6 +33,8 @@ public partial class MainLayout(
     private bool _rendered;
 
     private IEnumerable<Menu> _menus = new List<Menu>();
+    private List<LanguageDto> _availableLanguages = new();
+    private string _selectedLanguageCode = "en";
 
     private ICollection<string>? _cachedPermissions = new List<string>();
     public Response<string>? AppInfo { get; set; }
@@ -45,11 +52,16 @@ public partial class MainLayout(
         AppInfo = await api.CallAsync(() => appInfoApi.GetAppInfoAsync(), showErrorNotification: false);
         _cachedPermissions = await authStorageService.GetCachedPermissionsAsync() ?? new List<string>();
         _menus = menuService.Menus;
+        await LoadLanguagesAsync();
+        await LoadSelectedLanguageFromTokenAsync();
         layoutService.HeadingChanged += HeadingChanged;
         authenticationService.LoginChange += async name =>
         {
             _cachedPermissions = await authStorageService.GetCachedPermissionsAsync() ?? new List<string>();
             _menus = menuService.Menus;
+            await LoadLanguagesAsync();
+            await LoadSelectedLanguageFromTokenAsync();
+            await InvokeAsync(StateHasChanged);
         };
     }
 
@@ -57,6 +69,73 @@ public partial class MainLayout(
     {
         string? term = args.Value?.ToString();
         _menus = string.IsNullOrEmpty(term) ? menuService.Menus : menuService.Filter(term);
+    }
+
+    private async Task LoadLanguagesAsync()
+    {
+        Response<List<LanguageDto>> response = await api.CallAsync(() => usersApi.GetLanguagesAsync(),
+            showErrorNotification: false);
+
+        _availableLanguages = response.Data?
+            .Where(language => language.IsActive)
+            .OrderBy(language => language.Name)
+            .ToList() ?? new List<LanguageDto>();
+
+        if (_availableLanguages.Count == 0)
+        {
+            _availableLanguages.Add(new LanguageDto { Code = "en", Name = "English", IsActive = true });
+        }
+    }
+
+    private async Task LoadSelectedLanguageFromTokenAsync()
+    {
+        string? cachedToken = await authStorageService.GetCachedAuthTokenAsync();
+        string selectedCode = "en";
+
+        if (!string.IsNullOrWhiteSpace(cachedToken))
+        {
+            JwtSecurityTokenHandler tokenHandler = new();
+            JwtSecurityToken token = tokenHandler.ReadJwtToken(cachedToken);
+            string? tokenLanguageCode = token.Claims.FirstOrDefault(c => c.Type == AppClaimTypes.PreferredLanguageCode)?.Value;
+            if (!string.IsNullOrWhiteSpace(tokenLanguageCode))
+            {
+                selectedCode = tokenLanguageCode.Trim().ToLowerInvariant();
+            }
+        }
+
+        _selectedLanguageCode = selectedCode;
+    }
+
+    private async Task ChangeLanguageAsync(object value)
+    {
+        string code = value?.ToString()?.Trim().ToLowerInvariant() ?? "en";
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            code = "en";
+        }
+
+        if (string.Equals(code, _selectedLanguageCode, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        Response response = await api.CallAsync(
+            () => usersApi.UpdatePreferredLanguageAsync(new UpdatePreferredLanguageRequest { PreferredLanguageCode = code }),
+            successMessage: "Language updated successfully");
+
+        if (response.IsError)
+        {
+            return;
+        }
+
+        bool synchronized = await authenticationService.SynchronizeAsync();
+        if (!synchronized)
+        {
+            await authenticationService.RefreshAsync();
+        }
+
+        _selectedLanguageCode = code;
+        await InvokeAsync(StateHasChanged);
     }
 
     private void HeadingChanged(object? sender, EventArgs e) => InvokeAsync(StateHasChanged);

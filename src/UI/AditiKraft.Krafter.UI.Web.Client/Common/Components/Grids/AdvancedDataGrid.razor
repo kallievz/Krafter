@@ -1,0 +1,96 @@
+@using AditiKraft.Krafter.UI.Web.Client.Common.Components.Layout
+@typeparam TItem where TItem : notnull
+
+<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem"
+             JustifyContent="JustifyContent.End" Wrap="FlexWrap.Wrap" class="mt-1 mb-2">
+    @if (ShowResetButton)
+    {
+        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Light" Icon="restart_alt" Text="Reset Grid"
+                      Click="@ResetGridAsync" Disabled="@IsLoading" />
+    }
+
+    @if (EnableStateManager && !string.IsNullOrWhiteSpace(ComponentKey))
+    {
+        <GridStateManager ComponentKey="@ComponentKey"
+                          CurrentStateJson="@CurrentStateJson"
+                          Disabled="@(IsLoading || _isExporting)"
+                          ResetVersion="@_gridStateResetVersion"
+                          OnApplyStateJson="@ApplyStateJsonAsync" />
+    }
+
+    @if (ShowExportControls)
+    {
+        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Success" Icon="grid_on" Text="Export Excel"
+                      Click="@ExportExcelAsync" Disabled="@_isExporting" />
+        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Icon="description" Text="Export CSV"
+                      Click="@ExportCsvAsync" Disabled="@_isExporting" />
+    }
+
+    @if (ToolbarActions is not null)
+    {
+        @ToolbarActions
+    }
+</RadzenStack>
+
+@if (ShowSkeletonWhenLoading && IsLoading && !(Data?.Any() ?? false))
+{
+    <RadzenStack Gap="0.5rem" class="rz-mb-2">
+        @for (int rowIndex = 0; rowIndex < SkeletonRows; rowIndex++)
+        {
+            <RadzenSkeleton Variant="SkeletonVariant.Text" Style="height: 20px; width: 100%;" />
+        }
+    </RadzenStack>
+}
+else
+{
+    <RadzenDataGrid @ref="_grid"
+                    TItem="TItem"
+                    @bind-Settings="_settings"
+                    Responsive="true"
+                    ShowCellDataAsTooltip="ShowCellDataAsTooltip"
+                    Density="@EffectiveDensity"
+                    AllowColumnResize="AllowColumnResize"
+                    AllowColumnPicking="AllowColumnPicking"
+                    ColumnPickerAllowFiltering="true"
+                    AllowFiltering="AllowFiltering"
+                    FilterMode="@FilterMode"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    LogicalFilterOperator="LogicalFilterOperator"
+                    FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                    FilterCleared="@OnFilterClearedInternalAsync"
+                    AllowSorting="AllowSorting"
+                    AllowMultiColumnSorting="AllowMultiColumnSorting"
+                    AllowPaging="AllowPaging"
+                    PageSize="@EffectivePageSize"
+                    PageSizeOptions="@EffectivePageSizeOptions"
+                    PageNumbersCount="@PageNumbersCount"
+                    PagerAlwaysVisible="@PagerAlwaysVisible"
+                    PagerHorizontalAlign="HorizontalAlign.Center"
+                    ShowPagingSummary="ShowPagingSummary"
+                    PagingSummaryFormat="@PagingSummaryFormat"
+                    AllowGrouping="AllowGrouping"
+                    GroupPanelText="@GroupPanelText"
+                    IsLoading="IsLoading"
+                    Data="Data"
+                    Count="Count"
+                    LoadData="LoadData"
+                    AllowVirtualization="@(AllowVirtualization && !AllowGrouping)"
+                    Style="@GridStyle">
+        <Columns>
+            @Columns
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@if (_isExporting)
+{
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.75rem" AlignItems="AlignItems.Center" class="rz-mt-2">
+        <RadzenProgressBar Value="@ExportProgressValue" ShowValue="true" Style="width: 260px" AriaLabel="Export progress" />
+        <RadzenText TextStyle="TextStyle.Body2">@($"{_loadedRows} of {_totalRows} rows")</RadzenText>
+    </RadzenStack>
+}
+
+@if (!string.IsNullOrWhiteSpace(_statusMessage))
+{
+    <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">@_statusMessage</RadzenText>
+}

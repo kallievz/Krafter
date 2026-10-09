@@ -1,4 +1,5 @@
 using AditiKraft.Krafter.Backend.Infrastructure.Jobs;
+using AditiKraft.Krafter.Backend.Infrastructure.Localization;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -70,5 +71,17 @@ public class DesignTimeAuditDbContextFactory : IDesignTimeDbContextFactory<Audit
         optionsBuilder.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure());
 
         return new AuditDbContext(optionsBuilder.Options);
+    }
+}
+
+public class DesignTimeLocalizationDbContextFactory : IDesignTimeDbContextFactory<LocalizationDbContext>
+{
+    public LocalizationDbContext CreateDbContext(string[] args)
+    {
+        string connectionString = DesignTimeConnectionStringHelper.GetConnectionString();
+        var optionsBuilder = new DbContextOptionsBuilder<LocalizationDbContext>();
+        optionsBuilder.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure());
+
+        return new LocalizationDbContext(optionsBuilder.Options, null!, null!);
     }
 }

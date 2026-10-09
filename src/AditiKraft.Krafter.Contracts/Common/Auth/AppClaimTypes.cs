@@ -6,4 +6,5 @@ public class AppClaimTypes
     public const string Permission = "permission";
     public const string IpAddress = "ipAddress";
     public const string Expiration = "exp";
+    public const string PreferredLanguageCode = "preferredLanguageCode";
 }

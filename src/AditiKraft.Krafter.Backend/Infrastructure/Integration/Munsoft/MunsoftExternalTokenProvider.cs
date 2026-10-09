@@ -56,7 +56,7 @@ public sealed class MunsoftExternalTokenProvider(
         HttpClient httpClient = httpClientFactory.CreateClient(ExternalIntegrationHttpClientNames.MunsoftTokenClient);
         httpClient.BaseAddress = new Uri(baseAddress, UriKind.Absolute);
 
-        var loginPayload = new MunsoftLoginRequest(userName, password);
+        MunsoftLoginRequest loginPayload = new MunsoftLoginRequest(userName, password);
 
         using HttpResponseMessage response = await httpClient
             .PostAsJsonAsync(loginPath, loginPayload, cancellationToken).ConfigureAwait(false);

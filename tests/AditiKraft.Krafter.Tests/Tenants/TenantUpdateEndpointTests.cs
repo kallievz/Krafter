@@ -1,8 +1,11 @@
 using System.Net;
 using System.Net.Http.Json;
+using AditiKraft.Krafter.Backend.Common.Auth;
 using AditiKraft.Krafter.Backend.Features.Tenants;
 using AditiKraft.Krafter.Backend.Features.Tenants.Common;
+using AditiKraft.Krafter.Backend.Infrastructure.Notifications;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
+using AditiKraft.Krafter.Backend.Web.Configuration;
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Auth.Permissions;
 using AditiKraft.Krafter.Contracts.Contracts.Tenants;
@@ -36,7 +39,7 @@ public sealed class TenantUpdateEndpointTests
             request["id"] = bodyId;
         }
         using var client = new HttpClient { BaseAddress = new Uri(Assert.Single(app.Urls)) };
-        using HttpResponseMessage response = await client.PutAsJsonAsync($"/{ApiRoutes.Tenants}/{routeId}", request);
+        using HttpResponseMessage response = await client.PatchAsJsonAsync($"/{ApiRoutes.Tenants}/{routeId}", request);
 
         Assert.Equal(expectedStatus, response.StatusCode);
         await using AsyncServiceScope verificationScope = app.Services.CreateAsyncScope();
@@ -57,7 +60,7 @@ public sealed class TenantUpdateEndpointTests
     {
         await using WebApplication app = await CreateAppAsync();
         using var client = new HttpClient { BaseAddress = new Uri(Assert.Single(app.Urls)) };
-        using HttpResponseMessage response = await client.PutAsJsonAsync($"/{ApiRoutes.Tenants}/blue-id", new
+        using HttpResponseMessage response = await client.PatchAsJsonAsync($"/{ApiRoutes.Tenants}/blue-id", new
         {
             Identifier = "blue",
             Name = "Blue tenant",
@@ -83,7 +86,7 @@ public sealed class TenantUpdateEndpointTests
     {
         await using WebApplication app = await CreateAppAsync();
         using var client = new HttpClient { BaseAddress = new Uri(Assert.Single(app.Urls)) };
-        using HttpResponseMessage response = await client.PutAsJsonAsync($"/{ApiRoutes.Tenants}/blue-id", new
+        using HttpResponseMessage response = await client.PatchAsJsonAsync($"/{ApiRoutes.Tenants}/blue-id", new
         {
             Identifier = "blue",
             Name = "Blue tenant updated",
@@ -105,7 +108,7 @@ public sealed class TenantUpdateEndpointTests
     {
         await using WebApplication app = await CreateAppAsync();
         using var client = new HttpClient { BaseAddress = new Uri(Assert.Single(app.Urls)) };
-        using HttpResponseMessage response = await client.PutAsJsonAsync($"/{ApiRoutes.Tenants}/root", new
+        using HttpResponseMessage response = await client.PatchAsJsonAsync($"/{ApiRoutes.Tenants}/root", new
         {
             Identifier = "root",
             Name = "Root tenant",
@@ -132,7 +135,11 @@ public sealed class TenantUpdateEndpointTests
             TenantBaseDomain = "getkrafter.dev",
             ApiBaseUrl = "https://api.getkrafter.dev"
         });
-        builder.Services.AddScoped<UpdateTenant.Handler>();
+        builder.Services.AddScoped<TenantsCrud.Handler>();
+        builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+        builder.Services.AddSingleton(new SMTPEmailSettings());
+        builder.Services.AddSingleton(new SendGridEmailSettings());
+        builder.Services.Configure<SecuritySettings>(_ => { });
         builder.Services.AddValidatorsFromAssemblyContaining<CreateOrUpdateTenantRequestValidator>();
         builder.AddFluentValidationEndpointFilter();
         builder.Services.AddAuthorization(options => options.AddPolicy(
@@ -141,7 +148,7 @@ public sealed class TenantUpdateEndpointTests
         WebApplication app = builder.Build();
         app.Urls.Add("http://127.0.0.1:0");
         // Keep the production route and filters. Authentication is outside this validation regression.
-        new UpdateTenant.Route().MapRoute(app.MapGroup("").AllowAnonymous());
+        new TenantsCrud.Route().MapRoute(app.MapGroup("").AllowAnonymous());
 
         DateTime validUntil = new(2030, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         await using (AsyncServiceScope scope = app.Services.CreateAsyncScope())

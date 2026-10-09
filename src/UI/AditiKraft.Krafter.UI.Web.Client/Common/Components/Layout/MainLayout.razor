@@ -21,6 +21,8 @@
             </RadzenColumn>
             <RadzenColumn>
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0" JustifyContent="JustifyContent.Right">
+                    <RadzenDropDown TValue="string" Data="@_availableLanguages" TextProperty="Name" ValueProperty="Code"
+                                    Value="@_selectedLanguageCode" Change="@ChangeLanguageAsync" Style="width: 130px; margin-right: 0.5rem;" />
                     <span class="header-desktop-only">
                         <TopRight></TopRight>
                     </span>
@@ -137,7 +139,7 @@
 
     <RadzenFooter>
         <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center" class="rz-px-4">
-            <RadzenText TextStyle="TextStyle.Body2" class="rz-m-0">Aditi Kraft© @DateTime.Now.Year</RadzenText>
+            <RadzenText TextStyle="TextStyle.Body2" class="rz-m-0">Aditi Kraft© @DateTime.UtcNow.Year</RadzenText>
         </RadzenStack>
     </RadzenFooter>
 

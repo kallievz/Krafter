@@ -13,7 +13,7 @@ public interface IRolesApi
     public Task<Response> CreateRoleAsync([Body] CreateOrUpdateRoleRequest request,
         CancellationToken cancellationToken = default);
 
-    [Put("/api/roles/{id}")]
+    [Patch("/api/roles/{id}")]
     public Task<Response> UpdateRoleAsync(string id, [Body] CreateOrUpdateRoleRequest request,
         CancellationToken cancellationToken = default);
 
@@ -25,7 +25,7 @@ public interface IRolesApi
     public Task<Response<RoleDto>> GetRolePermissionsAsync(string roleId,
         CancellationToken cancellationToken = default);
 
-    [Put("/api/roles/permissions")]
+    [Patch("/api/roles/permissions")]
     public Task<Response> UpdateRolePermissionsAsync([Body] UpdateRolePermissionsRequest request,
         CancellationToken cancellationToken = default);
 }

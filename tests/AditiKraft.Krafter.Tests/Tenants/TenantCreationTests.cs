@@ -43,6 +43,7 @@ public sealed class TenantCreationTests
             .AddEntityFrameworkStores<ApplicationDbContext>();
         services.AddScoped<DataSeedService>();
         services.AddSingleton<IJobService, NoExternalJobs>();
+        services.AddSingleton<IEmailService, NoExternalEmailService>();
         await using ServiceProvider provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
         await using AsyncServiceScope scope = provider.CreateAsyncScope();
         IServiceProvider scoped = scope.ServiceProvider;
@@ -62,7 +63,7 @@ public sealed class TenantCreationTests
             IsActive = true,
             ValidUpto = new DateTime(2030, 6, 15, 18, 15, 0, DateTimeKind.Utc)
         };
-        var create = new CreateTenant.Handler(
+        var create = new TenantsCrud.Handler(
             db,
             provider,
             currentUser,
@@ -85,8 +86,8 @@ public sealed class TenantCreationTests
         Assert.Equal(DateTimeKind.Utc, saved.ValidUpto.Kind);
 
         request.Name = "Updated tenant";
-        var update = new UpdateTenant.Handler(db, provider, _urls);
-        Response updated = await update.UpdateAsync(saved.Id!, request, CancellationToken.None);
+        var update = new TenantsCrud.Handler(db, provider, currentUser, _urls, Options.Create(new SecuritySettings()), new SMTPEmailSettings(), new SendGridEmailSettings());
+        Response updated = await update.PatchAsync(saved.Id!, request, CancellationToken.None);
 
         Assert.False(updated.IsError, updated.Message);
         db.ChangeTracker.Clear();
@@ -119,7 +120,7 @@ public sealed class TenantCreationTests
         await using TenantDbContext db = CreateDb();
         CreateOrUpdateTenantRequest request = ValidRequest(identifier);
         request.Id = "root";
-        var handler = new CreateTenant.Handler(
+        var handler = new TenantsCrud.Handler(
             db,
             null!,
             null!,
@@ -152,7 +153,7 @@ public sealed class TenantCreationTests
         await using TenantDbContext db = CreateDb();
         db.Tenants.Add(ExistingTenant("existing", "Blue"));
         await db.SaveChangesAsync();
-        var handler = new CreateTenant.Handler(
+        var handler = new TenantsCrud.Handler(
             db,
             null!,
             null!,
@@ -173,9 +174,9 @@ public sealed class TenantCreationTests
         await using TenantDbContext db = CreateDb();
         db.Tenants.AddRange(ExistingTenant("existing", "Blue"), ExistingTenant("edited", "green"));
         await db.SaveChangesAsync();
-        var handler = new UpdateTenant.Handler(db, null!, _urls);
+        var handler = new TenantsCrud.Handler(db, null!, null!, _urls, null!, null!, null!);
 
-        Response response = await handler.UpdateAsync("edited", ValidRequest("blue"), CancellationToken.None);
+        Response response = await handler.PatchAsync("edited", ValidRequest("blue"), CancellationToken.None);
 
         Assert.Equal(409, response.StatusCode);
         Assert.Equal("green", (await db.Tenants.FindAsync("edited"))!.Identifier);
@@ -195,9 +196,9 @@ public sealed class TenantCreationTests
         await db.SaveChangesAsync();
         CreateOrUpdateTenantRequest request = ValidRequest(identifier);
         request.Id = "root";
-        var handler = new UpdateTenant.Handler(db, null!, _urls);
+        var handler = new TenantsCrud.Handler(db, null!, null!, _urls, null!, null!, null!);
 
-        Response response = await handler.UpdateAsync("edited", request, CancellationToken.None);
+        Response response = await handler.PatchAsync("edited", request, CancellationToken.None);
 
         Assert.Equal(400, response.StatusCode);
         Assert.Equal("green", (await db.Tenants.FindAsync("edited"))!.Identifier);
@@ -213,9 +214,9 @@ public sealed class TenantCreationTests
         CreateOrUpdateTenantRequest request = ValidRequest(DefaultTenantConstants.Identifier);
         request.Name = "Updated root";
         request.ValidUpto = root.ValidUpto;
-        var handler = new UpdateTenant.Handler(db, null!, _urls);
+        var handler = new TenantsCrud.Handler(db, null!, null!, _urls, null!, null!, null!);
 
-        Response response = await handler.UpdateAsync(root.Id!, request, CancellationToken.None);
+        Response response = await handler.PatchAsync(root.Id!, request, CancellationToken.None);
 
         Assert.False(response.IsError, response.Message);
         Assert.Equal("Updated root", root.Name);
@@ -242,8 +243,8 @@ public sealed class TenantCreationTests
         conflict.RejectSave = true;
 
         Response response = updating
-            ? await new UpdateTenant.Handler(db, null!, _urls).UpdateAsync("edited", ValidRequest("blue"), CancellationToken.None)
-            : await new CreateTenant.Handler(
+            ? await new TenantsCrud.Handler(db, null!, null!, _urls, null!, null!, null!).PatchAsync("edited", ValidRequest("blue"), CancellationToken.None)
+            : await new TenantsCrud.Handler(
                     db,
                     null!,
                     new CurrentUser(),
@@ -307,6 +308,17 @@ public sealed class TenantCreationTests
             Task.CompletedTask;
 
         public Task EnqueueByLogIdAsync(string emailLogId, string methodName, CancellationToken cancellationToken) =>
+            Task.CompletedTask;
+    }
+
+    private sealed class NoExternalEmailService : IEmailService
+    {
+        public Task<string> QueueEmailAsync(SendEmailRequestInput request, CancellationToken cancellationToken) =>
+            Task.FromResult(Guid.CreateVersion7().ToString());
+
+        public Task ProcessEmailAsync(string emailLogId, CancellationToken cancellationToken) => Task.CompletedTask;
+
+        public Task SendEmailAsync(string email, string subject, string htmlMessage, CancellationToken cancellationToken) =>
             Task.CompletedTask;
     }
 }

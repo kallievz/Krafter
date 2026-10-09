@@ -16,6 +16,7 @@ public class AuthStorageServiceServer(IHttpContextAccessor httpContextAccessor, 
         httpContextAccessor.HttpContext.Response.Cookies.Delete(StorageConstants.Local.AuthToken);
         httpContextAccessor.HttpContext.Response.Cookies.Delete(StorageConstants.Local.RefreshToken);
         httpContextAccessor.HttpContext.Response.Cookies.Delete(StorageConstants.Local.Permissions);
+        httpContextAccessor.HttpContext.Response.Cookies.Delete(StorageConstants.Local.PreferredLanguageCode);
         httpContextAccessor.HttpContext.Response.Cookies.Delete(StorageConstants.Local.AuthTokenExpiryDate);
         httpContextAccessor.HttpContext.Response.Cookies.Delete(StorageConstants.Local.RefreshTokenExpiryDate);
         if (!string.IsNullOrWhiteSpace(userId))
@@ -146,6 +147,7 @@ public class AuthStorageServiceServer(IHttpContextAccessor httpContextAccessor, 
         httpContext.Items[StorageConstants.Local.AuthTokenExpiryDate] = tokenResponse.TokenExpiryTime;
         httpContext.Items[StorageConstants.Local.RefreshTokenExpiryDate] = tokenResponse.RefreshTokenExpiryTime;
         httpContext.Items[StorageConstants.Local.Permissions] = tokenResponse.Permissions;
+        httpContext.Items[StorageConstants.Local.PreferredLanguageCode] = tokenResponse.PreferredLanguageCode;
 
         if (!httpContext.Response.HasStarted)
         {
@@ -183,6 +185,12 @@ public class AuthStorageServiceServer(IHttpContextAccessor httpContextAccessor, 
                     refreshTokenExpiry.Ticks.ToString(),
                     new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict });
             }
+
+            httpContextAccessor.HttpContext.Response.Cookies.Append(StorageConstants.Local.PreferredLanguageCode,
+                string.IsNullOrWhiteSpace(tokenResponse.PreferredLanguageCode)
+                    ? "en"
+                    : tokenResponse.PreferredLanguageCode.Trim().ToLowerInvariant(),
+                new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict });
         }
 
         string? userId = ExtractUserIdFromToken(tokenResponse.Token);

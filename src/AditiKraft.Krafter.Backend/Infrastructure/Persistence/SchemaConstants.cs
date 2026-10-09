@@ -10,4 +10,5 @@ public static class SchemaConstants
     public const string Cache = "cache";
     public const string Integration = "integration";
     public const string Munsoft = "munsoft";
+    public const string Localization = "Ui";
 }

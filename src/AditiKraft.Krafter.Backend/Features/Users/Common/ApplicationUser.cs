@@ -32,4 +32,5 @@ public class ApplicationUser : IdentityUser<string>, ICommonAuthEntityProperty
 
     public string TenantId { get; set; } = null!;
     public bool IsOwner { get; set; }
+    public string? PreferredLanguageCode { get; set; }
 }

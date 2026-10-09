@@ -7,19 +7,29 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AditiKraft.Krafter.Backend.Features.Tenants;
 
-public sealed class SeedBasicData
+public sealed class TenantSeedDataCrud
 {
+    internal sealed class Handler(DataSeedService tenantSeedService) : IScopedHandler
+    {
+        public Task<Response> SeedAsync(SeedDataRequest request)
+        {
+            return tenantSeedService.SeedBasicDataAsync(request);
+        }
+    }
+
     public sealed class Route : IRouteRegistrar
     {
         public void MapRoute(IEndpointRouteBuilder endpointRouteBuilder)
         {
-            RouteGroupBuilder tenant = endpointRouteBuilder.MapGroup(ApiRoutes.Tenants).AddFluentValidationFilter();
-            tenant.MapPost($"/{RouteSegment.SeedData}", async
-                ([FromBody] SeedDataRequest request,
-                    [FromServices] DataSeedService tenantSeedService) =>
+            RouteGroupBuilder tenantGroup = endpointRouteBuilder.MapGroup(ApiRoutes.Tenants)
+                .AddFluentValidationFilter();
+
+            tenantGroup.MapPost($"/{RouteSegment.SeedData}", async (
+                    [FromBody] SeedDataRequest request,
+                    [FromServices] Handler handler) =>
                 {
-                    Response res = await tenantSeedService.SeedBasicDataAsync(request);
-                    return Results.Json(res, statusCode: res.StatusCode);
+                    Response response = await handler.SeedAsync(request).ConfigureAwait(false);
+                    return Results.Json(response, statusCode: response.StatusCode);
                 })
                 .Produces<Response>();
         }

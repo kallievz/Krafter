@@ -5,4 +5,5 @@ public record TokenResponse(
     string RefreshToken,
     DateTime RefreshTokenExpiryTime,
     DateTime TokenExpiryTime,
-    List<string> Permissions);
+    List<string> Permissions,
+    string PreferredLanguageCode);

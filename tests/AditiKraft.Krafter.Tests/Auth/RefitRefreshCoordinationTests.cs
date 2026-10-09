@@ -11,7 +11,9 @@ using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Auth;
 using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Http;
 using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Refit;
 using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AditiKraft.Krafter.Tests.Auth;
@@ -28,12 +30,16 @@ public sealed class RefitRefreshCoordinationTests
         var api = new BlockingAuthApi(freshTokens);
         var observations = new RefreshObservations();
         var sentTokens = new ConcurrentBag<string?>();
+
+        await using WebApplication backend = await CreateBackendAsync(sentTokens);
+        string backendUrl = Assert.Single(backend.Urls);
+
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddSingleton(new AppUrls
         {
             RootUiUrl = "https://localhost:5002",
-            ApiBaseUrl = "https://localhost:5001"
+            ApiBaseUrl = backendUrl
         });
         services.AddSingleton<NavigationManager, BrowserNavigationManager>();
         services.AddSingleton<IFormFactor, FormFactor>();
@@ -44,8 +50,6 @@ public sealed class RefitRefreshCoordinationTests
         services.AddUIServices();
         services.AddSingleton<TokenRefreshCoordinator>();
         services.AddScoped<IAuthenticationService, ForwardingAuthenticationService>();
-        services.ConfigureHttpClientDefaults(builder => builder.ConfigurePrimaryHttpMessageHandler(
-            () => new RecordingTransport(sentTokens)));
         services.AddApiRefitClients();
 
         await using ServiceProvider provider = services.BuildServiceProvider();
@@ -109,6 +113,8 @@ public sealed class RefitRefreshCoordinationTests
         public Task<bool> LoginAsync(TokenRequest model) => throw new NotSupportedException();
 
         public Task LogoutAsync(string methodName) => throw new NotSupportedException();
+
+        public Task<bool> SynchronizeAsync() => throw new NotSupportedException();
     }
 
     private sealed class BrowserNavigationManager : NavigationManager
@@ -118,16 +124,40 @@ public sealed class RefitRefreshCoordinationTests
         protected override void NavigateToCore(string uri, bool forceLoad) => throw new NotSupportedException();
     }
 
-    private sealed class RecordingTransport(ConcurrentBag<string?> sentTokens) : HttpMessageHandler
+    private static async Task<WebApplication> CreateBackendAsync(ConcurrentBag<string?> sentTokens)
     {
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        WebApplicationBuilder builder = WebApplication.CreateBuilder();
+        WebApplication app = builder.Build();
+        app.Urls.Add("http://127.0.0.1:0");
+
+        app.MapGet("/api/users", (HttpContext context) =>
         {
-            sentTokens.Add(request.Headers.Authorization?.Parameter);
-            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent("{\"isError\":false,\"statusCode\":200}", Encoding.UTF8, "application/json")
-            });
+            sentTokens.Add(ExtractBearerToken(context));
+            return Results.Json(new { isError = false, statusCode = 200 });
+        });
+
+        app.MapGet("/api/roles", (HttpContext context) =>
+        {
+            sentTokens.Add(ExtractBearerToken(context));
+            return Results.Json(new { isError = false, statusCode = 200 });
+        });
+
+        await app.StartAsync();
+        return app;
+    }
+
+    private static string? ExtractBearerToken(HttpContext context)
+    {
+        string? authorization = context.Request.Headers.Authorization.FirstOrDefault();
+        if (string.IsNullOrWhiteSpace(authorization))
+        {
+            return null;
         }
+
+        const string bearerPrefix = "Bearer ";
+        return authorization.StartsWith(bearerPrefix, StringComparison.OrdinalIgnoreCase)
+            ? authorization[bearerPrefix.Length..]
+            : authorization;
     }
 
     private sealed class BlockingAuthApi(TokenResponse refreshed) : IAuthApiService

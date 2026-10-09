@@ -90,4 +90,6 @@ public class AuthenticationService(
     }
 
     public Task<bool> RefreshAsync() => tokenService.RefreshAsync();
+
+    public Task<bool> SynchronizeAsync() => tokenService.SynchronizeFromServerAsync();
 }

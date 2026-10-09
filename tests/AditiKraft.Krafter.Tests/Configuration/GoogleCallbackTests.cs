@@ -22,10 +22,10 @@ public sealed class GoogleCallbackTests
         }).Build();
         using var handler = new TokenRequestHandler();
         using var httpClient = new HttpClient(handler);
-        var googleClient = new ExternalAuth.GoogleAuthClient(
-            httpClient, configuration, NullLogger<ExternalAuth.GoogleAuthClient>.Instance);
+        var googleClient = new AuthCrud.GoogleAuthClient(
+            httpClient, configuration, NullLogger<AuthCrud.GoogleAuthClient>.Instance);
 
-        ExternalAuth.GoogleAuthClient.GoogleTokens? tokens = await googleClient.ExchangeCodeForTokensAsync("test-code");
+        AuthCrud.GoogleAuthClient.GoogleTokens? tokens = await googleClient.ExchangeCodeForTokensAsync("test-code");
 
         Assert.NotNull(tokens);
         Assert.Equal("access-token", tokens.AccessToken);

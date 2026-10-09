@@ -1,3 +1,4 @@
+using AditiKraft.Krafter.Contracts.Contracts.Localization;
 using Refit;
 
 namespace AditiKraft.Krafter.UI.Web.Client.Features.Users;
@@ -19,7 +20,7 @@ public interface IUsersApi
     public Task<Response> CreateUserAsync([Body] CreateUserRequest request,
         CancellationToken cancellationToken = default);
 
-    [Put("/api/users/{id}")]
+    [Patch("/api/users/{id}")]
     public Task<Response> UpdateUserAsync(string id, [Body] CreateUserRequest request,
         CancellationToken cancellationToken = default);
 
@@ -29,6 +30,9 @@ public interface IUsersApi
 
     [Get("/api/users/permissions")]
     public Task<Response<List<string>>> GetPermissionsAsync(CancellationToken cancellationToken = default);
+
+    [Get("/api/users/localization/languages")]
+    public Task<Response<List<LanguageDto>>> GetLanguagesAsync(CancellationToken cancellationToken = default);
 
     [Get("/api/users/{userId}/roles")]
     public Task<Response<List<UserRoleDto>>> GetUserRolesAsync(string userId,
@@ -44,5 +48,9 @@ public interface IUsersApi
 
     [Post("/api/users/reset-password")]
     public Task<Response> ResetPasswordAsync([Body] ResetPasswordRequest request,
+        CancellationToken cancellationToken = default);
+
+    [Post("/api/users/profile/language")]
+    public Task<Response> UpdatePreferredLanguageAsync([Body] UpdatePreferredLanguageRequest request,
         CancellationToken cancellationToken = default);
 }

@@ -69,7 +69,7 @@ public static class AuthenticationRegistration
             .AddDefaultTokenProviders();
         services.Configure<SecuritySettings>(config.GetSection(nameof(SecuritySettings)));
         services.AddScoped<RolePermissionService>();
-        services.AddHttpClient<ExternalAuth.GoogleAuthClient>(client =>
+        services.AddHttpClient<AuthCrud.GoogleAuthClient>(client =>
         {
             client.DefaultRequestHeaders.Accept.Add(
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));

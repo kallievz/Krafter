@@ -24,9 +24,9 @@ public sealed class RolePermissionTests
         var service = new RolePermissionService(context.Db, context.Tenant);
 
         Response result = permissionsOnly
-            ? await new UpdateRolePermissions.Handler(context.Roles, context.Db, service).UpdatePermissionsAsync(
+            ? await new RolesCrud.Handler(context.Roles, context.Db, service).PatchPermissionsAsync(
                 new UpdateRolePermissionsRequest { RoleId = role.Id, Permissions = [] }, CancellationToken.None)
-            : await new UpdateRole.Handler(context.Roles, context.Db, service).UpdateAsync(role.Id,
+            : await new RolesCrud.Handler(context.Roles, context.Db, service).PatchAsync(role.Id,
                 new CreateOrUpdateRoleRequest { Name = role.Name!, Permissions = [] }, CancellationToken.None);
 
         Assert.False(result.IsError, result.Message);
@@ -43,10 +43,10 @@ public sealed class RolePermissionTests
         ApplicationRole role = await context.AddRoleAsync("Editor");
         context.Db.RoleClaims.Add(Claim(role.Id, AppClaimTypes.Permission, "Permissions.Users.View"));
         await context.Db.SaveChangesAsync();
-        var handler = new UpdateRole.Handler(context.Roles, context.Db,
+        var handler = new RolesCrud.Handler(context.Roles, context.Db,
             new RolePermissionService(context.Db, context.Tenant));
 
-        Response result = await handler.UpdateAsync(role.Id,
+        Response result = await handler.PatchAsync(role.Id,
             new CreateOrUpdateRoleRequest { Name = role.Name!, Description = "Changed", Permissions = null! },
             CancellationToken.None);
 
@@ -68,9 +68,9 @@ public sealed class RolePermissionTests
         var service = new RolePermissionService(context.Db, context.Tenant);
 
         Response result = permissionsOnly
-            ? await new UpdateRolePermissions.Handler(context.Roles, context.Db, service).UpdatePermissionsAsync(
+            ? await new RolesCrud.Handler(context.Roles, context.Db, service).PatchPermissionsAsync(
                 new UpdateRolePermissionsRequest { RoleId = role.Id, Permissions = [] }, CancellationToken.None)
-            : await new UpdateRole.Handler(context.Roles, context.Db, service).UpdateAsync(role.Id,
+            : await new RolesCrud.Handler(context.Roles, context.Db, service).PatchAsync(role.Id,
                 new CreateOrUpdateRoleRequest { Name = role.Name!, Permissions = [] }, CancellationToken.None);
 
         Assert.True(result.IsError);

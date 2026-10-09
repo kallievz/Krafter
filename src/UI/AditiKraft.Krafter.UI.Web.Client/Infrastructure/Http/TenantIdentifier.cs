@@ -21,9 +21,7 @@ public class TenantIdentifier(IServiceProvider serviceProvider, AppUrls urls)
             : null;
         string tenantIdentifier = !string.IsNullOrWhiteSpace(subdomain)
             ? subdomain
-            : string.IsNullOrWhiteSpace(TenantInfo.Identifier)
-                ? DefaultTenantConstants.Identifier
-                : TenantInfo.Identifier;
+            : DefaultTenantConstants.Identifier;
         string clientBaseAddress = uiUri.GetLeftPart(UriPartial.Authority);
         Uri apiUri;
 

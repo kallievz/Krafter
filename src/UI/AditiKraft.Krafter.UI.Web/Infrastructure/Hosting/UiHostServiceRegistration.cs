@@ -49,6 +49,7 @@ public static class UiHostServiceRegistration
         services.AddScoped<AuthenticationStateProvider, PersistingServerAuthenticationStateProvider>()
             .AddAuthorizationCore(PermissionRegistration.RegisterPermissionClaims);
 
+        services.AddSingleton<TokenRefreshCoordinator>();
         services.AddUIServices();
         services.AddRadzenComponents();
         services.AddScoped<TenantIdentifier>();

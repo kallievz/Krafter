@@ -29,7 +29,6 @@ public class ApplicationDbContext(
     public virtual DbSet<EmailLog> EmailLogs { get; set; }
     public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
     public virtual DbSet<ExternalTokenStorage> ExternalTokenStorages { get; set; }
-    public virtual DbSet<MunsoftInstance> MunsoftInstances { get; set; }
     // AuditOutbox moved to AuditDbContext. Kept processing in AuditOutboxProcessor which uses both contexts.
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -45,7 +44,6 @@ public class ApplicationDbContext(
         modelBuilder.ApplyConfiguration(new EmailLogConfiguration(tenantGetterService));
         modelBuilder.ApplyConfiguration(new EmailTemplateConfiguration(tenantGetterService));
         modelBuilder.ApplyConfiguration(new ExternalTokenStorageConfiguration());
-        modelBuilder.ApplyConfiguration(new MunsoftInstanceConfiguration());
 
         modelBuilder.ApplyConfiguration(new ApplicationUserLoginConfiguration());
         modelBuilder.ApplyConfiguration(new ApplicationUserTokenConfiguration());

@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 using System.Reflection;
+using AditiKraft.Krafter.Backend.Infrastructure.Integration.Munsoft;
+using AditiKraft.Krafter.Backend.Infrastructure.Localization;
 
 namespace AditiKraft.Krafter.Backend;
 
@@ -157,6 +159,31 @@ public static class Program
             logger.LogInformation("Migrating BackgroundJobs (TickerQ) DB...");
             await backgroundJobsContext.Database.MigrateAsync().ConfigureAwait(false);
             logger.LogInformation("BackgroundJobs migration complete.");
+
+            // Munsoft integration DB (optional)
+            IConfiguration? scopedConfig = scope.ServiceProvider.GetService<IConfiguration>();
+            string? munsoftConn = scopedConfig?.GetConnectionString("Munsoft");
+            if (!string.IsNullOrWhiteSpace(munsoftConn))
+            {
+                MunsoftDbContext munsoftDbContext = scope.ServiceProvider.GetRequiredService<MunsoftDbContext>();
+                logger.LogInformation("Migrating MunsoftDb...");
+                await munsoftDbContext.Database.MigrateAsync().ConfigureAwait(false);
+                logger.LogInformation("MunsoftDb migration complete.");
+            }
+
+            // Localization DB (uses separate 'Localization' connection when configured, otherwise appDb)
+            LocalizationDbContext localizationDbContext = scope.ServiceProvider.GetRequiredService<LocalizationDbContext>();
+            logger.LogInformation("Migrating LocalizationDb...");
+            await localizationDbContext.Database.MigrateAsync().ConfigureAwait(false);
+            logger.LogInformation("LocalizationDb migration complete.");
+
+            logger.LogInformation("Seeding localization languages...");
+            await LocalizationDbSeedService.SeedLanguagesAsync(localizationDbContext, CancellationToken.None).ConfigureAwait(false);
+            logger.LogInformation("Localization language seeding complete.");
+
+            logger.LogInformation("Seeding localization resources...");
+            await LocalizationDbSeedService.SeedResourcesAsync(localizationDbContext, CancellationToken.None).ConfigureAwait(false);
+            logger.LogInformation("Localization resource seeding complete.");
 
             // Audit DB - must be present before application writes via audit interceptor
             AuditDbContext auditDbContext = scope.ServiceProvider.GetRequiredService<AuditDbContext>();

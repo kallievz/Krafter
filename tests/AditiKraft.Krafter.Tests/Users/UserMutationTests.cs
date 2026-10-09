@@ -1,3 +1,4 @@
+using AditiKraft.Krafter.Backend.Common.Auth;
 using AditiKraft.Krafter.Backend.Features.Roles.Common;
 using AditiKraft.Krafter.Backend.Features.Tenants.Common;
 using AditiKraft.Krafter.Backend.Features.Users;
@@ -24,7 +25,16 @@ public sealed class UserMutationTests
             Roles = [basic.Id, basic.Id]
         };
 
-        Response result = await new CreateUser.Handler(context.Mutations).CreateAsync(request, CancellationToken.None);
+        Response result = await new UsersCrud.Handler(
+            context.Mutations,
+            context.Users,
+            context.Roles,
+            new CurrentUser(),
+            context.Tenant,
+            context.Jobs,
+            context.EmailService,
+            context.PasswordPolicies,
+            context.Db).CreateAsync(request, CancellationToken.None);
 
         Assert.False(result.IsError, result.Message);
         context.Db.ChangeTracker.Clear();
@@ -55,7 +65,16 @@ public sealed class UserMutationTests
         await context.TenantDb.SaveChangesAsync();
         string? passwordHash = user.PasswordHash;
 
-        Response result = await new UpdateUser.Handler(context.Mutations).UpdateAsync(user.Id, new CreateUserRequest
+        Response result = await new UsersCrud.Handler(
+            context.Mutations,
+            context.Users,
+            context.Roles,
+            new CurrentUser(),
+            context.Tenant,
+            context.Jobs,
+            context.EmailService,
+            context.PasswordPolicies,
+            context.Db).PatchAsync(user.Id, new CreateUserRequest
         {
             FirstName = "Changed",
             LastName = "Name",

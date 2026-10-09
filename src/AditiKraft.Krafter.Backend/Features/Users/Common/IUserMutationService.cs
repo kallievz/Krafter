@@ -12,4 +12,7 @@ public interface IUserMutationService
     public Task<Response> UpdateEmailAsync(string id, string email, CancellationToken cancellationToken);
 
     public Task<Response> UpdateTelephoneNumberAsync(string id, string? telephoneNumber, CancellationToken cancellationToken);
+
+    public Task<Response> UpdatePreferredLanguageCodeAsync(string id, string? preferredLanguageCode,
+        CancellationToken cancellationToken);
 }

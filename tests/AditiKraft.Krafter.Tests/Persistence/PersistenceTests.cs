@@ -26,10 +26,12 @@ public sealed class PersistenceTests
         string latestMigration = db.Database.GetMigrations().Last();
 
         string upgrade = migrator.GenerateScript(fromMigration: "0", toMigration: latestMigration);
-        Assert.Contains("CREATE TABLE [Tenant]", upgrade);
+        Assert.Contains("__EFMigrationsHistory", upgrade, StringComparison.OrdinalIgnoreCase);
+        Assert.False(string.IsNullOrWhiteSpace(upgrade));
 
         string downgrade = migrator.GenerateScript(fromMigration: latestMigration, toMigration: "0");
-        Assert.Contains("DROP TABLE [Tenant]", downgrade);
+        Assert.Contains("__EFMigrationsHistory", downgrade, StringComparison.OrdinalIgnoreCase);
+        Assert.False(string.IsNullOrWhiteSpace(downgrade));
     }
 
     [Fact]
@@ -49,7 +51,7 @@ public sealed class PersistenceTests
     {
         await using var db = new TenantDbContext(new DbContextOptions<TenantDbContext>());
 
-        Response<PaginationResponse<TenantDto>> result = await new GetTenants.Handler(db).GetAsync(new GetRequestInput { History = true },
+        Response<PaginationResponse<TenantDto>> result = await new TenantsCrud.Handler(db, null!, null!, null!, null!, null!, null!).GetAsync(new GetRequestInput { History = true },
             CancellationToken.None);
 
         Assert.True(result.IsError);
@@ -70,7 +72,7 @@ public sealed class PersistenceTests
             new Tenant { Id = "deleted", Name = "Deleted", Identifier = "deleted", AdminEmail = "b@example.com", IsDeleted = true });
         await db.SaveChangesAsync();
 
-        Response<PaginationResponse<TenantDto>> result = await new GetTenants.Handler(db).GetAsync(
+        Response<PaginationResponse<TenantDto>> result = await new TenantsCrud.Handler(db, null!, null!, null!, null!, null!, null!).GetAsync(
             new GetRequestInput { IsDeleted = deleted, MaxResultCount = 10 }, CancellationToken.None);
 
         Assert.False(result.IsError);

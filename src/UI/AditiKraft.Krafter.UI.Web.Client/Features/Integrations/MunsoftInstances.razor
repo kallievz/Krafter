@@ -11,21 +11,37 @@
     </RadzenAlert>
 }
 
-<RadzenDataGrid Responsive="true" ShowCellDataAsTooltip="true"
-                Density="Density.Compact" AllowColumnResize="true" IsLoading="@_isLoading"
-                Count="@(_response?.Data?.TotalCount ?? 0)" LoadData="@LoadDataAsync" AllowSorting="true" Data="@_response?.Data?.Items"
-                AllowFiltering="true" AllowPaging="true" PageSize="@_requestInput.MaxResultCount"
-                PagerHorizontalAlign="HorizontalAlign.Center">
+<AdvancedDataGrid TItem="MunsoftInstanceDto"
+                  Data="@_response?.Data?.Items"
+                  Count="@(_response?.Data?.TotalCount ?? 0)"
+                  IsLoading="@_isLoading"
+                  LoadData="@LoadDataAsync"
+                  Density="LocalAppState.Density"
+                  ShowCellDataAsTooltip="LocalAppState.ShowCellDataAsTooltip"
+                  AllowColumnResize="LocalAppState.AllowColumnResize"
+                  FilterMode="FilterMode.CheckBoxList"
+                  GroupPanelText="Drag a column header here to group results"
+                  ExportFileBaseName="munsoft-instances"
+                  ExportTitle="Munsoft instances"
+                  ComponentKey="@RoutePath"
+                  PageSizeOptions="new[] { 10, 20, 50, 100, 500 }"
+                  PageNumbersCount="7"
+                  PagerAlwaysVisible="true"
+                  PagingSummaryFormat="Showing {0}-{1} of {2} instances"
+                  OnFilterCleared="@OnGridFilterClearedAsync"
+                  OnGridReset="@OnGridResetAsync">
+    <ToolbarActions>
+        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary" Icon="sync" Text="Sync"
+                      Click="@SyncAsync" Disabled="@_isLoading" />
+    </ToolbarActions>
     <Columns>
-        <RadzenDataGridColumn Property="Id" Title="Id" Width="90px" />
-        <RadzenDataGridColumn Property="Name" Title="Name" />
-        <RadzenDataGridColumn Property="MunicipalityName" Title="Municipality Name" />
-        <RadzenDataGridColumn Property="DemarcationCode" Title="Demarcation Code" />
-        <RadzenDataGridColumn Title="Actions" Filterable="false" Sortable="false" Width="140px" TextAlign="TextAlign.Center">
-            <HeaderTemplate>
-                <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary" Icon="sync" Text="Sync"
-                              Click="@SyncAsync" />
-            </HeaderTemplate>
-        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="MunsoftInstanceDto" Property="Id" Title="Id" Width="90px" TextAlign="TextAlign.Center"
+                              FilterLookupData="@_idLookupOptions" FilterLookupTextProperty="Text" FilterLookupValueProperty="Value" />
+        <RadzenDataGridColumn TItem="MunsoftInstanceDto" Property="Name" Title="Name"
+                              FilterLookupData="@_nameLookupOptions" FilterLookupTextProperty="Text" FilterLookupValueProperty="Value" />
+        <RadzenDataGridColumn TItem="MunsoftInstanceDto" Property="MunicipalityName" Title="Municipality Name"
+                              FilterLookupData="@_municipalityLookupOptions" FilterLookupTextProperty="Text" FilterLookupValueProperty="Value" />
+        <RadzenDataGridColumn TItem="MunsoftInstanceDto" Property="DemarcationCode" Title="Demarcation Code"
+                              FilterLookupData="@_demarcationLookupOptions" FilterLookupTextProperty="Text" FilterLookupValueProperty="Value" />
     </Columns>
-</RadzenDataGrid>
+</AdvancedDataGrid>

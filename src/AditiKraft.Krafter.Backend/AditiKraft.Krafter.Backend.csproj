@@ -108,7 +108,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructure\Integration\Mab\" />
+    <Folder Include="Infrastructure\Integration\Munsoft\" />
+    <Folder Include="Migrations\Munsoft\" />
     <Folder Include="Migrations\TenantDb\" />
   </ItemGroup>
 

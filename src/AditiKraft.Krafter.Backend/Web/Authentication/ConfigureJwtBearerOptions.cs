@@ -43,15 +43,15 @@ public class ConfigureJwtBearerOptions(IOptions<JwtSettings> jwtSettings) : ICon
         };
         options.Events = new JwtBearerEvents
         {
-            OnChallenge = context =>
+            OnChallenge = async context =>
             {
                 context.HandleResponse();
                 if (!context.Response.HasStarted)
                 {
-                    throw new UnauthorizedException("Authentication Failed.");
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    context.Response.ContentType = "application/json";
+                    await context.Response.WriteAsJsonAsync(new { message = "Authentication Failed." });
                 }
-
-                return Task.CompletedTask;
             },
             OnForbidden = _ => throw new ForbiddenException("You are not authorized to access this resource."),
             OnMessageReceived = context =>

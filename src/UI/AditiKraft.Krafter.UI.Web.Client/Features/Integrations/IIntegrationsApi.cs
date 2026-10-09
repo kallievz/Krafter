@@ -10,7 +10,7 @@ public interface IIntegrationsApi
         [Query] GetRequestInput request,
         CancellationToken cancellationToken = default);
 
-    [Post("/api/integrations/munsoft/instances/sync")]
+    [Patch("/api/integrations/munsoft/instances/sync")]
     public Task<Response<MunsoftInstanceSyncResult>> SyncMunsoftInstancesAsync(
         CancellationToken cancellationToken = default);
 }

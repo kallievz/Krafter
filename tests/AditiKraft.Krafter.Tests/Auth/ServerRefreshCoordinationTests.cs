@@ -9,6 +9,7 @@ using AditiKraft.Krafter.UI.Web.Client.Features.Roles;
 using AditiKraft.Krafter.UI.Web.Client.Features.Users;
 using AditiKraft.Krafter.UI.Web.Client.Infrastructure.Auth;
 using AditiKraft.Krafter.UI.Web.Infrastructure.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
@@ -34,7 +35,9 @@ public sealed class ServerRefreshCoordinationTests
         });
         var observations = new RefreshObservations();
         var sentTokens = new ConcurrentBag<string?>();
-        await using ServiceProvider provider = CreateProvider(api, observations, sentTokens);
+        await using WebApplication backend = await CreateBackendAsync(sentTokens);
+        string backendUrl = Assert.Single(backend.Urls);
+        await using ServiceProvider provider = CreateProvider(api, observations, sentTokens, backendUrl);
 
         Task<HttpContext> users = RunRequestAsync(provider, original, services =>
             services.GetRequiredService<IUsersApi>().GetUsersAsync(new GetRequestInput()));
@@ -184,17 +187,17 @@ public sealed class ServerRefreshCoordinationTests
         }
 
         AssertTokensEqual(fresh, (await second.WaitAsync(_timeout)).Data);
-        Assert.Equal(1, api.RefreshCount);
+        Assert.Equal(2, api.RefreshCount);
     }
 
     private static ServiceProvider CreateProvider(AuthApi api, RefreshObservations? observations = null,
-        ConcurrentBag<string?>? sentTokens = null)
+        ConcurrentBag<string?>? sentTokens = null, string? apiBaseUrl = null)
     {
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["Urls:RootUiUrl"] = "https://localhost:7291",
-                ["Urls:ApiBaseUrl"] = "https://localhost:5001"
+                ["Urls:ApiBaseUrl"] = apiBaseUrl ?? "https://localhost:5001"
             }).Build();
         var services = new ServiceCollection();
         services.AddLogging();
@@ -207,12 +210,6 @@ public sealed class ServerRefreshCoordinationTests
         {
             services.AddSingleton(observations);
             services.AddScoped<IAuthenticationService, ForwardingAuthenticationService>();
-        }
-
-        if (sentTokens is not null)
-        {
-            services.ConfigureHttpClientDefaults(builder => builder.ConfigurePrimaryHttpMessageHandler(
-                () => new RecordingTransport(sentTokens)));
         }
 
         return services.BuildServiceProvider();
@@ -278,18 +275,44 @@ public sealed class ServerRefreshCoordinationTests
         public Task<bool> LoginAsync(TokenRequest model) => throw new NotSupportedException();
 
         public Task LogoutAsync(string methodName) => throw new NotSupportedException();
+
+        public Task<bool> SynchronizeAsync() => throw new NotSupportedException();
     }
 
-    private sealed class RecordingTransport(ConcurrentBag<string?> sentTokens) : HttpMessageHandler
+    private static async Task<WebApplication> CreateBackendAsync(ConcurrentBag<string?> sentTokens)
     {
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        WebApplicationBuilder builder = WebApplication.CreateBuilder();
+        WebApplication app = builder.Build();
+        app.Urls.Add("http://127.0.0.1:0");
+
+        app.MapGet("/api/users", (HttpContext context) =>
         {
-            sentTokens.Add(request.Headers.Authorization?.Parameter);
-            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent("{\"isError\":false,\"statusCode\":200}", Encoding.UTF8, "application/json")
-            });
+            sentTokens.Add(ExtractBearerToken(context));
+            return Results.Json(new { isError = false, statusCode = 200 });
+        });
+
+        app.MapGet("/api/roles", (HttpContext context) =>
+        {
+            sentTokens.Add(ExtractBearerToken(context));
+            return Results.Json(new { isError = false, statusCode = 200 });
+        });
+
+        await app.StartAsync();
+        return app;
+    }
+
+    private static string? ExtractBearerToken(HttpContext context)
+    {
+        string? authorization = context.Request.Headers.Authorization.FirstOrDefault();
+        if (string.IsNullOrWhiteSpace(authorization))
+        {
+            return null;
         }
+
+        const string bearerPrefix = "Bearer ";
+        return authorization.StartsWith(bearerPrefix, StringComparison.OrdinalIgnoreCase)
+            ? authorization[bearerPrefix.Length..]
+            : authorization;
     }
 
     private sealed class AuthApi(Func<RefreshTokenRequest, CancellationToken, Task<Response<TokenResponse>>> refresh)

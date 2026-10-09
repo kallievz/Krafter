@@ -11,4 +11,6 @@ public interface IAuthenticationService
     public Task LogoutAsync(string methodName);
 
     public Task<bool> RefreshAsync();
+
+    public Task<bool> SynchronizeAsync();
 }

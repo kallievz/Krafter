@@ -41,6 +41,14 @@ Role synchronization checks that requested roles belong to the current tenant. N
 - Role assignment rules change.
 - Password or email notification flows change.
 - User role/permission query patterns change.
+- New entities/features are added that require authorization/permission coverage.
+
+## 7. Permission Expansion Rule
+When adding new entities or feature endpoints, always update permission coverage in the same change:
+1. Add new resource constants to `PermissionResource`.
+2. Add matching `PermissionCatalog` entries (View/Create/Update/Delete as applicable).
+3. Apply `MustHavePermission(...)` on new/updated backend routes.
+4. Ensure seed/sync path grants missing permissions (admin/root via `DataSeedService` + `PermissionCatalog`).
 
 ## References (real code)
 - `src/AditiKraft.Krafter.Backend/Features/Users/Common/UserMutationService.cs`

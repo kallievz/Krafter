@@ -10,6 +10,7 @@ public class CreateUserRequest
     public string Email { get; set; } = default!;
     public string UserName { get; set; } = default!;
     public string? PhoneNumber { get; set; }
+    public string? PreferredLanguageCode { get; set; }
     public List<string> Roles { get; set; } = [];
     public bool UpdateTenantEmail { get; set; } = true;
     public bool IsEmailConfirmed { get; set; } = true;

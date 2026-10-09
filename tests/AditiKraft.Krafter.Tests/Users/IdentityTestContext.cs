@@ -4,6 +4,7 @@ using AditiKraft.Krafter.Backend.Features.Roles.Common;
 using AditiKraft.Krafter.Backend.Features.Tenants.Common;
 using AditiKraft.Krafter.Backend.Features.Users.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Jobs;
+using AditiKraft.Krafter.Backend.Infrastructure.Localization;
 using AditiKraft.Krafter.Backend.Infrastructure.Notifications;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
 using AditiKraft.Krafter.Backend.Web.Configuration;
@@ -29,6 +30,7 @@ internal sealed class IdentityTestContext : IAsyncDisposable
         services.AddSingleton<ITenantGetterService>(p => p.GetRequiredService<CurrentTenantService>());
         services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase(databaseName));
         services.AddDbContext<TenantDbContext>(options => options.UseInMemoryDatabase($"{databaseName}-tenants"));
+        services.AddDbContext<LocalizationDbContext>(options => options.UseInMemoryDatabase($"{databaseName}-localization"));
         services.AddIdentityCore<ApplicationUser>()
             .AddRoles<ApplicationRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();

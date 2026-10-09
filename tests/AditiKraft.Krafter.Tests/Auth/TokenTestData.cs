@@ -17,6 +17,7 @@ internal static class TokenTestData
             $"refresh-{userId}-{Guid.CreateVersion7()}",
             DateTime.UtcNow.AddDays(1),
             expiry,
-            []);
+            [],
+            "en");
     }
 }

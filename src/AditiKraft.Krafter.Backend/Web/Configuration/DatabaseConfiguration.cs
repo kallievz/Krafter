@@ -6,6 +6,8 @@ using AditiKraft.Krafter.Backend.Infrastructure.Persistence.Interceptors;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using AditiKraft.Krafter.Backend.Infrastructure.Integration.Munsoft;
+using AditiKraft.Krafter.Backend.Infrastructure.Localization;
 
 namespace AditiKraft.Krafter.Backend.Web.Configuration;
 
@@ -51,6 +53,21 @@ public static class DatabaseConfiguration
         // AuditDbContext (separate audit store)
         services.AddDbContext<AuditDbContext>((sp, opts) =>
             opts.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure())
+                .AddInterceptors(sp.GetRequiredService<EfCommandTimingInterceptor>()));
+
+        // Munsoft integration store (optional separate connection string 'Munsoft')
+        string? munsoftConnection = configuration.GetConnectionString("Munsoft") ?? connectionString;
+        if (!string.IsNullOrWhiteSpace(munsoftConnection))
+        {
+            services.AddDbContext<MunsoftDbContext>((sp, opts) =>
+                opts.UseSqlServer(munsoftConnection, sqlServer => sqlServer.EnableRetryOnFailure())
+                    .AddInterceptors(sp.GetRequiredService<EfCommandTimingInterceptor>()));
+        }
+
+        // Localization store (uses separate connection string 'Localization' when present, otherwise falls back to appDb)
+        string? localizationConnection = configuration.GetConnectionString("Localization") ?? connectionString;
+        services.AddDbContext<LocalizationDbContext>((sp, opts) =>
+            opts.UseSqlServer(localizationConnection, sqlServer => sqlServer.EnableRetryOnFailure())
                 .AddInterceptors(sp.GetRequiredService<EfCommandTimingInterceptor>()));
 
         return services;

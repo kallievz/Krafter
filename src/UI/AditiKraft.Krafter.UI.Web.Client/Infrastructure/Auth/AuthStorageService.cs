@@ -11,6 +11,7 @@ public class AuthStorageService(ILocalStorageService localStorageService) : IAut
         await localStorageService.RemoveItemAsync(StorageConstants.Local.AuthToken);
         await localStorageService.RemoveItemAsync(StorageConstants.Local.RefreshToken);
         await localStorageService.RemoveItemAsync(StorageConstants.Local.Permissions);
+        await localStorageService.RemoveItemAsync(StorageConstants.Local.PreferredLanguageCode);
         await localStorageService.RemoveItemAsync(StorageConstants.Local.AuthTokenExpiryDate);
         await localStorageService.RemoveItemAsync(StorageConstants.Local.RefreshTokenExpiryDate);
     }
@@ -36,6 +37,10 @@ public class AuthStorageService(ILocalStorageService localStorageService) : IAut
             tokenResponse.TokenExpiryTime);
         await localStorageService.SetItemAsync(StorageConstants.Local.RefreshTokenExpiryDate,
             tokenResponse.RefreshTokenExpiryTime);
+        await localStorageService.SetItemAsync(StorageConstants.Local.PreferredLanguageCode,
+            string.IsNullOrWhiteSpace(tokenResponse.PreferredLanguageCode)
+                ? "en"
+                : tokenResponse.PreferredLanguageCode.Trim().ToLowerInvariant());
         if (tokenResponse.Permissions == null)
         {
             await localStorageService.RemoveItemAsync(StorageConstants.Local.Permissions);

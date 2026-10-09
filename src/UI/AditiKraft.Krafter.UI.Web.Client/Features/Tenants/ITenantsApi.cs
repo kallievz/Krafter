@@ -13,7 +13,7 @@ public interface ITenantsApi
     public Task<Response> CreateTenantAsync([Body] CreateOrUpdateTenantRequest request,
         CancellationToken cancellationToken = default);
 
-    [Put("/api/tenants/{id}")]
+    [Patch("/api/tenants/{id}")]
     public Task<Response> UpdateTenantAsync(string id, [Body] CreateOrUpdateTenantRequest request,
         CancellationToken cancellationToken = default);
 
@@ -25,7 +25,7 @@ public interface ITenantsApi
     public Task<Response<List<TenantSettingDto>>> GetTenantSettingsAsync(string id,
         CancellationToken cancellationToken = default);
 
-    [Post("/api/tenants/{id}/settings")]
+    [Patch("/api/tenants/{id}/settings")]
     public Task<Response> UpsertTenantSettingAsync(string id, [Body] UpsertTenantSettingRequest request,
         CancellationToken cancellationToken = default);
 
