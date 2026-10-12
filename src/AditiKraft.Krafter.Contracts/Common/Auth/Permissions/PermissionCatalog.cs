@@ -45,13 +45,13 @@ public static class PermissionCatalog
 #endregion
 
 #region Integrations
-        new("Manage Integrations", PermissionAction.Manage, PermissionResource.Integrations),
+        new("Manage Integrations", PermissionAction.Manage, PermissionResource.Integrations, IsRoot: true),
         new("View Integrations", PermissionAction.View, PermissionResource.Integrations),
         new("Update Integrations", PermissionAction.Update, PermissionResource.Integrations),
 #endregion
 
 #region LocalizationLanguages
-        new("Manage LocalizationLanguages", PermissionAction.Manage, PermissionResource.LocalizationLanguages),
+        new("Manage LocalizationLanguages", PermissionAction.Manage, PermissionResource.LocalizationLanguages, IsRoot: true),
         new("View LocalizationLanguages", PermissionAction.View, PermissionResource.LocalizationLanguages),
         new("Create LocalizationLanguages", PermissionAction.Create, PermissionResource.LocalizationLanguages),
         new("Update LocalizationLanguages", PermissionAction.Update, PermissionResource.LocalizationLanguages),
@@ -59,7 +59,7 @@ public static class PermissionCatalog
 #endregion
 
 #region LocalizationResources
-        new("Manage LocalizationResources", PermissionAction.Manage, PermissionResource.LocalizationResources),
+        new("Manage LocalizationResources", PermissionAction.Manage, PermissionResource.LocalizationResources, IsRoot: true),
         new("View LocalizationResources", PermissionAction.View, PermissionResource.LocalizationResources),
         new("Create LocalizationResources", PermissionAction.Create, PermissionResource.LocalizationResources),
         new("Update LocalizationResources", PermissionAction.Update, PermissionResource.LocalizationResources),
@@ -67,7 +67,7 @@ public static class PermissionCatalog
 #endregion
 
 #region LocalizationResourceTranslations
-        new("Manage LocalizationResourceTranslations", PermissionAction.Manage, PermissionResource.LocalizationResourceTranslations),
+        new("Manage LocalizationResourceTranslations", PermissionAction.Manage, PermissionResource.LocalizationResourceTranslations, IsRoot: true),
         new("View LocalizationResourceTranslations", PermissionAction.View, PermissionResource.LocalizationResourceTranslations),
         new("Create LocalizationResourceTranslations", PermissionAction.Create, PermissionResource.LocalizationResourceTranslations),
         new("Update LocalizationResourceTranslations", PermissionAction.Update, PermissionResource.LocalizationResourceTranslations),

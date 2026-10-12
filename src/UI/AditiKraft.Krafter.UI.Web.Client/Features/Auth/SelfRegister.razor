@@ -97,13 +97,13 @@
                 </RadzenStack>
 
                 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Right" Gap="0.5rem" Class="rz-mt-4 rz-mb-2">
-                    <RadzenButton ButtonType="ButtonType.Submit" IsBusy="IsBusy" Size="ButtonSize.Small" Icon="person_add" Text="Register" />
+                    <RadzenButton ButtonType="ButtonType.Submit" IsBusy="IsBusy" Size="ButtonSize.Small" Icon="person_add" Text="@L.Localize("Button_Register", "Register")" />
                 </RadzenStack>
             </RadzenTemplateForm>
 
             <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.5rem">
                 <RadzenText TextStyle="TextStyle.Body2">Already have an account?</RadzenText>
-                <RadzenLink Path="/login" Text="Login"></RadzenLink>
+                <RadzenLink Path="/login" Text="@L.Localize("Button_Login", "Login")"></RadzenLink>
             </RadzenStack>
         </RadzenCard>
     </RadzenColumn>

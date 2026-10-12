@@ -1,11 +1,13 @@
 using System.Text.Json;
+using AditiKraft.Krafter.UI.Web.Client.Common.Models;
+using AditiKraft.Krafter.UI.Web.Client.Features.Localization;
 
 namespace AditiKraft.Krafter.UI.Web.Client.Common.Components.Grids;
 
 public partial class AdvancedDataGrid<TItem> : ComponentBase where TItem : notnull
 {
     [Inject] private IJSRuntime JsRuntime { get; set; } = default!;
-
+    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
     [Parameter] public IEnumerable<TItem>? Data { get; set; }
     [Parameter] public int Count { get; set; }
     [Parameter] public bool IsLoading { get; set; }
@@ -13,15 +15,15 @@ public partial class AdvancedDataGrid<TItem> : ComponentBase where TItem : notnu
     [Parameter] public RenderFragment? Columns { get; set; }
     [Parameter] public RenderFragment? ToolbarActions { get; set; }
 
-    [Parameter] public bool ShowCellDataAsTooltip { get; set; } = true;
-    [Parameter] public Density Density { get; set; } = Density.Compact;
+    [Parameter] public bool ShowCellDataAsTooltip { get; set; } = LocalAppState.ShowCellDataAsTooltip;
+    [Parameter] public Density Density { get; set; } = LocalAppState.Density;
     [Parameter] public Density MobileDensity { get; set; } = Density.Compact;
     [Parameter] public bool UseAdaptiveDensity { get; set; } = true;
 
-    [Parameter] public bool AllowColumnResize { get; set; } = true;
+    [Parameter] public bool AllowColumnResize { get; set; } = LocalAppState.AllowColumnResize;
     [Parameter] public bool AllowColumnPicking { get; set; } = true;
     [Parameter] public bool AllowFiltering { get; set; } = true;
-    [Parameter] public FilterMode FilterMode { get; set; } = FilterMode.Advanced;
+    [Parameter] public FilterMode FilterMode { get; set; } = FilterMode.CheckBoxList;
     [Parameter] public LogicalFilterOperator LogicalFilterOperator { get; set; } = LogicalFilterOperator.Or;
     [Parameter] public bool AllowSorting { get; set; } = true;
     [Parameter] public bool AllowMultiColumnSorting { get; set; } = true;
@@ -30,11 +32,11 @@ public partial class AdvancedDataGrid<TItem> : ComponentBase where TItem : notnu
     [Parameter] public int PageSize { get; set; } = 10;
     [Parameter] public int MobilePageSize { get; set; } = 10;
     [Parameter] public IEnumerable<int> PageSizeOptions { get; set; } = [10, 20, 50, 100, 500];
-    [Parameter] public int PageNumbersCount { get; set; } = 5;
+    [Parameter] public int PageNumbersCount { get; set; } = 7;
     [Parameter] public bool PagerAlwaysVisible { get; set; } = true;
-    [Parameter] public string PagingSummaryFormat { get; set; } = "Showing {0}-{1} of {2}";
+    [Parameter] public string? PagingSummaryFormat { get; set; }
     [Parameter] public bool AllowGrouping { get; set; } = true;
-    [Parameter] public string GroupPanelText { get; set; } = "Drag a column header here to group results";
+    [Parameter] public string? GroupPanelText { get; set; }
 
     [Parameter] public bool AllowVirtualization { get; set; } = true;
     [Parameter] public string GridStyle { get; set; } = "max-height: 70vh; overflow: auto;";
@@ -193,7 +195,7 @@ public partial class AdvancedDataGrid<TItem> : ComponentBase where TItem : notnu
         }
         catch (JsonException)
         {
-            _statusMessage = "Failed to apply saved grid state.";
+            _statusMessage = L.Localize("GridState_ApplyFailed", "Failed to apply saved grid state.");
         }
     }
 
@@ -221,7 +223,7 @@ public partial class AdvancedDataGrid<TItem> : ComponentBase where TItem : notnu
                     Progress = OnExportProgress
                 }).ConfigureAwait(false);
 
-            _statusMessage = "Excel export completed.";
+            _statusMessage = L.Localize("Export_ExcelCompleted", "Excel export completed.");
         }
         finally
         {
@@ -252,7 +254,7 @@ public partial class AdvancedDataGrid<TItem> : ComponentBase where TItem : notnu
                     Progress = OnExportProgress
                 }).ConfigureAwait(false);
 
-            _statusMessage = "CSV export completed.";
+            _statusMessage = L.Localize("Export_CsvCompleted", "CSV export completed.");
         }
         finally
         {

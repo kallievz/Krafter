@@ -1,14 +1,14 @@
-﻿@if (!Example.New && !Example.Updated)
+@if (!Example.New && !Example.Updated)
 {
-    <RadzenPanelMenuItem @bind-Expanded=@Expanded Text="@Example.Name" Path="@GetUrl()" Icon="@Example.Icon" aria-label="@Example.Name">
+    <RadzenPanelMenuItem @bind-Expanded=@Expanded Text="@GetLocalizedName()" Path="@GetUrl()" Icon="@Example.Icon" aria-label="@GetLocalizedName()">
         <ChildContent>@ChildContent</ChildContent>
     </RadzenPanelMenuItem>
 }
 else
 {
-    <RadzenPanelMenuItem @bind-Expanded=@Expanded Text="@Example.Name" Path="@GetUrl()" Icon="@Example.Icon" aria-label="@Example.Name">
+    <RadzenPanelMenuItem @bind-Expanded=@Expanded Text="@GetLocalizedName()" Path="@GetUrl()" Icon="@Example.Icon" aria-label="@GetLocalizedName()">
         <Template>
-            @Example.Name
+            @GetLocalizedName()
             <RadzenBadge Text="Updated" Visible=@Example.Updated BadgeStyle="BadgeStyle.Info"/>
             <RadzenBadge Text="New" Visible=@Example.New BadgeStyle="BadgeStyle.Success"/>
         </Template>

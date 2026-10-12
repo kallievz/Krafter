@@ -1,6 +1,7 @@
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.Contracts.Common.Enums;
 using AditiKraft.Krafter.UI.Web.Client.Common.Models;
+using AditiKraft.Krafter.UI.Web.Client.Features.Localization;
 
 namespace AditiKraft.Krafter.UI.Web.Client.Features.Tenants;
 
@@ -12,6 +13,8 @@ public partial class Tenants(
     AppUrls urls
 ) : ComponentBase
 {
+    [Inject]
+    private Radzen.ILocalizer L { get; set; } = null!;
     public const string RoutePath = ApiRoutes.Tenants;
     private bool _isLoading = true;
     private readonly GetRequestInput _requestInput = new();
@@ -44,9 +47,10 @@ public partial class Tenants(
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task AddAsync()
+    private async Task AddTenantAsync()
     {
-        object? result = await dialogService.OpenAsync<CreateOrUpdateTenant>($"Add New Tenant",
+        string title = L.Localize("Dialog_AddNewTenant", "Add New Tenant");
+        object? result = await dialogService.OpenAsync<CreateOrUpdateTenant>(title,
             new Dictionary<string, object?> { { "TenantInput", new TenantDto() } },
             new DialogOptions { Width = "40vw", Resizable = true, Draggable = true, Top = "5vh" });
         if (result is true)
@@ -55,9 +59,10 @@ public partial class Tenants(
         }
     }
 
-    private async Task UpdateAsync(TenantDto tenant)
+    private async Task UpdateTenantAsync(TenantDto tenant)
     {
-        object? result = await dialogService.OpenAsync<CreateOrUpdateTenant>($"Update Tenant {tenant.Name}",
+        string title = L.Localize("Dialog_UpdateTenant", "Update Tenant {0}", tenant.Name ?? string.Empty);
+        object? result = await dialogService.OpenAsync<CreateOrUpdateTenant>(title,
             new Dictionary<string, object?> { { "TenantInput", tenant } },
             new DialogOptions { Width = "40vw", Resizable = true, Draggable = true, Top = "5vh" });
         if (result is true)
@@ -68,7 +73,8 @@ public partial class Tenants(
 
     private async Task ManageSettingsAsync(TenantDto tenant)
     {
-        _ = await dialogService.OpenAsync<ManageTenantSettings>($"Tenant Settings - {tenant.Name}",
+        string title = L.Localize("Dialog_TenantSettings", "Tenant Settings - {0}", tenant.Name ?? string.Empty);
+        _ = await dialogService.OpenAsync<ManageTenantSettings>(title,
             new Dictionary<string, object?>
             {
                 { "TenantInput", tenant },
@@ -87,18 +93,22 @@ public partial class Tenants(
         navigationManager.NavigateTo($"/{ApiRoutes.Tenants}/{tenant.Id}/settings");
     }
 
-    private async Task DeleteAsync(TenantDto input)
+    private async Task DeleteTenantAsync(TenantDto input)
     {
         bool? confirmed = await dialogService.Confirm(
-            $"Are you sure you want to delete tenant '{input.Name}'?",
-            "Delete Tenant",
-            new ConfirmOptions { OkButtonText = "Delete", CancelButtonText = "Cancel" });
+            L.Localize("Dialog_ConfirmDeleteTenant", "Are you sure you want to delete tenant '{0}'?", input.Name ?? string.Empty),
+            L.Localize("Dialog_DeleteTenantTitle", "Delete Tenant"),
+            new ConfirmOptions
+            {
+                OkButtonText = L.Localize("Button_Delete", "Delete"),
+                CancelButtonText = L.Localize("Button_Cancel", "Cancel")
+            });
 
         if (confirmed == true && !string.IsNullOrWhiteSpace(input.Id))
         {
             Response result = await api.CallAsync(
                 () => tenantsApi.DeleteTenantAsync(input.Id),
-                successMessage: "Tenant deleted successfully");
+                successMessage: L.Localize("Notification_TenantDeletedSuccessfully", "Tenant deleted successfully"));
 
             if (!result.IsError)
             {
@@ -122,15 +132,15 @@ public partial class Tenants(
     {
         if (item is { Value: PermissionAction.Update })
         {
-            await UpdateAsync(data);
+            await UpdateTenantAsync(data);
         }
         else if (item is { Value: PermissionAction.Create })
         {
-            await AddAsync();
+            await AddTenantAsync();
         }
         else if (item is { Value: PermissionAction.Delete })
         {
-            await DeleteAsync(data);
+            await DeleteTenantAsync(data);
         }
         else if (item is { Value: "settings" })
         {

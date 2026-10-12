@@ -9,25 +9,25 @@
                     ValueProperty="Id"
                     TextProperty="Name"
                     @bind-Value="_selectedStateId"
-                    Placeholder="Saved states"
+                    Placeholder="@L.Localize("GridState_SavedStates", "Saved states")"
                     Change="@OnSelectionChangedAsync"
                     Style="min-width: 220px;"
                     Disabled="@Disabled" />
 
-    <RadzenTextBox @bind-Value="_stateName" Placeholder="State name" Style="min-width: 180px;" Disabled="@Disabled" />
+    <RadzenTextBox @bind-Value="_stateName" Placeholder="@L.Localize("GridState_Name", "GridState Name")" Style="min-width: 180px;" Disabled="@Disabled" />
 
     <RadzenCheckBox @bind-Value="_isDefault" Name="gridStateDefault" Disabled="@Disabled" />
-    <RadzenLabel Text="Default" Component="gridStateDefault" />
+    <RadzenLabel Text="@L.Localize("GridState_IsDefault", "IsDefault?")" Component="gridStateDefault" />
 
     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.35rem" AlignItems="AlignItems.Center" Wrap="FlexWrap.Wrap"
                  Class="grid-state-actions" Style="position: relative;">
-        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Light" Icon="save" Text="Save"
+        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Light" Icon="save" Text="@L.Localize("Button_Save", "Save")"
                       Click="@SaveStateAsync" Disabled="@(Disabled || _isBusy)" />
-        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Light" Icon="edit" Text="Update"
+        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Light" Icon="edit" Text="@L.Localize("Button_Update", "Update")"
                       Click="@UpdateStateAsync" Disabled="@(Disabled || _isBusy || string.IsNullOrWhiteSpace(_selectedStateId))" />
-        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Variant="Variant.Outlined" Icon="delete" Text="Delete"
+        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Variant="Variant.Outlined" Icon="delete" Text="@L.Localize("Button_Delete", "Delete")"
                       Click="@DeleteStateAsync" Disabled="@(Disabled || _isBusy || string.IsNullOrWhiteSpace(_selectedStateId))" />
-        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Light" Icon="refresh" Text="Refresh"
+        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Light" Icon="refresh" Text="@L.Localize("Button_Refresh", "Refresh")"
                       Click="@LoadStatesAsync" Disabled="@(Disabled || _isBusy)" />
     </RadzenStack>
 </RadzenStack>

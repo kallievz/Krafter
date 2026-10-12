@@ -2,6 +2,7 @@ namespace AditiKraft.Krafter.UI.Web.Client.Common.Components.Brand;
 
 public partial class LoadingIndicator
 {
+    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
     [Parameter] public LoadingIndicatorSize Size { get; set; } = LoadingIndicatorSize.Medium;
 
     public string GetAlt()

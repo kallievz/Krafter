@@ -16,23 +16,12 @@
                   Count="@(_response?.Data?.TotalCount ?? 0)"
                   IsLoading="@_isLoading"
                   LoadData="@LoadDataAsync"
-                  Density="LocalAppState.Density"
-                  ShowCellDataAsTooltip="LocalAppState.ShowCellDataAsTooltip"
-                  AllowColumnResize="LocalAppState.AllowColumnResize"
-                  FilterMode="FilterMode.CheckBoxList"
-                  GroupPanelText="@L.Localize("DataGrid_GroupPanelText", "Drag a column header here and drop it to group by that column")"
                   ExportFileBaseName="munsoft-instances"
                   ExportTitle="Munsoft instances"
-                  ComponentKey="@RoutePath"
-                  PageSizeOptions="new[] { 10, 20, 50, 100, 500 }"
-                  PageNumbersCount="7"
-                  PagerAlwaysVisible="true"
-                  PagingSummaryFormat="@L.Localize("Pager_PagingSummaryFormat", "Page {0} of {1} ({2} items)")"
-                  OnFilterCleared="@OnGridFilterClearedAsync"
-                  OnGridReset="@OnGridResetAsync">
+                  ComponentKey="@RoutePath">
     <ToolbarActions>
         <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary" Icon="sync" Text="@L.Localize("Button_Sync", "Syncronize")"
-                      Click="@SyncAsync" Disabled="@_isLoading" />
+                      Click="@SyncInstancesAsync" Disabled="@_isLoading" />
     </ToolbarActions>
     <Columns>
         <RadzenDataGridColumn TItem="MunsoftInstanceDto" Property="Id" Title="@L.Localize("MunsoftInstance_Id", "Id")" Width="90px" TextAlign="TextAlign.Center"

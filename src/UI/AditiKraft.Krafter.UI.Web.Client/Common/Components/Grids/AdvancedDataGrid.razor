@@ -5,7 +5,7 @@
              JustifyContent="JustifyContent.End" Wrap="FlexWrap.Wrap" class="mt-1 mb-2">
     @if (ShowResetButton)
     {
-        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Light" Icon="restart_alt" Text="Reset Grid"
+        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Light" Icon="restart_alt" Text="@L.Localize("Button_ResetGrid", "Reset Grid")"
                       Click="@ResetGridAsync" Disabled="@IsLoading" />
     }
 
@@ -20,9 +20,9 @@
 
     @if (ShowExportControls)
     {
-        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Success" Icon="grid_on" Text="Export Excel"
+        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Success" Icon="grid_on" Text="@L.Localize("Button_ExportExcel", "Export Excel")"
                       Click="@ExportExcelAsync" Disabled="@_isExporting" />
-        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Icon="description" Text="Export CSV"
+        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Icon="description" Text="@L.Localize("Button_ExportCsv", "Export CSV")"
                       Click="@ExportCsvAsync" Disabled="@_isExporting" />
     }
 
@@ -67,9 +67,13 @@ else
                     PagerAlwaysVisible="@PagerAlwaysVisible"
                     PagerHorizontalAlign="HorizontalAlign.Center"
                     ShowPagingSummary="ShowPagingSummary"
-                    PagingSummaryFormat="@PagingSummaryFormat"
+                    PagingSummaryFormat="@(string.IsNullOrWhiteSpace(PagingSummaryFormat)
+                        ? L.Localize("Pager_PagingSummaryFormat", "Page {0} of {1} ({2} items)")
+                        : PagingSummaryFormat)"
                     AllowGrouping="AllowGrouping"
-                    GroupPanelText="@GroupPanelText"
+                    GroupPanelText="@(string.IsNullOrWhiteSpace(GroupPanelText)
+                        ? L.Localize("DataGrid_GroupPanelText", "Drag a column header here and drop it to group by that column")
+                        : GroupPanelText)"
                     IsLoading="IsLoading"
                     Data="Data"
                     Count="Count"
@@ -86,7 +90,7 @@ else
 {
     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.75rem" AlignItems="AlignItems.Center" class="rz-mt-2">
         <RadzenProgressBar Value="@ExportProgressValue" ShowValue="true" Style="width: 260px" AriaLabel="Export progress" />
-        <RadzenText TextStyle="TextStyle.Body2">@($"{_loadedRows} of {_totalRows} rows")</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body2">@L.Localize("Export_ProgressRows", "{0} of {1} rows", _loadedRows, _totalRows)</RadzenText>
     </RadzenStack>
 }
 

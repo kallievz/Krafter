@@ -19,19 +19,39 @@ public sealed class ResourceTranslationsCrud
     {
         public async Task<Response<List<ResourceTranslationDto>>> GetAsync(CancellationToken cancellationToken)
         {
-            List<ResourceTranslationDto> items = await localizationDbContext.ResourceTranslations.AsNoTracking()
-                .OrderBy(resourceTranslation => resourceTranslation.ResourceId)
-                .ThenBy(resourceTranslation => resourceTranslation.LanguageId)
-                .Select(resourceTranslation => new ResourceTranslationDto
+            List<ResourceTranslationDto> items = await (
+                from resourceTranslation in localizationDbContext.ResourceTranslations.AsNoTracking()
+                join resource in localizationDbContext.Resources.AsNoTracking()
+                    on resourceTranslation.ResourceId equals resource.Id
+                join language in localizationDbContext.Languages.AsNoTracking()
+                    on resourceTranslation.LanguageId equals language.Id
+                orderby resource.Key, language.Code
+                select new ResourceTranslationDto
                 {
                     Id = resourceTranslation.Id,
                     ResourceId = resourceTranslation.ResourceId,
                     LanguageId = resourceTranslation.LanguageId,
                     Value = resourceTranslation.Value,
                     CreatedOn = resourceTranslation.CreatedOn,
-                    UpdatedOn = resourceTranslation.UpdatedOn
-                })
-                .ToListAsync(cancellationToken)
+                    UpdatedOn = resourceTranslation.UpdatedOn,
+                    Resource = new ResourceDto
+                    {
+                        Id = resource.Id,
+                        Key = resource.Key,
+                        Description = resource.Description,
+                        CreatedOn = resource.CreatedOn,
+                        UpdatedOn = resource.UpdatedOn
+                    },
+                    Language = new LanguageDto
+                    {
+                        Id = language.Id,
+                        Code = language.Code,
+                        Name = language.Name,
+                        IsActive = language.IsActive,
+                        CreatedOn = language.CreatedOn,
+                        UpdatedOn = language.UpdatedOn
+                    }
+                }).ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
 
             return Response<List<ResourceTranslationDto>>.Success(items);
@@ -89,15 +109,11 @@ public sealed class ResourceTranslationsCrud
             await localizationTextResolver.InvalidateByResourceIdAsync(entity.ResourceId, cancellationToken)
                 .ConfigureAwait(false);
 
-            ResourceTranslationDto dto = new()
+            ResourceTranslationDto? dto = await GetByIdAsync(entity.Id, cancellationToken).ConfigureAwait(false);
+            if (dto is null)
             {
-                Id = entity.Id,
-                ResourceId = entity.ResourceId,
-                LanguageId = entity.LanguageId,
-                Value = entity.Value,
-                CreatedOn = entity.CreatedOn,
-                UpdatedOn = entity.UpdatedOn
-            };
+                return Response<ResourceTranslationDto>.NotFound("Resource translation not found.");
+            }
 
             return Response<ResourceTranslationDto>.Success(dto);
         }
@@ -168,17 +184,50 @@ public sealed class ResourceTranslationsCrud
             await localizationTextResolver.InvalidateByResourceIdAsync(entity.ResourceId, cancellationToken)
                 .ConfigureAwait(false);
 
-            ResourceTranslationDto dto = new()
+            ResourceTranslationDto? dto = await GetByIdAsync(entity.Id, cancellationToken).ConfigureAwait(false);
+            if (dto is null)
             {
-                Id = entity.Id,
-                ResourceId = entity.ResourceId,
-                LanguageId = entity.LanguageId,
-                Value = entity.Value,
-                CreatedOn = entity.CreatedOn,
-                UpdatedOn = entity.UpdatedOn
-            };
+                return Response<ResourceTranslationDto>.NotFound("Resource translation not found.");
+            }
 
             return Response<ResourceTranslationDto>.Success(dto);
+        }
+
+        private async Task<ResourceTranslationDto?> GetByIdAsync(string id, CancellationToken cancellationToken)
+        {
+            return await (
+                from resourceTranslation in localizationDbContext.ResourceTranslations.AsNoTracking()
+                join resource in localizationDbContext.Resources.AsNoTracking()
+                    on resourceTranslation.ResourceId equals resource.Id
+                join language in localizationDbContext.Languages.AsNoTracking()
+                    on resourceTranslation.LanguageId equals language.Id
+                where resourceTranslation.Id == id
+                select new ResourceTranslationDto
+                {
+                    Id = resourceTranslation.Id,
+                    ResourceId = resourceTranslation.ResourceId,
+                    LanguageId = resourceTranslation.LanguageId,
+                    Value = resourceTranslation.Value,
+                    CreatedOn = resourceTranslation.CreatedOn,
+                    UpdatedOn = resourceTranslation.UpdatedOn,
+                    Resource = new ResourceDto
+                    {
+                        Id = resource.Id,
+                        Key = resource.Key,
+                        Description = resource.Description,
+                        CreatedOn = resource.CreatedOn,
+                        UpdatedOn = resource.UpdatedOn
+                    },
+                    Language = new LanguageDto
+                    {
+                        Id = language.Id,
+                        Code = language.Code,
+                        Name = language.Name,
+                        IsActive = language.IsActive,
+                        CreatedOn = language.CreatedOn,
+                        UpdatedOn = language.UpdatedOn
+                    }
+                }).FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<Response> DeleteAsync(string id, CancellationToken cancellationToken)

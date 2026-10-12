@@ -11,6 +11,10 @@ public static class ApiRoutes
     public const string AppInfo = "app-info";
     public const string ExternalAuth = "external-auth";
     public const string Integrations = "integrations";
+    public const string Configuration = "configuration";
+    public const string LocalizationLanguages = $"{Configuration}/languages";
+    public const string LocalizationResources = $"{Configuration}/resources";
+    public const string LocalizationResourceTranslations = $"{Configuration}/resource-translations";
 }
 
 public static class RouteSegment

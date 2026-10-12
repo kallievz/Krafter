@@ -6,6 +6,8 @@ public partial class ResetPassword(
     IUsersApi usersApi
 ) : ComponentBase
 {
+    [Inject]
+    private Radzen.ILocalizer L { get; set; } = null!;
     public ResetPasswordRequest ResetPasswordRequest { get; set; } = new();
 
     [SupplyParameterFromQuery(Name = "Token")]

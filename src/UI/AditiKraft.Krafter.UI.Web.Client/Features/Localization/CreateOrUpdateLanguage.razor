@@ -1,0 +1,37 @@
+@using AditiKraft.Krafter.Contracts.Contracts.Localization
+
+<RadzenTemplateForm TItem="CreateLanguageRequest" Data="@_request" Submit="@SubmitAsync">
+    <RadzenStack Gap="0.75rem">
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="3">
+                <RadzenLabel Text="@L.Localize("Language_Code", "Code")" Component="Code" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="9">
+                <RadzenTextBox Style="width: 100%" @bind-Value="@_request.Code" Name="Code" />
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="3">
+                <RadzenLabel Text="@L.Localize("Language_Name", "Name")" Component="Name" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="9">
+                <RadzenTextBox Style="width: 100%" @bind-Value="@_request.Name" Name="Name" />
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="3">
+                <RadzenLabel Text="@L.Localize("Language_IsActive", "Active")" Component="IsActive" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="9">
+                <RadzenCheckBox @bind-Value="@_request.IsActive" Name="IsActive" />
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenStack>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.5rem" Class="rz-mt-4 rz-mb-2">
+        <RadzenButton ButtonType="ButtonType.Submit" IsBusy="_isBusy" Size="ButtonSize.Small" Icon="save" Text="@L.Localize("Button_Save", "Save")" />
+        <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Icon="cancel" Text="@L.Localize("Button_Cancel", "Cancel")" Click="@Cancel" />
+    </RadzenStack>
+</RadzenTemplateForm>

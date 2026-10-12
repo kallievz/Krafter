@@ -5,6 +5,8 @@ public partial class MultiSelectRoleDropDownDataGrid(
     IRolesApi rolesApi
 ) : ComponentBase
 {
+    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
+
     private RadzenDropDownDataGrid<IEnumerable<string>> _dropDownGrid = null!;
 
     private Response<PaginationResponse<RoleDto>>? _response;

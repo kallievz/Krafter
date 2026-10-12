@@ -2,6 +2,7 @@ namespace AditiKraft.Krafter.UI.Web.Client.Common.Models;
 
 public static class LocalAppState
 {
+
     public static string CurrentPageTitle { get; set; } = "Home"; //Density
 
     public static Density Density { get; set; } = Density.Compact;

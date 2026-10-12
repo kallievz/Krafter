@@ -17,7 +17,7 @@ else
     <RadzenStack Gap="0.75rem" class="rz-p-2">
         <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
             <RadzenText TextStyle="TextStyle.H6">Tenant Settings - @_tenant.Name</RadzenText>
-            <RadzenButton Size="ButtonSize.Small" Icon="arrow_back" Text="Back to tenants" Click="BackAsync" />
+            <RadzenButton Size="ButtonSize.Small" Icon="arrow_back" Text="@L.Localize("Button_BackToTenants", "Back to tenants")" Click="BackAsync" />
         </RadzenStack>
 
         <ManageTenantSettings TenantInput="_tenant" ShowCloseButton="false" />

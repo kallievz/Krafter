@@ -8,7 +8,7 @@
 
 ## UI Component Guidelines
 - For Radzen grid components, do not expose per-grid theme toggles; theme must be configured globally and reusable grids should respect global theme settings.
-- Use inline `L.Localize("key", "fallback", args)` calls directly in Razor markup via LocalizerExtensions without code-behind properties. This method combines localization and formatting into a single call, intelligently handling args: if args are null/empty, it returns the value as-is; if args are provided, it applies string.Format automatically. It is null-safe and exception-safe (returns unformatted on format error). Inject `Radzen.ILocalizer L` in code-behind, preload keys once during OnInitializedAsync via `(L as Localizer).PreloadAsync(keys)`, invalidate/reload on language change. This eliminates repetitive property declarations and keeps localization strings visible at the point of use.
+- Use inline `L.Localize("key", "fallback", args)` calls directly in Razor markup via LocalizerExtensions without code-behind properties. Inject `Radzen.ILocalizer L` in code-behind, preload keys once during OnInitializedAsync via `(L as Localizer).PreloadAsync(keys)`, invalidate/reload on language change. This eliminates repetitive property declarations and keeps localization strings visible at point of use.
 
 ## Permission Model
 - Every entity must have a PermissionResource entry.

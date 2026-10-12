@@ -7,6 +7,8 @@ public partial class ManageTenantSettings(
     ApiCallService api,
     DialogService dialogService) : ComponentBase
 {
+    [Inject]
+    private Radzen.ILocalizer L { get; set; } = null!;
     [Parameter] public TenantDto? TenantInput { get; set; }
     [Parameter] public bool ShowCloseButton { get; set; } = true;
 

@@ -5,6 +5,7 @@ public partial class SingleSelectUserDropDownDataGrid(
     IUsersApi usersApi
 ) : ComponentBase
 {
+    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
     private RadzenDropDownDataGrid<string> _dropDownGrid = default!;
     private int _totalCount = 0;
     private bool _isLoading = true;

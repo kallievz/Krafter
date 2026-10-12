@@ -9,5 +9,6 @@
 }
 
 @code {
+       [Inject] private Radzen.ILocalizer L { get; set; } = null!;
     [Parameter] public List<string> Messages { get; set; } = [];
 }

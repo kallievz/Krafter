@@ -8,6 +8,7 @@ public partial class AppearancePage(
     ThemeManager themeManager
 ) : ComponentBase
 {
+    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
     private async Task ChangeThemeAsync(string value) => await themeManager.SetDifferentThemeAsync(value);
 
     private void ChangeRightToLeft(bool value) => themeService.SetRightToLeft(value);

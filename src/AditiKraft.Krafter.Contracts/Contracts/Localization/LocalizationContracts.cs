@@ -53,6 +53,8 @@ public sealed class ResourceTranslationDto
     public string Value { get; set; } = string.Empty;
     public DateTime CreatedOn { get; set; }
     public DateTime? UpdatedOn { get; set; }
+    public ResourceDto? Resource { get; set; }
+    public LanguageDto? Language { get; set; }
 }
 
 public sealed class CreateResourceTranslationRequest

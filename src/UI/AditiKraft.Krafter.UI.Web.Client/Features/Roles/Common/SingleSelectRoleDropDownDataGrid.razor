@@ -1,10 +1,9 @@
 @using AditiKraft.Krafter.UI.Web.Client.Common.Models
 <RadzenDropDownDataGrid Name="RoleDropDown" Style="width: 100%;" @ref="_dropDownGrid" AllowSelectAll="false" IsLoading="_isLoading" Density="LocalAppState.Density" PageSize="GetRequestInput.MaxResultCount" Multiple="false" AllowClear="true" @bind-Value="@Value" Change="@((arg) => OnValueChangedAsync(arg))"
                         LoadData="@LoadDataAsync" AllowFiltering="true"
-                        Data="@_data" Count="@(GetCount())" TextProperty="Name" ValueProperty="Id" Placeholder="Select Role" Chips="true">
+                        Data="@_data" Count="@(GetCount())" TextProperty="Name" ValueProperty="Id" Placeholder="@L.Localize("Placeholder_SelectRole", "Select Role")" Chips="true">
 
     <Columns>
-
         <RadzenDropDownDataGridColumn Width="60px" Sortable="false">
             <HeaderTemplate>
                 <RadzenCheckBox Disabled="true" TriState="false" TValue="bool" Value="@(_data != null && _data.Any(c => Value != null && Value.Contains(c.Id)))"/>
@@ -15,6 +14,5 @@
             </Template>
         </RadzenDropDownDataGridColumn>
         <RadzenDropDownDataGridColumn Property="Name" Title="Name" Width="150px"/>
-
     </Columns>
 </RadzenDropDownDataGrid>

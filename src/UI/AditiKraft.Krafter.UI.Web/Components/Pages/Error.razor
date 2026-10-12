@@ -1,4 +1,4 @@
-﻿@page "/Error"
+@page "/Error"
 @using System.Diagnostics
 
 <PageTitle>Error</PageTitle>
@@ -21,9 +21,9 @@
         }
 
         <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" class="rz-mt-6">
-            <RadzenButton Text="Go Home" Icon="home" ButtonStyle="ButtonStyle.Primary"
+            <RadzenButton Text="@GetLocalizedText("Button_GoHome", "Go Home")" Icon="home" ButtonStyle="ButtonStyle.Primary"
                           Click="@(() => NavigationManager.NavigateTo("/"))" />
-            <RadzenButton Text="Try Again" Icon="refresh" ButtonStyle="ButtonStyle.Light"
+            <RadzenButton Text="@GetLocalizedText("Button_TryAgain", "Try Again")" Icon="refresh" ButtonStyle="ButtonStyle.Light"
                           Click="@(() => NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true))" />
         </RadzenStack>
     </div>
@@ -32,6 +32,7 @@
 @code {
     [CascadingParameter] private HttpContext? HttpContext { get; set; }
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] private Radzen.ILocalizer L { get; set; } = default!;
 
     private string? RequestId { get; set; }
     private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
@@ -39,5 +40,11 @@
     protected override void OnInitialized()
     {
         RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
+    }
+
+    private string GetLocalizedText(string key, string fallback)
+    {
+        string? result = L.Get(key, System.Globalization.CultureInfo.CurrentCulture);
+        return string.IsNullOrWhiteSpace(result) ? fallback : result;
     }
 }

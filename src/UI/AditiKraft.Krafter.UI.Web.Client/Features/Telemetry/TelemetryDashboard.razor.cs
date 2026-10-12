@@ -5,6 +5,8 @@ namespace AditiKraft.Krafter.UI.Web.Client.Features.Telemetry;
 
 public partial class TelemetryDashboard(AppUrls appUrls) : ComponentBase
 {
+    [Inject]
+    private Radzen.ILocalizer L { get; set; } = null!;
     public const string RoutePath = "/telemetry-dashboard";
 
     private string MetricsUrl => BuildMetricsUrl();

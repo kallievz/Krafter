@@ -15,7 +15,7 @@
         </RadzenText>
         <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.5rem"
                      class="rz-mt-4">
-            <RadzenButton Text="Go Home" Icon="home" ButtonStyle="ButtonStyle.Primary"
+            <RadzenButton Text="@L.Localize("Button_Home", "Go Home")" Icon="home" ButtonStyle="ButtonStyle.Primary"
                           Click="@(() => NavigationManager.NavigateTo("/"))" />
         </RadzenStack>
     </div>
@@ -23,4 +23,5 @@
 
 @code {
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
 }

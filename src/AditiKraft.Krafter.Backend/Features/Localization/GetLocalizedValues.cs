@@ -40,6 +40,19 @@ public sealed class GetLocalizedValues
 
         private string GetPreferredLanguageCode()
         {
+            string? acceptLanguageValue = httpContextAccessor.HttpContext?.Request.Headers.AcceptLanguage
+                .FirstOrDefault();
+            string? headerLanguageCode = acceptLanguageValue?
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .FirstOrDefault()?
+                .Split('-', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .FirstOrDefault();
+
+            if (!string.IsNullOrWhiteSpace(headerLanguageCode))
+            {
+                return headerLanguageCode.Trim().ToLowerInvariant();
+            }
+
             string? claimValue = httpContextAccessor.HttpContext?.User.Claims
                 .FirstOrDefault(claim => claim.Type == AppClaimTypes.PreferredLanguageCode)?.Value;
 

@@ -8,7 +8,7 @@
 
     </RadzenStack>
     <RadzenStack Style="width: 85%;">
-        <RadzenTextBox @bind-Value="Value" @oninput="OnInputChanged" @onkeydown="OnKeyDownAsync" Placeholder="Enter search text"/>
+        <RadzenTextBox @bind-Value="Value" @oninput="OnInputChanged" @onkeydown="OnKeyDownAsync" Placeholder="@L.Localize("Placeholder_Search", "Enter search text")"/>
     </RadzenStack>
     <RadzenStack Style="width: 5%;">
         @if (!IsAutoSearch)

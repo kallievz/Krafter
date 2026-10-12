@@ -8,6 +8,8 @@ public partial class TenantSettingsPage(
     ApiCallService api,
     NavigationManager navigationManager) : ComponentBase
 {
+    [Inject]
+    private Radzen.ILocalizer L { get; set; } = null!;
     public const string RoutePath = "/tenants/{tenantId}/settings";
 
     [Parameter] public string TenantId { get; set; } = string.Empty;

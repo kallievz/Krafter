@@ -9,6 +9,7 @@
 Welcome to your new app running on <em>@factor</em> using <em>@platform</em>.
 
 @code {
+    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
     private string factor => FormFactor.GetFormFactor();
     private string platform => FormFactor.GetPlatform();
 }

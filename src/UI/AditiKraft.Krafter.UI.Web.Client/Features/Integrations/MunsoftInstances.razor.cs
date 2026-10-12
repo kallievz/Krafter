@@ -7,7 +7,8 @@ namespace AditiKraft.Krafter.UI.Web.Client.Features.Integrations;
 
 public partial class MunsoftInstances(
     ApiCallService api,
-    IIntegrationsApi integrationsApi
+    IIntegrationsApi integrationsApi,
+    DialogService dialogService
 ) : ComponentBase
 {
     [Inject]
@@ -69,15 +70,29 @@ public partial class MunsoftInstances(
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task SyncAsync()
+    private async Task SyncInstancesAsync()
     {
+        bool? confirmed = await dialogService.Confirm(
+            L.Localize("Dialog_ConfirmSyncMunsoftInstances", "Do you want to synchronize Munsoft instances now?"),
+            L.Localize("Dialog_SyncMunsoftInstancesTitle", "Synchronize Munsoft Instances"),
+            new ConfirmOptions
+            {
+                OkButtonText = L.Localize("Button_Sync", "Synchronize"),
+                CancelButtonText = L.Localize("Button_Cancel", "Cancel")
+            }).ConfigureAwait(false);
+
+        if (confirmed != true)
+        {
+            return;
+        }
+
         _isLoading = true;
         await InvokeAsync(StateHasChanged);
 
         Response<MunsoftInstanceSyncResult> syncResponse = await api.CallAsync(
             () => integrationsApi.SyncMunsoftInstancesAsync(),
-            errorTitle: "Munsoft Sync",
-            successMessage: "Munsoft instances synchronized successfully.").ConfigureAwait(false);
+            errorTitle: L.Localize("Entity_MunsoftInstancesSync", "Munsoft Instances Sync"),
+            successMessage: L.Localize("Notification_MunsoftInstancesSynchronized", "Munsoft instances synchronized successfully.")).ConfigureAwait(false);
 
         if (!syncResponse.IsError)
         {
@@ -89,19 +104,6 @@ public partial class MunsoftInstances(
         _errorMessage = syncResponse.Message;
         _isLoading = false;
         await InvokeAsync(StateHasChanged);
-    }
-
-    private Task OnGridFilterClearedAsync()
-    {
-        return Task.CompletedTask;
-    }
-
-    private Task OnGridResetAsync()
-    {
-        _requestInput.SkipCount = 0;
-        _requestInput.Filter = null;
-        _requestInput.OrderBy = null;
-        return Task.CompletedTask;
     }
 
     private void UpdateFilterLookups(IEnumerable<MunsoftInstanceDto> items)

@@ -32,7 +32,7 @@
             {
                 <div role="alert">
                     <p>Could not load role permissions. Retry before saving.</p>
-                    <RadzenButton ButtonType="ButtonType.Button" Text="Retry" Click="@LoadPermissionsAsync"/>
+                    <RadzenButton ButtonType="ButtonType.Button" Text="@L.Localize("Button_Retry", "Retry")" Click="@LoadPermissionsAsync"/>
                 </div>
             }
 
@@ -52,7 +52,7 @@
         }
     </RadzenStack>
     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.5rem" Class="rz-mt-4 rz-mb-2">
-        <RadzenButton ButtonType="ButtonType.Submit" Disabled="@(!CanSave)" IsBusy="_isBusy" Size="ButtonSize.Small" Icon="save" Text="Save" />
-        <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Icon="cancel" Text="Cancel" Click="@Cancel" />
+        <RadzenButton ButtonType="ButtonType.Submit" Disabled="@(!CanSave)" IsBusy="_isBusy" Size="ButtonSize.Small" Icon="save" Text="@L.Localize("Button_Save", "Save")" />
+        <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Icon="cancel" Text="@L.Localize("Button_Cancel", "Cancel")" Click="@Cancel" />
     </RadzenStack>
 </RadzenTemplateForm>

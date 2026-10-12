@@ -1,5 +1,6 @@
 using AditiKraft.Krafter.Contracts.Contracts.Grids;
 using AditiKraft.Krafter.UI.Web.Client.Features.GridStates;
+using AditiKraft.Krafter.UI.Web.Client.Features.Localization;
 
 namespace AditiKraft.Krafter.UI.Web.Client.Common.Components.Layout;
 
@@ -8,6 +9,8 @@ public partial class GridStateManager(
     ApiCallService api,
     DialogService dialogService) : ComponentBase
 {
+    [Inject]
+    private Radzen.ILocalizer L { get; set; } = null!;
     [Parameter] public string ComponentKey { get; set; } = string.Empty;
     [Parameter] public string CurrentStateJson { get; set; } = string.Empty;
     [Parameter] public EventCallback<string> OnApplyStateJson { get; set; }
@@ -54,7 +57,7 @@ public partial class GridStateManager(
         _isBusy = true;
         Response<List<GridStateDto>> response = await api.CallAsync(
             () => gridStatesApi.GetGridStatesAsync(ComponentKey),
-            errorTitle: "Grid states").ConfigureAwait(false);
+            errorTitle: L.Localize("Entity_GridStates", "Grid states")).ConfigureAwait(false);
 
         if (!response.IsError && response.Data is not null)
         {
@@ -145,8 +148,8 @@ public partial class GridStateManager(
 
         Response<GridStateDto> response = await api.CallAsync(
             () => gridStatesApi.CreateGridStateAsync(request),
-            errorTitle: "Grid state",
-            successMessage: "Grid state saved successfully.").ConfigureAwait(false);
+            errorTitle: L.Localize("Entity_GridStates", "Grid states"),
+            successMessage: L.Localize("GridStates_SavedSuccessfully", "Grid state saved successfully.")).ConfigureAwait(false);
 
         if (!response.IsError && response.Data is not null)
         {
@@ -175,8 +178,8 @@ public partial class GridStateManager(
 
         Response<GridStateDto> response = await api.CallAsync(
             () => gridStatesApi.UpdateGridStateAsync(_selectedStateId, request),
-            errorTitle: "Grid state",
-            successMessage: "Grid state updated successfully.").ConfigureAwait(false);
+            errorTitle: L.Localize("Entity_GridStates", "Grid states"),
+            successMessage: L.Localize("GridStates_UpdatedSuccessfully", "Grid state updated successfully.")).ConfigureAwait(false);
 
         if (!response.IsError)
         {
@@ -195,9 +198,9 @@ public partial class GridStateManager(
         }
 
         bool? confirmed = await dialogService.Confirm(
-            "Are you sure you want to permanently delete this grid state?",
-            "Delete grid state",
-            new ConfirmOptions { OkButtonText = "Delete", CancelButtonText = "Cancel" });
+            L.Localize("GridStates_ConfirmDelete", "Are you sure you want to permanently delete this grid state?"),
+            L.Localize("GridStates_DeleteTitle", "Delete grid state"),
+            new ConfirmOptions { OkButtonText = L.Localize("Button_Delete", "Delete"), CancelButtonText = L.Localize("Button_Cancel", "Cancel") });
 
         if (confirmed != true)
         {
@@ -208,8 +211,8 @@ public partial class GridStateManager(
 
         Response response = await api.CallAsync(
             () => gridStatesApi.DeleteGridStateAsync(_selectedStateId),
-            errorTitle: "Grid state",
-            successMessage: "Grid state deleted successfully.").ConfigureAwait(false);
+            errorTitle: L.Localize("Entity_GridStates", "Grid states"),
+            successMessage: L.Localize("GridStates_DeletedSuccessfully", "Grid state deleted successfully.")).ConfigureAwait(false);
 
         if (!response.IsError)
         {

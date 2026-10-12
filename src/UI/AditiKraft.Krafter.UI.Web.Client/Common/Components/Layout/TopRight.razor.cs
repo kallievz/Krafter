@@ -7,6 +7,8 @@ public partial class TopRight(
     NavigationManager navigationManager
 ) : ComponentBase
 {
+    [Inject]
+    private Radzen.ILocalizer L { get; set; } = null!;
     [CascadingParameter] public bool IsMobileDevice { get; set; }
 
     [Parameter] public bool ShowProfileCard { get; set; }

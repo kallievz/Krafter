@@ -8,6 +8,7 @@ public partial class InitializeSignalr(
     SignalRService signalRService
 )
 {
+    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
     protected override async Task OnInitializedAsync()
     {
         authenticationService.LoginChange += async name => { await signalRService.InitializeAsync(); };

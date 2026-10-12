@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using AditiKraft.Krafter.Contracts.Common.Auth;
 using AditiKraft.Krafter.Contracts.Contracts.Localization;
@@ -57,14 +58,16 @@ public partial class MainLayout(
         AppInfo = await api.CallAsync(() => appInfoApi.GetAppInfoAsync(), showErrorNotification: false);
         _cachedPermissions = await authStorageService.GetCachedPermissionsAsync() ?? new List<string>();
         _menus = menuService.Menus;
+        await PreloadMenuLocalizationAsync(_menus);
         await LoadLanguagesAsync();
         await LoadSelectedLanguageFromTokenAsync();
-    
+
         layoutService.HeadingChanged += HeadingChanged;
         authenticationService.LoginChange += async name =>
         {
             _cachedPermissions = await authStorageService.GetCachedPermissionsAsync() ?? new List<string>();
             _menus = menuService.Menus;
+            await PreloadMenuLocalizationAsync(_menus);
             await LoadLanguagesAsync();
             await LoadSelectedLanguageFromTokenAsync();
             await InvokeAsync(StateHasChanged);
@@ -110,6 +113,7 @@ public partial class MainLayout(
         }
 
         _selectedLanguageCode = selectedCode;
+        ApplyCurrentCulture(selectedCode);
     }
 
     private async Task ChangeLanguageAsync(object value)
@@ -141,13 +145,63 @@ public partial class MainLayout(
         }
 
         _selectedLanguageCode = code;
+        ApplyCurrentCulture(code);
 
         // Invalidate localizer cache for new language
-        var localizer = L as Features.Localization.Localizer;
+        Localizer? localizer = L as Localizer;
         localizer?.InvalidateCache();
-       
+        await PreloadMenuLocalizationAsync(_menus);
 
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task PreloadMenuLocalizationAsync(IEnumerable<Menu> menus)
+    {
+        if (L is not Localizer localizer)
+        {
+            return;
+        }
+
+        IEnumerable<Menu> Flatten(IEnumerable<Menu> source)
+        {
+            return source.SelectMany(menu =>
+                menu.Children is not null && menu.Children.Any()
+                    ? new[] { menu }.Concat(Flatten(menu.Children))
+                    : new[] { menu });
+        }
+
+        string[] keys = Flatten(menus)
+            .Select(menu => !string.IsNullOrWhiteSpace(menu.NameLocalizationKey)
+                ? menu.NameLocalizationKey
+                : $"Nav_{menu.Name.Replace(" ", string.Empty)}")
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        await localizer.PreloadAsync(keys).ConfigureAwait(false);
+    }
+
+    private static void ApplyCurrentCulture(string languageCode)
+    {
+        string normalizedCode = string.IsNullOrWhiteSpace(languageCode)
+            ? "en"
+            : languageCode.Trim().ToLowerInvariant();
+
+        try
+        {
+            CultureInfo culture = new(normalizedCode);
+            CultureInfo.CurrentCulture = culture;
+            CultureInfo.CurrentUICulture = culture;
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
+        }
+        catch (CultureNotFoundException)
+        {
+            CultureInfo fallbackCulture = new("en");
+            CultureInfo.CurrentCulture = fallbackCulture;
+            CultureInfo.CurrentUICulture = fallbackCulture;
+            CultureInfo.DefaultThreadCurrentCulture = fallbackCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = fallbackCulture;
+        }
     }
 
     private void HeadingChanged(object? sender, EventArgs e) => InvokeAsync(StateHasChanged);

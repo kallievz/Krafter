@@ -1,7 +1,7 @@
 @using AditiKraft.Krafter.UI.Web.Client.Common.Models
 <RadzenDropDownDataGrid Name="UserDropDown" Style="width: 100%;" @ref="_dropDownGrid" AllowSelectAll="false" IsLoading="_isLoading" Density="LocalAppState.Density" PageSize="GetRequestInput.MaxResultCount" Multiple="false" AllowClear="true" @bind-Value="@Value" Change="@((arg) => OnValueChangedAsync(arg))"
                         LoadData="@LoadProcessesAsync" AllowFiltering="true"
-                        Data="@_data" Count="@_totalCount" TextProperty="FirstName" ValueProperty="Id" Placeholder="Select User" Chips="true">
+                        Data="@_data" Count="@_totalCount" TextProperty="FirstName" ValueProperty="Id" Placeholder="@L.Localize("Placeholder_SelectUser", "Select User")" Chips="true">
 
     <Columns>
 
@@ -14,8 +14,8 @@
                                 TValue="bool" Change="@(_ => _dropDownGrid.SelectItem(data))"@onclick:stopPropagation/>
             </Template>
         </RadzenDropDownDataGridColumn>
-        <RadzenDropDownDataGridColumn Property="FirstName" Title="FirstName" Width="80px"/>
-        <RadzenDropDownDataGridColumn Property="LastName" Title="LastName" Width="200px"/>
+        <RadzenDropDownDataGridColumn Property="FirstName" Title="@L.Localize("ApplicationUser_FirstName", "FirstName")" Width="80px"/> 
+        <RadzenDropDownDataGridColumn Property="LastName" Title="@L.Localize("ApplicationUser_LastName", "LastName")" Width="200px"/>  
 
     </Columns>
 </RadzenDropDownDataGrid>

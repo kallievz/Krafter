@@ -7,6 +7,8 @@ public partial class CreateOrUpdateRole(
     ApiCallService api,
     IRolesApi rolesApi) : ComponentBase
 {
+    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
+
     public class GroupPermissionData
     {
         public string Description { get; set; } = default!;

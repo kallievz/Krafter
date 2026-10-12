@@ -11,6 +11,7 @@ public class Menu
     public bool New { get; set; }
     public bool Updated { get; set; }
     public string Name { get; set; } = string.Empty;
+    public string NameLocalizationKey { get; set; } = string.Empty;
     public string Icon { get; set; } = string.Empty;
     public string Path { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;

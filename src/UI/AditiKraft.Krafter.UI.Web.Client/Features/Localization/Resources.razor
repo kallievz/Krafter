@@ -1,0 +1,42 @@
+@using AditiKraft.Krafter.Contracts.Common
+@using AditiKraft.Krafter.Contracts.Common.Auth.Permissions
+@using AditiKraft.Krafter.Contracts.Contracts.Localization
+@using AditiKraft.Krafter.UI.Web.Client.Common.Permissions
+@attribute [Route(RoutePath)]
+@attribute [MustHavePermission(PermissionAction.View, PermissionResource.LocalizationResources)]
+
+<LocalizationNavigation />
+
+<AdvancedDataGrid TItem="ResourceDto"
+                  Data="@_response?.Data"
+                  Count="@(_response?.Data?.Count ?? 0)"
+                  IsLoading="@_isLoading"
+                  ExportFileBaseName="resources"
+                  ExportTitle="Resources"
+                  ComponentKey="@RoutePath">
+    <ToolbarActions>
+        <AuthorizeView Policy="@(PermissionDefinition.NameFor(PermissionAction.Create, PermissionResource.LocalizationResources))">
+            <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary" Icon="add_circle_outline" Text="@L.Localize("Button_AddResource", "Add Resource")" Click="@AddResourceAsync" />
+        </AuthorizeView>
+    </ToolbarActions>
+    <Columns>
+        <RadzenDataGridColumn TItem="ResourceDto" Property="Key" Title="@L.Localize("Resource_Key", "Key")" />
+        <RadzenDataGridColumn TItem="ResourceDto" Property="Description" Title="@L.Localize("Resource_Description", "Description")" />
+        <RadzenDataGridColumn TItem="ResourceDto" Property="CreatedOn" Title="@L.Localize("Resource_CreatedOn", "Created On")" />
+        <RadzenDataGridColumn TItem="ResourceDto" Property="UpdatedOn" Title="@L.Localize("Resource_UpdatedOn", "Updated On")" />
+        <RadzenDataGridColumn TItem="ResourceDto" Title="@L.Localize("DataGrid_Actions", "Actions")" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true" Width="9.28vw" FrozenPosition="FrozenColumnPosition.Right">
+            <Template Context="data">
+                <RadzenSplitButton ButtonStyle="ButtonStyle.Light" Shade="Shade.Lighter" Variant="Variant.Flat" AlwaysOpenPopup="true" Click="@(args => ActionClickedAsync(args, data))" Text="@L.Localize("DataGrid_Actions", "Actions")" Icon="settings_applications" Style="margin-right: 4px">
+                    <ChildContent>
+                        <AuthorizeView Policy="@(PermissionDefinition.NameFor(PermissionAction.Update, PermissionResource.LocalizationResources))">
+                            <RadzenSplitButtonItem Text="@L.Localize("Button_Edit", "Edit")" Value="@PermissionAction.Update" Icon="edit" />
+                        </AuthorizeView>
+                        <AuthorizeView Policy="@(PermissionDefinition.NameFor(PermissionAction.Delete, PermissionResource.LocalizationResources))">
+                            <RadzenSplitButtonItem Text="@L.Localize("Button_Delete", "Delete")" Value="@PermissionAction.Delete" Icon="delete" />
+                        </AuthorizeView>
+                    </ChildContent>
+                </RadzenSplitButton>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</AdvancedDataGrid>

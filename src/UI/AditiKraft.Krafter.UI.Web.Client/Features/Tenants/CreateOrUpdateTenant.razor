@@ -68,8 +68,8 @@
     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.5rem"
                  Class="rz-mt-4 rz-mb-2">
         <RadzenButton ButtonType="ButtonType.Submit" IsBusy="_isBusy" Disabled="@(_dateError is not null)"
-                      Size="ButtonSize.Small" Icon="save" Text="Save" />
+                      Size="ButtonSize.Small" Icon="save" Text="@L.Localize("Button_Save", "Save")" />
         <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Icon="cancel"
-                      Text="Cancel" Click="@Cancel" />
+                      Text="@L.Localize("Button_Cancel", "Cancel")" Click="@Cancel" />
     </RadzenStack>
 </RadzenTemplateForm>

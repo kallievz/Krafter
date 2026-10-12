@@ -2,6 +2,7 @@ namespace AditiKraft.Krafter.UI.Web.Client.Common.Components.Forms;
 
 public partial class DebouncedSearchInput
 {
+    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
     [Parameter] public string Value { get; set; } = string.Empty;
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
     [Parameter] public int DebounceTime { get; set; } = 2000;

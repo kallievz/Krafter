@@ -1,7 +1,7 @@
 @using AditiKraft.Krafter.Contracts.Common.Extensions
 <AuthorizeView>
     <Authorizing>
-        <text>Login...</text>
+        <text>@L.Localize("Notification_Login", "Login...")</text>
     </Authorizing>
     <Authorized>
 
@@ -10,12 +10,12 @@
 
             <RadzenSplitButton AlwaysOpenPopup="true" Click="@(args => SplitButtonClickAsync(args))" Text="@context.User.GetFullName()" Icon="account_circle" Style="margin-right: 4px">
                 <ChildContent>
-                    <RadzenSplitButtonItem Text="Logout" Value="Logout" Icon="logout"/>
-                    <RadzenSplitButtonItem Text="Change Password" Value="ChangePassword" Icon="account_balance_wallet"/>
-                    <RadzenSplitButtonItem Text="Appearance" Value="Appearance" Icon="contrast"/>
+                    <RadzenSplitButtonItem Text="@L.Localize("Button_Logout", "Logout")" Value="Logout" Icon="logout"/>
+                    <RadzenSplitButtonItem Text="@L.Localize("Button_ChangePassword", "Change Password")" Value="ChangePassword" Icon="account_balance_wallet"/>
+                    <RadzenSplitButtonItem Text="@L.Localize("Button_Appearance", "Appearance")" Value="Appearance" Icon="contrast"/>
                 </ChildContent>
             </RadzenSplitButton>
-            @* @if (ShowProfileCard)
+            <!--@if (ShowProfileCard)
             {
                 <RadzenCard Variant="Variant.Filled" class="rz-my-12 rz-mx-auto" Style="max-width: 315px">
                     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start" Gap="1rem" class="rz-p-4">
@@ -28,12 +28,13 @@
                         </RadzenStack>
                     </RadzenStack>
                 </RadzenCard>
-            } *@
+            }
+            -->
 
         </RadzenStack>
 
     </Authorized>
     <NotAuthorized>
-        <RadzenButton Click="@(() => NavigateToLoginAsync())" Text="Login" Style="margin-right: 4px"></RadzenButton>
+        <RadzenButton Click="@(() => NavigateToLoginAsync())" Text="@L.Localize("Button_Login", "Login")" Style="margin-right: 4px"></RadzenButton>
     </NotAuthorized>
 </AuthorizeView>

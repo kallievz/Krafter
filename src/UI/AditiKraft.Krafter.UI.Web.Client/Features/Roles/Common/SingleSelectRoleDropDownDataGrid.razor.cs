@@ -5,6 +5,8 @@ public partial class SingleSelectRoleDropDownDataGrid(
     IRolesApi rolesApi
 ) : ComponentBase
 {
+    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
+
     private RadzenDropDownDataGrid<string> _dropDownGrid = null!;
     private Response<PaginationResponse<RoleDto>>? _response;
     private bool _isLoading = true;

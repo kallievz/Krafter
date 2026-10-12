@@ -73,14 +73,14 @@
                         </RadzenColumn>
                         <ValidationMessage For="@(() => TokenRequestInput.Password)" />
                     </RadzenRow>
-                    <RadzenLink Path="account/forgot-password" Text="Forgot Password?"></RadzenLink>
+                    <RadzenLink Path="account/forgot-password" Text="@L.Localize("Button_ForgotPassword", "Forgot Password?")"></RadzenLink>
                 </RadzenStack>
                 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Right" Gap="0.5rem" Class="rz-mt-4 rz-mb-2">
-                    <RadzenButton ButtonType="ButtonType.Submit" IsBusy="IsBusy" Size="ButtonSize.Small" Icon="login" Text="Login" />
+                    <RadzenButton ButtonType="ButtonType.Submit" IsBusy="IsBusy" Size="ButtonSize.Small" Icon="login" Text="@L.Localize("Button_Login", "Login")" />
                 </RadzenStack>
                 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.5rem">
                     <RadzenText TextStyle="TextStyle.Body2">Don't have an account?</RadzenText>
-                    <RadzenLink Path="/self-register" Text="Self Register"></RadzenLink>
+                    <RadzenLink Path="/self-register" Text="@L.Localize("Button_SelfRegister", "Self Register")"></RadzenLink>
                 </RadzenStack>
             </RadzenTemplateForm>
         </RadzenCard>

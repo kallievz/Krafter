@@ -1,0 +1,39 @@
+@using AditiKraft.Krafter.Contracts.Contracts.Localization
+
+<RadzenTemplateForm TItem="CreateResourceTranslationRequest" Data="@_request" Submit="@SubmitAsync">
+    <RadzenStack Gap="0.75rem">
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="3">
+                <RadzenLabel Text="@L.Localize("ResourceTranslation_Resource", "Resource")" Component="ResourceId" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="9">
+                <RadzenDropDown Style="width: 100%" Data="@_resources" TextProperty="Key" ValueProperty="Id"
+                                @bind-Value="@_request.ResourceId" Name="ResourceId" AllowFiltering="true" />
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="3">
+                <RadzenLabel Text="@L.Localize("ResourceTranslation_Language", "Language")" Component="LanguageId" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="9">
+                <RadzenDropDown Style="width: 100%" Data="@_languages" TextProperty="Name" ValueProperty="Id"
+                                @bind-Value="@_request.LanguageId" Name="LanguageId" AllowFiltering="true" />
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="3">
+                <RadzenLabel Text="@L.Localize("ResourceTranslation_Value", "Value")" Component="Value" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="9">
+                <RadzenTextArea Style="width: 100%" @bind-Value="@_request.Value" Name="Value" Rows="4" />
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenStack>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.5rem" Class="rz-mt-4 rz-mb-2">
+        <RadzenButton ButtonType="ButtonType.Submit" IsBusy="_isBusy" Disabled="@_isLookupLoading" Size="ButtonSize.Small" Icon="save" Text="@L.Localize("Button_Save", "Save")" />
+        <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Icon="cancel" Text="@L.Localize("Button_Cancel", "Cancel")" Click="@Cancel" />
+    </RadzenStack>
+</RadzenTemplateForm>

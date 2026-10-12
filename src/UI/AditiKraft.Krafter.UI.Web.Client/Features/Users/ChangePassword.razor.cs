@@ -6,6 +6,8 @@ public partial class ChangePassword(
     IUsersApi usersApi
 ) : ComponentBase
 {
+    [Inject]
+    private Radzen.ILocalizer L { get; set; } = null!;
     public ChangePasswordRequest ChangePasswordRequest { get; set; } = new();
 
     [SupplyParameterFromQuery(Name = "ReturnUrl")]

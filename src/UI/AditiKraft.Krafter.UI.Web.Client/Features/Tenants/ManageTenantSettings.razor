@@ -3,7 +3,7 @@
 <RadzenStack Gap="0.75rem">
     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
         <RadzenText TextStyle="TextStyle.Subtitle1">Settings for @TenantInput?.Name</RadzenText>
-        <RadzenButton Size="ButtonSize.Small" Icon="add" Text="Add Setting" Click="@BeginAddAsync" />
+        <RadzenButton Size="ButtonSize.Small" Icon="add" Text="@L.Localize("Button_AddSetting", "Add Setting")" Click="@BeginAddAsync" />
     </RadzenStack>
 
     <RadzenDataGrid Data="@_settings" TItem="TenantSettingDto" IsLoading="@_isLoading" AllowPaging="true" PageSize="10"
@@ -58,8 +58,8 @@
             </RadzenStack>
 
             <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.5rem">
-                <RadzenButton ButtonType="ButtonType.Submit" IsBusy="_isBusy" Icon="save" Text="Save" Size="ButtonSize.Small" />
-                <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Icon="cancel" Text="Cancel"
+                <RadzenButton ButtonType="ButtonType.Submit" IsBusy="_isBusy" Icon="save" Text="@L.Localize("Button_Save", "Save")" Size="ButtonSize.Small" />
+                <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Icon="cancel" Text="@L.Localize("Button_Cancel", "Cancel")"
                               Size="ButtonSize.Small" Click="@CancelEditAsync" />
             </RadzenStack>
         </RadzenTemplateForm>
@@ -68,7 +68,7 @@
     @if (ShowCloseButton)
     {
         <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
-            <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Icon="close" Text="Close" Click="@CloseAsync" />
+            <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Icon="close" Text="@L.Localize("Button_Close", "Close")" Click="@CloseAsync" />
         </RadzenStack>
     }
 </RadzenStack>

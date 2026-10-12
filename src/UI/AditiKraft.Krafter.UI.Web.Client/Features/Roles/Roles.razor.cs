@@ -1,5 +1,6 @@
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.UI.Web.Client.Common.Models;
+using AditiKraft.Krafter.UI.Web.Client.Features.Localization;
 
 namespace AditiKraft.Krafter.UI.Web.Client.Features.Roles;
 
@@ -8,6 +9,8 @@ public partial class Roles(
     IRolesApi rolesApi,
     DialogService dialogService) : ComponentBase
 {
+    [Inject]
+    private Radzen.ILocalizer L { get; set; } = null!;
     public const string RoutePath = ApiRoutes.Roles;
     private bool _isLoading = true;
 
@@ -41,7 +44,8 @@ public partial class Roles(
 
     private async Task AddRoleAsync()
     {
-        object? result = await dialogService.OpenAsync<CreateOrUpdateRole>($"Add New Role",
+        string title = L.Localize("Dialog_AddNewRole", "Add New Role");
+        object? result = await dialogService.OpenAsync<CreateOrUpdateRole>(title,
             new Dictionary<string, object?> { { "UserDetails", new RoleDto() } },
             new DialogOptions { Width = "50vw", Resizable = true, Draggable = true, Top = "5vh" });
         if (result is true)
@@ -52,7 +56,8 @@ public partial class Roles(
 
     private async Task UpdateRoleAsync(RoleDto user)
     {
-        object? result = await dialogService.OpenAsync<CreateOrUpdateRole>($"Update Role {user.Name}",
+        string title = L.Localize("Dialog_UpdateRole", "Update Role {0}", user.Name ?? string.Empty);
+        object? result = await dialogService.OpenAsync<CreateOrUpdateRole>(title,
             new Dictionary<string, object?> { { "UserDetails", user } },
             new DialogOptions { Width = "50vw", Resizable = true, Draggable = true, Top = "5vh" });
         if (result is true)
@@ -64,15 +69,19 @@ public partial class Roles(
     private async Task DeleteRoleAsync(RoleDto roleDto)
     {
         bool? confirmed = await dialogService.Confirm(
-            $"Are you sure you want to delete role '{roleDto.Name}'?",
-            "Delete Role",
-            new ConfirmOptions { OkButtonText = "Delete", CancelButtonText = "Cancel" });
+            L.Localize("Dialog_ConfirmDeleteRole", "Are you sure you want to delete role '{0}'?", roleDto.Name ?? string.Empty),
+            L.Localize("Dialog_DeleteRoleTitle", "Delete Role"),
+            new ConfirmOptions
+            {
+                OkButtonText = L.Localize("Button_Delete", "Delete"),
+                CancelButtonText = L.Localize("Button_Cancel", "Cancel")
+            });
 
         if (confirmed == true)
         {
             Response result = await api.CallAsync(
                 () => rolesApi.DeleteRoleAsync(roleDto.Id),
-                successMessage: "Role deleted successfully");
+                successMessage: L.Localize("Notification_RoleDeletedSuccessfully", "Role deleted successfully"));
 
             if (!result.IsError)
             {

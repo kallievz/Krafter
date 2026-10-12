@@ -1,0 +1,28 @@
+@using AditiKraft.Krafter.Contracts.Contracts.Localization
+
+<RadzenTemplateForm TItem="CreateResourceRequest" Data="@_request" Submit="@SubmitAsync">
+    <RadzenStack Gap="0.75rem">
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="3">
+                <RadzenLabel Text="@L.Localize("Resource_Key", "Key")" Component="Key" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="9">
+                <RadzenTextBox Style="width: 100%" @bind-Value="@_request.Key" Name="Key" />
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="3">
+                <RadzenLabel Text="@L.Localize("Resource_Description", "Description")" Component="Description" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="9">
+                <RadzenTextBox Style="width: 100%" @bind-Value="@_request.Description" Name="Description" />
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenStack>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.5rem" Class="rz-mt-4 rz-mb-2">
+        <RadzenButton ButtonType="ButtonType.Submit" IsBusy="_isBusy" Size="ButtonSize.Small" Icon="save" Text="@L.Localize("Button_Save", "Save")" />
+        <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Icon="cancel" Text="@L.Localize("Button_Cancel", "Cancel")" Click="@Cancel" />
+    </RadzenStack>
+</RadzenTemplateForm>

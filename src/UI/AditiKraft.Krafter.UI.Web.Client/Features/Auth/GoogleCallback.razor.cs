@@ -6,9 +6,11 @@ using Microsoft.Extensions.Primitives;
 
 namespace AditiKraft.Krafter.UI.Web.Client.Features.Auth;
 
-public partial class GoogleCallback(IAuthenticationService authenticationService, NavigationManager navigationManager)
+public partial class GoogleCallback(IAuthenticationService authenticationService
+    , NavigationManager navigationManager)
     : ComponentBase
 {
+    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
     protected override async Task OnInitializedAsync()
     {
         Uri uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);

@@ -1,5 +1,6 @@
 using AditiKraft.Krafter.Contracts.Common;
 using AditiKraft.Krafter.UI.Web.Client.Common.Models;
+using AditiKraft.Krafter.UI.Web.Client.Features.Localization;
 
 namespace AditiKraft.Krafter.UI.Web.Client.Features.Users;
 
@@ -9,6 +10,8 @@ public partial class Users(
     IUsersApi usersApi
 ) : ComponentBase
 {
+    [Inject]
+    private Radzen.ILocalizer L { get; set; } = null!;
     public const string RoutePath = ApiRoutes.Users;
     private readonly GetRequestInput _requestInput = new();
 
@@ -49,7 +52,8 @@ public partial class Users(
 
     private async Task AddUserAsync()
     {
-        object? result = await dialogService.OpenAsync<CreateOrUpdateUser>($"Add New User",
+        string title = L.Localize("Dialog_AddNewUser", "Add New User");
+        object? result = await dialogService.OpenAsync<CreateOrUpdateUser>(title,
             new Dictionary<string, object?> { { "UserInput", new UserDto() } },
             new DialogOptions { Width = "40vw", Resizable = true, Draggable = true, Top = "5vh" });
         if (result is true)
@@ -60,7 +64,8 @@ public partial class Users(
 
     private async Task UpdateUserAsync(UserDto user)
     {
-        object? result = await dialogService.OpenAsync<CreateOrUpdateUser>($"Update User {user.FirstName}",
+        string title = L.Localize("Dialog_UpdateUser", "Update User {0}", user.FirstName ?? string.Empty);
+        object? result = await dialogService.OpenAsync<CreateOrUpdateUser>(title,
             new Dictionary<string, object?> { { "UserInput", user } },
             new DialogOptions { Width = "40vw", Resizable = true, Draggable = true, Top = "5vh" });
         if (result is true)
@@ -71,16 +76,21 @@ public partial class Users(
 
     private async Task DeleteUserAsync(UserDto user)
     {
+        string fullName = $"{user.FirstName} {user.LastName}".Trim();
         bool? confirmed = await dialogService.Confirm(
-            $"Are you sure you want to delete user '{user.FirstName} {user.LastName}'?",
-            "Delete User",
-            new ConfirmOptions { OkButtonText = "Delete", CancelButtonText = "Cancel" });
+            L.Localize("Dialog_ConfirmDeleteUser", "Are you sure you want to delete user '{0}'?", fullName),
+            L.Localize("Dialog_DeleteUserTitle", "Delete User"),
+            new ConfirmOptions
+            {
+                OkButtonText = L.Localize("Button_Delete", "Delete"),
+                CancelButtonText = L.Localize("Button_Cancel", "Cancel")
+            });
 
         if (confirmed == true)
         {
             Response result = await api.CallAsync(
                 () => usersApi.DeleteUserAsync(user.Id),
-                successMessage: "User deleted successfully");
+                successMessage: L.Localize("Notification_UserDeletedSuccessfully", "User deleted successfully"));
 
             if (!result.IsError)
             {

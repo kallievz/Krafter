@@ -1,0 +1,47 @@
+@using AditiKraft.Krafter.Contracts.Common
+@using AditiKraft.Krafter.Contracts.Common.Auth.Permissions
+@using AditiKraft.Krafter.UI.Web.Client.Common.Permissions
+@inject NavigationManager NavigationManager
+@inject Radzen.ILocalizer L
+
+<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" Wrap="FlexWrap.Wrap" class="rz-mb-2">
+    <AuthorizeView Policy="@(PermissionDefinition.NameFor(PermissionAction.View, PermissionResource.LocalizationLanguages))">
+        <RadzenButton Size="ButtonSize.Small"
+                      ButtonStyle="@(IsCurrent(ApiRoutes.LocalizationLanguages) ? ButtonStyle.Primary : ButtonStyle.Light)"
+                      Icon="language"
+                      Text="@L.Localize("Nav_Languages", "Languages")"
+                      Click="@(() => NavigateTo(ApiRoutes.LocalizationLanguages))"
+                      Disabled="@IsCurrent(ApiRoutes.LocalizationLanguages)" />
+    </AuthorizeView>
+
+    <AuthorizeView Policy="@(PermissionDefinition.NameFor(PermissionAction.View, PermissionResource.LocalizationResources))">
+        <RadzenButton Size="ButtonSize.Small"
+                      ButtonStyle="@(IsCurrent(ApiRoutes.LocalizationResources) ? ButtonStyle.Primary : ButtonStyle.Light)"
+                      Icon="key"
+                      Text="@L.Localize("Nav_Resources", "Resources")"
+                      Click="@(() => NavigateTo(ApiRoutes.LocalizationResources))"
+                      Disabled="@IsCurrent(ApiRoutes.LocalizationResources)" />
+    </AuthorizeView>
+
+    <AuthorizeView Policy="@(PermissionDefinition.NameFor(PermissionAction.View, PermissionResource.LocalizationResourceTranslations))">
+        <RadzenButton Size="ButtonSize.Small"
+                      ButtonStyle="@(IsCurrent(ApiRoutes.LocalizationResourceTranslations) ? ButtonStyle.Primary : ButtonStyle.Light)"
+                      Icon="translate"
+                      Text="@L.Localize("Nav_ResourceTranslations", "Resource Translations")"
+                      Click="@(() => NavigateTo(ApiRoutes.LocalizationResourceTranslations))"
+                      Disabled="@IsCurrent(ApiRoutes.LocalizationResourceTranslations)" />
+    </AuthorizeView>
+</RadzenStack>
+
+@code {
+    private bool IsCurrent(string route)
+    {
+        string currentPath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        return string.Equals(currentPath, route, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void NavigateTo(string route)
+    {
+        NavigationManager.NavigateTo($"/{route}");
+    }
+}

@@ -3,30 +3,29 @@
 @attribute [Route(RoutePath)]
 @attribute [MustHavePermission(PermissionAction.View, PermissionResource.Users)]
 
-<AuthorizeView Policy="@PermissionDefinition.NameFor(PermissionAction.Create, PermissionResource.Users)">
-
-    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem"
-                 JustifyContent="JustifyContent.End" class="mt-1 mb-2">
-        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary" Icon="add_circle_outline" Text="User"
-                      Click="@AddUserAsync" />
-    </RadzenStack>
-</AuthorizeView>
-
-
-<RadzenDataGrid Responsive="true" ShowCellDataAsTooltip="LocalAppState.ShowCellDataAsTooltip"
-                Density="LocalAppState.Density" AllowColumnResize="LocalAppState.AllowColumnResize" IsLoading="@_isLoading"
-                Count="@(_response?.Data?.TotalCount ?? 0)" LoadData="@LoadDataAsync" AllowSorting="true" Data="@_response?.Data?.Items"
-                AllowFiltering="true" AllowPaging="true" PageSize="@_requestInput.MaxResultCount"
-                PagerHorizontalAlign="HorizontalAlign.Center">
+<AdvancedDataGrid TItem="UserDto"
+                  Data="@_response?.Data?.Items"
+                  Count="@(_response?.Data?.TotalCount ?? 0)"
+                  IsLoading="@_isLoading"
+                  LoadData="@LoadDataAsync"
+                  ExportFileBaseName="users"
+                  ExportTitle="Users"
+                  ComponentKey="@RoutePath">
+    <ToolbarActions>
+        <AuthorizeView Policy="@PermissionDefinition.NameFor(PermissionAction.Create, PermissionResource.Users)">
+            <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary" Icon="add_circle_outline" Text="@L.Localize("Button_AddUser", "Add User")"
+                          Click="@AddUserAsync" />
+        </AuthorizeView>
+    </ToolbarActions>
     <Columns>
-        <RadzenDataGridColumn Property="Id" Title="ID" />
-        <RadzenDataGridColumn Property="FirstName" Title="First Name" TextAlign="TextAlign.Center" />
-        <RadzenDataGridColumn Property="LastName" Title="Last Name" TextAlign="TextAlign.Center" />
-        <RadzenDataGridColumn Property="Email" Title="Email" TextAlign="TextAlign.Center" />
-        <RadzenDataGridColumn Property="IsActive" Title="Active" TextAlign="TextAlign.Center" />
-        <RadzenDataGridColumn Property="EmailConfirmed" Title="EmailConfirmed" TextAlign="TextAlign.Center" />
-        <RadzenDataGridColumn Property="PhoneNumber" Title="PhoneNumber" TextAlign="TextAlign.Center" />
-        <RadzenDataGridColumn Title="Created By" Frozen="true" Sortable="false" Filterable="false"
+        <RadzenDataGridColumn TItem="UserDto" Property="Id" Title="@L.Localize("ApplicationUser_Id", "ID")" />
+        <RadzenDataGridColumn TItem="UserDto" Property="FirstName" Title="@L.Localize("ApplicationUser_FirstName", "First Name")" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="UserDto" Property="LastName" Title="@L.Localize("ApplicationUser_LastName", "Last Name")" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="UserDto" Property="Email" Title="@L.Localize("ApplicationUser_Email", "Email")" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="UserDto" Property="IsActive" Title="@L.Localize("ApplicationUser_IsActive", "Active")" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="UserDto" Property="EmailConfirmed" Title="@L.Localize("ApplicationUser_EmailConfirmed", "EmailConfirmed")" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="UserDto" Property="PhoneNumber" Title="@L.Localize("ApplicationUser_PhoneNumber", "Phone Number")" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="UserDto" Title="@L.Localize("ApplicationUser_CreatedBy", "Created By")" Frozen="true" Sortable="false" Filterable="false"
                               TextAlign="TextAlign.Center">
             <Template Context="data">
                 @if (data.CreatedBy is not null)
@@ -35,36 +34,24 @@
                 }
             </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn Property="CreatedById" Title="UserId">
+        <RadzenDataGridColumn TItem="UserDto" Property="CreatedById" Title="@L.Localize("ApplicationUser_CreatedById", "UserId")">
             <Template Context="data">
                 @data.CreatedById
             </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="UserDto" Title="Actions" Filterable="false" Sortable="false"
+        <RadzenDataGridColumn TItem="UserDto" Title="@L.Localize("DataGrid_Actions", "Actions")" Filterable="false" Sortable="false"
                               TextAlign="TextAlign.Right" Frozen="true" Width="9.28vw" FrozenPosition="FrozenColumnPosition.Right">
             <Template Context="data">
                 <RadzenSplitButton ButtonStyle="ButtonStyle.Light" Shade="Shade.Lighter" Variant="Variant.Flat"
-                                   AlwaysOpenPopup="true" Click="@(args => ActionClickedAsync(args, data))" Text="Actions"
+                                   AlwaysOpenPopup="true" Click="@(args => ActionClickedAsync(args, data))" Text="@L.Localize("DataGrid_Actions", "Actions")"
                                    Icon="settings_applications" Style="margin-right: 4px">
                     <ChildContent>
-
-                        <AuthorizeView
-                            Policy="@(PermissionDefinition.NameFor(PermissionAction.Update, PermissionResource.Users))">
-                            <RadzenSplitButtonItem Text="Edit" Value="@PermissionAction.Update" Icon="edit" />
+                        <AuthorizeView Policy="@(PermissionDefinition.NameFor(PermissionAction.Update, PermissionResource.Users))">
+                            <RadzenSplitButtonItem Text="@L.Localize("Button_Edit", "Edit")" Value="@PermissionAction.Update" Icon="edit" />
                         </AuthorizeView>
-
-                        @*  @if (data.IsOwner == false)
-                        {
-                            <AuthorizeView Policy="@(KrafterPermission.NameFor(KrafterAction.Delete, KrafterResource.Users))">
-                                <RadzenSplitButtonItem Text="Delete" Value="@KrafterAction.Delete" Icon="delete" />
-                            </AuthorizeView>
-                        } *@
-
-
                     </ChildContent>
                 </RadzenSplitButton>
             </Template>
         </RadzenDataGridColumn>
-
     </Columns>
-</RadzenDataGrid>
+</AdvancedDataGrid>

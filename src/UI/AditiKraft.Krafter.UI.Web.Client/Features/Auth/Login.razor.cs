@@ -13,6 +13,8 @@ public partial class Login(
     AppUrls appUrls
 ) : ComponentBase
 {
+    [Inject]
+    private Radzen.ILocalizer L { get; set; } = null!;
     [CascadingParameter] public Task<AuthenticationState> AuthState { get; set; } = default!;
 
     [SupplyParameterFromQuery(Name = "ReturnUrl")]

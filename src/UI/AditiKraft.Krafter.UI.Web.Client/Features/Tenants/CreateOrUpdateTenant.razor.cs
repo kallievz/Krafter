@@ -8,6 +8,8 @@ public partial class CreateOrUpdateTenant(
     ApiCallService api,
     ITenantsApi tenantsApi) : ComponentBase
 {
+    [Inject]
+    private Radzen.ILocalizer L { get; set; } = null!;
     [Parameter] public TenantDto? TenantInput { get; set; } = new();
     private CreateOrUpdateTenantRequest _createRequest = new();
     private bool _isBusy;

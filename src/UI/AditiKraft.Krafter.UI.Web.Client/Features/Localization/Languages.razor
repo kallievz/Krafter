@@ -1,0 +1,43 @@
+@using AditiKraft.Krafter.Contracts.Common
+@using AditiKraft.Krafter.Contracts.Common.Auth.Permissions
+@using AditiKraft.Krafter.Contracts.Contracts.Localization
+@using AditiKraft.Krafter.UI.Web.Client.Common.Permissions
+@attribute [Route(RoutePath)]
+@attribute [MustHavePermission(PermissionAction.View, PermissionResource.LocalizationLanguages)]
+
+<LocalizationNavigation />
+
+<AdvancedDataGrid TItem="LanguageDto"
+                  Data="@_response?.Data"
+                  Count="@(_response?.Data?.Count ?? 0)"
+                  IsLoading="@_isLoading"
+                  ExportFileBaseName="languages"
+                  ExportTitle="Languages"
+                  ComponentKey="@RoutePath">
+    <ToolbarActions>
+        <AuthorizeView Policy="@(PermissionDefinition.NameFor(PermissionAction.Create, PermissionResource.LocalizationLanguages))">
+            <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary" Icon="add_circle_outline" Text="@L.Localize("Button_AddLanguage", "Add Language")" Click="@AddLanguageAsync" />
+        </AuthorizeView>
+    </ToolbarActions>
+    <Columns>
+        <RadzenDataGridColumn TItem="LanguageDto" Property="Code" Title="@L.Localize("Language_Code", "Code")" />
+        <RadzenDataGridColumn TItem="LanguageDto" Property="Name" Title="@L.Localize("Language_Name", "Name")" />
+        <RadzenDataGridColumn TItem="LanguageDto" Property="IsActive" Title="@L.Localize("Language_IsActive", "Active")" />
+        <RadzenDataGridColumn TItem="LanguageDto" Property="CreatedOn" Title="@L.Localize("Language_CreatedOn", "Created On")" />
+        <RadzenDataGridColumn TItem="LanguageDto" Property="UpdatedOn" Title="@L.Localize("Language_UpdatedOn", "Updated On")" />
+        <RadzenDataGridColumn TItem="LanguageDto" Title="@L.Localize("DataGrid_Actions", "Actions")" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true" Width="9.28vw" FrozenPosition="FrozenColumnPosition.Right">
+            <Template Context="data">
+                <RadzenSplitButton ButtonStyle="ButtonStyle.Light" Shade="Shade.Lighter" Variant="Variant.Flat" AlwaysOpenPopup="true" Click="@(args => ActionClickedAsync(args, data))" Text="@L.Localize("DataGrid_Actions", "Actions")" Icon="settings_applications" Style="margin-right: 4px">
+                    <ChildContent>
+                        <AuthorizeView Policy="@(PermissionDefinition.NameFor(PermissionAction.Update, PermissionResource.LocalizationLanguages))">
+                            <RadzenSplitButtonItem Text="@L.Localize("Button_Edit", "Edit")" Value="@PermissionAction.Update" Icon="edit" />
+                        </AuthorizeView>
+                        <AuthorizeView Policy="@(PermissionDefinition.NameFor(PermissionAction.Delete, PermissionResource.LocalizationLanguages))">
+                            <RadzenSplitButtonItem Text="@L.Localize("Button_Delete", "Delete")" Value="@PermissionAction.Delete" Icon="delete" />
+                        </AuthorizeView>
+                    </ChildContent>
+                </RadzenSplitButton>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</AdvancedDataGrid>

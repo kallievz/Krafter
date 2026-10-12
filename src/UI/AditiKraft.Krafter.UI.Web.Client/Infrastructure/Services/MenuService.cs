@@ -11,6 +11,7 @@ public class MenuService
         new Menu
         {
             Name = "Home",
+            NameLocalizationKey = "Nav_Home",
             Path = "/",
             Icon = "home",
             Title = "Manage Courses",
@@ -21,12 +22,14 @@ public class MenuService
         new Menu
         {
             Name = "Account",
+            NameLocalizationKey = "Nav_Account",
             Icon = "account_circle",
             Children = new[]
             {
                 new Menu
                 {
                     Name = "Users",
+                    NameLocalizationKey = "Nav_Users",
                     Path = ApiRoutes.Users,
                     Title = "User Management",
                     Description = "Manage user accounts, including creation, updates, and access control.",
@@ -37,6 +40,7 @@ public class MenuService
                 new Menu
                 {
                     Name = "Roles",
+                    NameLocalizationKey = "Nav_Roles",
                     Path = ApiRoutes.Roles,
                     Title = "Role Management",
                     Description = "Manage user roles and associated permissions within the system.",
@@ -47,6 +51,7 @@ public class MenuService
                 new Menu
                 {
                     Name = "Jobs Dashboard",
+                    NameLocalizationKey = "Nav_JobsDashboard",
                     Path = "jobs-dashboard",
                     Title = "TickerQ Jobs Dashboard",
                     Description = "View and monitor background jobs in the TickerQ dashboard.",
@@ -57,6 +62,7 @@ public class MenuService
                 new Menu
                 {
                     Name = "Telemetry Dashboard",
+                    NameLocalizationKey = "Nav_TelemetryDashboard",
                     Path = "telemetry-dashboard",
                     Title = "Grafana Metrics Dashboard",
                     Description = "View application telemetry in Grafana backed by prometheus-net.",
@@ -69,6 +75,7 @@ public class MenuService
         new Menu
         {
             Name = "Tenants",
+            NameLocalizationKey = "Nav_Tenants",
             Path = ApiRoutes.Tenants,
             Icon = "business",
             Permission = PermissionDefinition.NameFor(PermissionAction.View, PermissionResource.Tenants),
@@ -79,18 +86,62 @@ public class MenuService
         new Menu
         {
             Name = "Integration",
+            NameLocalizationKey = "Nav_Integration",
             Icon = "integration_instructions",
             Children = new[]
             {
                 new Menu
                 {
-                    Name = "Munsoft",
+                    Name = "Munsoft Instance",
+                    NameLocalizationKey = "Nav_MunsoftInstance",
                     Path = $"{ApiRoutes.Integrations}/munsoft",
                     Icon = "sync",
                     Title = "Munsoft Integration",
                     Description = "View Munsoft instances and trigger instance synchronization.",
                     Tags = new[] { "integration", "munsoft", "instances", "sync" },
                     Permission = PermissionDefinition.NameFor(PermissionAction.View, PermissionResource.Tenants)
+                }
+            }
+        },
+        new Menu
+        {
+            Name = "Configuration",
+            NameLocalizationKey = "Nav_Configuration",
+            Icon = "settings",
+            Children = new[]
+            {
+                new Menu
+                {
+                    Name = "Languages",
+                    NameLocalizationKey = "Nav_Languages",
+                    Path = ApiRoutes.LocalizationLanguages,
+                    Icon = "language",
+                    Title = "Language Configuration",
+                    Description = "View configured localization languages.",
+                    Tags = new[] { "configuration", "localization", "languages" },
+                    Permission = PermissionDefinition.NameFor(PermissionAction.View, PermissionResource.LocalizationLanguages)
+                },
+                new Menu
+                {
+                    Name = "Resources",
+                    NameLocalizationKey = "Nav_Resources",
+                    Path = ApiRoutes.LocalizationResources,
+                    Icon = "key",
+                    Title = "Resource Configuration",
+                    Description = "View localization resources.",
+                    Tags = new[] { "configuration", "localization", "resources" },
+                    Permission = PermissionDefinition.NameFor(PermissionAction.View, PermissionResource.LocalizationResources)
+                },
+                new Menu
+                {
+                    Name = "Resource Translations",
+                    NameLocalizationKey = "Nav_ResourceTranslations",
+                    Path = ApiRoutes.LocalizationResourceTranslations,
+                    Icon = "translate",
+                    Title = "Resource Translation Configuration",
+                    Description = "View localization resource translations.",
+                    Tags = new[] { "configuration", "localization", "translations" },
+                    Permission = PermissionDefinition.NameFor(PermissionAction.View, PermissionResource.LocalizationResourceTranslations)
                 }
             }
         }
@@ -116,6 +167,7 @@ public class MenuService
             .Select(category => new Menu
             {
                 Name = category.Name,
+                NameLocalizationKey = category.NameLocalizationKey,
                 Path = category.Path,
                 Icon = category.Icon,
                 Permission = category.Permission,
@@ -123,6 +175,7 @@ public class MenuService
                 Children = category.Children?.Where(DeepFilter).Select(menu => new Menu
                 {
                     Name = menu.Name,
+                    NameLocalizationKey = menu.NameLocalizationKey,
                     Path = menu.Path,
                     Icon = menu.Icon,
                     Expanded = true,
