@@ -10,6 +10,8 @@ public static class JobsConfiguration
     public static IServiceCollection AddBackgroundJobs(this IServiceCollection services)
     {
         services.AddScoped<IJobService, JobService>();
+        services.AddSingleton<ILocalizationTranslationJobTracker, LocalizationTranslationJobTracker>();
+
         services.AddTickerQ(options =>
         {
             options.AddOperationalStore(store => store.UseApplicationDbContext<BackgroundJobsContext>(ConfigurationType.IgnoreModelCustomizer));

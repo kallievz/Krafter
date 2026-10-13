@@ -36,6 +36,17 @@ public interface ILocalizationApi
     [Delete("/api/users/localization/resources/{id}")]
     public Task<Response> DeleteResourceAsync(string id, CancellationToken cancellationToken = default);
 
+    [Post("/api/users/localization/resources/{id}/generate-translations")]
+    public Task<Response> GenerateMissingResourceTranslationsAsync(string id, CancellationToken cancellationToken = default);
+
+    [Get("/api/users/localization/resources/{id}/translation-job-status")]
+    public Task<Response<LocalizationTranslationJobStatusDto>> GetResourceTranslationJobStatusAsync(string id,
+        CancellationToken cancellationToken = default);
+
+    [Get("/api/users/localization/jobs/health")]
+    public Task<Response<LocalizationTranslationJobHealthDto>> GetLocalizationTranslationJobsHealthAsync(
+        CancellationToken cancellationToken = default);
+
     [Get("/api/users/localization/resource-translations")]
     public Task<Response<List<ResourceTranslationDto>>> GetResourceTranslationsAsync(CancellationToken cancellationToken = default);
 

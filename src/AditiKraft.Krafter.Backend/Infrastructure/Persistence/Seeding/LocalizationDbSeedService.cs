@@ -1,7 +1,6 @@
 using AditiKraft.Krafter.Backend.Features.Localization.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Localization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace AditiKraft.Krafter.Backend.Infrastructure.Persistence.Seeding;
 

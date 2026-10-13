@@ -92,3 +92,21 @@ public sealed class LocalizedTextDto
     public bool AutoCreatedEnglishResource { get; set; }
     public bool AutoCreatedEnglishTranslation { get; set; }
 }
+
+public sealed class LocalizationTranslationJobStatusDto
+{
+    public string ResourceId { get; set; } = string.Empty;
+    public string State { get; set; } = string.Empty;
+    public DateTime UpdatedOnUtc { get; set; }
+    public string? ErrorMessage { get; set; }
+}
+
+public sealed class LocalizationTranslationJobHealthDto
+{
+    public int TotalTracked { get; set; }
+    public int EnqueuedCount { get; set; }
+    public int ExecutingCount { get; set; }
+    public int CompletedCount { get; set; }
+    public int FailedCount { get; set; }
+    public DateTime UpdatedOnUtc { get; set; }
+}

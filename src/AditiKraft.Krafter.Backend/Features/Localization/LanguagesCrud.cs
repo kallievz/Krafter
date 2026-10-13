@@ -17,7 +17,7 @@ public sealed class LanguagesCrud
         LocalizationDbContext localizationDbContext,
         ILocalizationTextResolver localizationTextResolver) : IScopedHandler
     {
-        public async Task<Response<List<LanguageDto>>> GetAsync(CancellationToken cancellationToken)
+        public async Task<Response<List<LanguageDto>>> GetLanguagesAsync(CancellationToken cancellationToken)
         {
             List<LanguageDto> items = await localizationDbContext.Languages.AsNoTracking()
                 .OrderBy(language => language.Name)
@@ -36,7 +36,7 @@ public sealed class LanguagesCrud
             return Response<List<LanguageDto>>.Success(items);
         }
 
-        public async Task<Response<LanguageDto>> CreateAsync(CreateLanguageRequest request, CancellationToken cancellationToken)
+        public async Task<Response<LanguageDto>> CreateLanguageAsync(CreateLanguageRequest request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(request.Code))
             {
@@ -85,7 +85,7 @@ public sealed class LanguagesCrud
             return Response<LanguageDto>.Success(dto);
         }
 
-        public async Task<Response<LanguageDto>> UpdateAsync(string id, UpdateLanguageRequest request, CancellationToken cancellationToken)
+        public async Task<Response<LanguageDto>> UpdateLanguageAsync(string id, UpdateLanguageRequest request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -144,7 +144,7 @@ public sealed class LanguagesCrud
             return Response<LanguageDto>.Success(dto);
         }
 
-        public async Task<Response> DeleteAsync(string id, CancellationToken cancellationToken)
+        public async Task<Response> DeleteLanguageAsync(string id, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -179,7 +179,7 @@ public sealed class LanguagesCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response<List<LanguageDto>> response = await handler.GetAsync(cancellationToken).ConfigureAwait(false);
+                    Response<List<LanguageDto>> response = await handler.GetLanguagesAsync(cancellationToken).ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
                 .Produces<Response<List<LanguageDto>>>()
@@ -190,7 +190,7 @@ public sealed class LanguagesCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response<LanguageDto> response = await handler.CreateAsync(request, cancellationToken).ConfigureAwait(false);
+                    Response<LanguageDto> response = await handler.CreateLanguageAsync(request, cancellationToken).ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
                 .Produces<Response<LanguageDto>>()
@@ -202,7 +202,7 @@ public sealed class LanguagesCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response<LanguageDto> response = await handler.UpdateAsync(id, request, cancellationToken).ConfigureAwait(false);
+                    Response<LanguageDto> response = await handler.UpdateLanguageAsync(id, request, cancellationToken).ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
                 .Produces<Response<LanguageDto>>()
@@ -213,7 +213,7 @@ public sealed class LanguagesCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response response = await handler.DeleteAsync(id, cancellationToken).ConfigureAwait(false);
+                    Response response = await handler.DeleteLanguageAsync(id, cancellationToken).ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
                 .Produces<Response>()

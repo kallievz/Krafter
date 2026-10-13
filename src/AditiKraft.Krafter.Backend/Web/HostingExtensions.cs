@@ -1,6 +1,7 @@
 using AditiKraft.Krafter.Backend.Common.Tenants;
 using AditiKraft.Krafter.Backend.Features.Integrations.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Jobs;
+using AditiKraft.Krafter.Backend.Infrastructure.Localization;
 using AditiKraft.Krafter.Backend.Infrastructure.Notifications;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence.Tenants;
 using AditiKraft.Krafter.Backend.Infrastructure.Realtime;
@@ -53,6 +54,8 @@ public static class HostingExtensions
 
         builder.Services.AddApplicationServices();
         builder.Services.AddMemoryCache();
+        builder.Services.Configure<LocalizationOllamaOptions>(builder.Configuration.GetSection(LocalizationOllamaOptions.SectionName));
+        builder.Services.AddScoped<IOllamaLocalizationTranslator, OllamaLocalizationTranslator>();
 
         builder.Services.AddHttpClient(ExternalIntegrationHttpClientNames.MunsoftTokenClient, client =>
         {

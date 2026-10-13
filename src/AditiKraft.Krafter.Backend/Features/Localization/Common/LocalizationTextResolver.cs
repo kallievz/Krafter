@@ -1,11 +1,11 @@
 using System.Collections.Concurrent;
 using System.Globalization;
 using AditiKraft.Krafter.Backend.Common;
+using AditiKraft.Krafter.Backend.Infrastructure.Jobs;
 using AditiKraft.Krafter.Backend.Infrastructure.Localization;
 using AditiKraft.Krafter.Contracts.Contracts.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 
 namespace AditiKraft.Krafter.Backend.Features.Localization.Common;
 
@@ -43,8 +43,11 @@ public interface ILocalizationTextResolver : IScopedService
     public void InvalidateAll();
 }
 
-public sealed class LocalizationTextResolver(LocalizationDbContext localizationDbContext, IMemoryCache memoryCache, ILogger<LocalizationTextResolver>? logger = null)
-    : ILocalizationTextResolver
+public sealed class LocalizationTextResolver(
+    LocalizationDbContext localizationDbContext,
+    IMemoryCache memoryCache,
+    IJobService jobService,
+    ILogger<LocalizationTextResolver>? logger = null) : ILocalizationTextResolver
 {
     private static long _globalVersion;
     private static readonly ConcurrentDictionary<string, long> _keyVersions = new(StringComparer.OrdinalIgnoreCase);
@@ -94,13 +97,14 @@ public sealed class LocalizationTextResolver(LocalizationDbContext localizationD
 
         bool autoCreatedEnglishResource = false;
         bool autoCreatedEnglishTranslation = false;
+        string? resourceId = null;
 
         if (missingInPreferredLanguage || missingInEnglish)
         {
-            logger?.LogInformation("Resolving missing localization for key '{Key}'. MissingPreferred: {MissingPreferred}, MissingEnglish: {MissingEnglish}", 
+            logger?.LogInformation("Resolving missing localization for key '{Key}'. MissingPreferred: {MissingPreferred}, MissingEnglish: {MissingEnglish}",
                 key, missingInPreferredLanguage, missingInEnglish);
 
-            (autoCreatedEnglishResource, autoCreatedEnglishTranslation) =
+            (autoCreatedEnglishResource, autoCreatedEnglishTranslation, resourceId) =
                 await EnsureEnglishResourceAndTranslationAsync(key, fallbackValue, cancellationToken)
                     .ConfigureAwait(false);
 
@@ -117,7 +121,13 @@ public sealed class LocalizationTextResolver(LocalizationDbContext localizationD
                 key,
                 cancellationToken).ConfigureAwait(false);
 
-            logger?.LogInformation("After auto-creation, preferred translation exists: {PrefExists}, English translation exists: {EngExists}", 
+            bool englishSeedWasCreated = autoCreatedEnglishResource || autoCreatedEnglishTranslation;
+            if (englishSeedWasCreated && englishTranslation.Exists && !string.IsNullOrWhiteSpace(resourceId))
+            {
+                await QueueMissingTranslationsAsync(resourceId, CancellationToken.None).ConfigureAwait(false);
+            }
+
+            logger?.LogInformation("After auto-creation, preferred translation exists: {PrefExists}, English translation exists: {EngExists}",
                 preferredTranslation.Exists, englishTranslation.Exists);
         }
 
@@ -191,7 +201,7 @@ public sealed class LocalizationTextResolver(LocalizationDbContext localizationD
         Interlocked.Increment(ref _globalVersion);
     }
 
-    private async Task<(bool AutoCreatedEnglishResource, bool AutoCreatedEnglishTranslation)> EnsureEnglishResourceAndTranslationAsync(
+    private async Task<(bool AutoCreatedEnglishResource, bool AutoCreatedEnglishTranslation, string ResourceId)> EnsureEnglishResourceAndTranslationAsync(
         string key,
         string fallbackValue,
         CancellationToken cancellationToken)
@@ -262,7 +272,38 @@ public sealed class LocalizationTextResolver(LocalizationDbContext localizationD
             await localizationDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        return (autoCreatedEnglishResource, autoCreatedEnglishTranslation);
+        return (autoCreatedEnglishResource, autoCreatedEnglishTranslation, resource.Id);
+    }
+
+    private async Task QueueMissingTranslationsAsync(string resourceId, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(resourceId))
+        {
+            return;
+        }
+
+        try
+        {
+            await jobService.EnqueueAsync(
+                new GenerateMissingLocalizationTranslationsRequestInput
+                {
+                    ResourceId = resourceId
+                },
+                nameof(Jobs.GenerateMissingLocalizationTranslationsJobAsync),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (InvalidOperationException ex)
+        {
+            logger?.LogWarning(ex,
+                "Failed to enqueue background localization translation job for resource '{ResourceId}'.",
+                resourceId);
+        }
+        catch (OperationCanceledException)
+        {
+            logger?.LogDebug(
+                "Background localization enqueue was canceled for resource '{ResourceId}'.",
+                resourceId);
+        }
     }
 
     private async Task<CachedTranslation> GetTranslationAsync(

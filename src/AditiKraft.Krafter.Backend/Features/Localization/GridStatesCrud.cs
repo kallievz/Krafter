@@ -18,7 +18,7 @@ public sealed class GridStatesCrud
         ICurrentUser currentUser,
         ITenantGetterService tenantGetterService) : IScopedHandler
     {
-        public async Task<Response<List<GridStateDto>>> GetAsync(string componentKey, CancellationToken cancellationToken)
+        public async Task<Response<List<GridStateDto>>> GetGridStatesAsync(string componentKey, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(componentKey))
             {
@@ -56,7 +56,7 @@ public sealed class GridStatesCrud
             return Response<List<GridStateDto>>.Success(states);
         }
 
-        public async Task<Response<GridStateDto>> CreateAsync(CreateGridStateRequest request, CancellationToken cancellationToken)
+        public async Task<Response<GridStateDto>> CreateGridStateAsync(CreateGridStateRequest request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(request.ComponentKey))
             {
@@ -134,7 +134,7 @@ public sealed class GridStatesCrud
             return Response<GridStateDto>.Success(dto);
         }
 
-        public async Task<Response<GridStateDto>> UpdateAsync(string id, UpdateGridStateRequest request,
+        public async Task<Response<GridStateDto>> UpdateGridStateAsync(string id, UpdateGridStateRequest request,
             CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -219,7 +219,7 @@ public sealed class GridStatesCrud
             return Response<GridStateDto>.Success(dto);
         }
 
-        public async Task<Response> DeleteAsync(string id, CancellationToken cancellationToken)
+        public async Task<Response> DeleteGridStateAsync(string id, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -272,7 +272,7 @@ public sealed class GridStatesCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response<List<GridStateDto>> response = await handler.GetAsync(componentKey, cancellationToken)
+                    Response<List<GridStateDto>> response = await handler.GetGridStatesAsync(componentKey, cancellationToken)
                         .ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
@@ -284,7 +284,7 @@ public sealed class GridStatesCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response<GridStateDto> response = await handler.CreateAsync(request, cancellationToken)
+                    Response<GridStateDto> response = await handler.CreateGridStateAsync(request, cancellationToken)
                         .ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
@@ -297,7 +297,7 @@ public sealed class GridStatesCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response<GridStateDto> response = await handler.UpdateAsync(id, request, cancellationToken)
+                    Response<GridStateDto> response = await handler.UpdateGridStateAsync(id, request, cancellationToken)
                         .ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
@@ -309,7 +309,7 @@ public sealed class GridStatesCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response response = await handler.DeleteAsync(id, cancellationToken).ConfigureAwait(false);
+                    Response response = await handler.DeleteGridStateAsync(id, cancellationToken).ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
                 .Produces<Response>()

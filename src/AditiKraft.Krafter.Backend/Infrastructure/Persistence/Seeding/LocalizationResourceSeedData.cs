@@ -9,7 +9,7 @@ namespace AditiKraft.Krafter.Backend.Infrastructure.Persistence.Seeding;
 
 internal static partial class LocalizationResourceSeedData
 {
-    private static readonly string RadzenResxPath = Path.Combine(
+    private static readonly string _radzenResxPath = Path.Combine(
         AppContext.BaseDirectory,
         "Infrastructure", "Persistence", "Seeding", "RadzenStrings.resx");
 
@@ -23,7 +23,7 @@ internal static partial class LocalizationResourceSeedData
         HashSet<string> existingKeys = new(StringComparer.OrdinalIgnoreCase);
         IEnumerable<Type> entityTypes = GetEntityTypes();
 
-        _logger?.LogInformation("Starting localization resource discovery. RadzenStrings.resx path: {Path}", RadzenResxPath);
+        _logger?.LogInformation("Starting localization resource discovery. RadzenStrings.resx path: {Path}", _radzenResxPath);
         _logger?.LogInformation("Discovered {Count} seedable entity types", entityTypes.Count());
 
         // Add entity property resources
@@ -61,9 +61,9 @@ internal static partial class LocalizationResourceSeedData
         }
 
         // Add Radzen component strings
-        var radzenResources = GetRadzenResources();
+        IEnumerable<Resource> radzenResources = GetRadzenResources();
         _logger?.LogInformation("Discovered {Count} Radzen resource strings", radzenResources.Count());
-        foreach (var radzenResource in radzenResources)
+        foreach (Resource radzenResource in radzenResources)
         {
             if (!existingKeys.Contains(radzenResource.Key))
             {
@@ -73,8 +73,8 @@ internal static partial class LocalizationResourceSeedData
         }
 
         // Add standard Button_ keys
-        var buttonKeys = GetStandardButtonKeys();
-        foreach (var buttonResource in buttonKeys)
+        IEnumerable<Resource> buttonKeys = GetStandardButtonKeys();
+        foreach (Resource buttonResource in buttonKeys)
         {
             if (!existingKeys.Contains(buttonResource.Key))
             {
@@ -84,8 +84,8 @@ internal static partial class LocalizationResourceSeedData
         }
 
         // Add standard Nav_ keys
-        var navKeys = GetStandardNavKeys();
-        foreach (var navResource in navKeys)
+        IEnumerable<Resource> navKeys = GetStandardNavKeys();
+        foreach (Resource navResource in navKeys)
         {
             if (!existingKeys.Contains(navResource.Key))
             {
@@ -103,7 +103,7 @@ internal static partial class LocalizationResourceSeedData
     /// </summary>
     private static IEnumerable<Resource> GetStandardButtonKeys()
     {
-        var buttons = new[]
+        string[] buttons = new[]
         {
             "Save", "Delete", "Cancel", "Submit", "Reset", "Create", "Update",
             "Add", "Remove", "Edit", "View", "Close", "Export", "Import", "Search",
@@ -125,10 +125,10 @@ internal static partial class LocalizationResourceSeedData
     private static IEnumerable<Resource> GetStandardNavKeys()
     {
         // Discover entity-based navigation items
-        var entityTypes = GetEntityTypes();
+        IEnumerable<Type> entityTypes = GetEntityTypes();
         var navKeys = new List<Resource>();
 
-        foreach (var entityType in entityTypes)
+        foreach (Type entityType in entityTypes)
         {
             string pluralName = Pluralize(entityType.Name);
             string navKey = $"Nav_{pluralName}";
@@ -146,7 +146,7 @@ internal static partial class LocalizationResourceSeedData
             "Home", "Dashboard", "Settings", "Users", "Profile", "Help", "About"
         };
 
-        foreach (var item in commonNavItems)
+        foreach (string? item in commonNavItems)
         {
             navKeys.Add(new Resource
             {
@@ -214,16 +214,16 @@ internal static partial class LocalizationResourceSeedData
     /// </summary>
     private static IEnumerable<Resource> GetRadzenResources()
     {
-        if (!File.Exists(RadzenResxPath))
+        if (!File.Exists(_radzenResxPath))
         {
-            _logger?.LogWarning("RadzenStrings.resx file not found at: {Path}", RadzenResxPath);
+            _logger?.LogWarning("RadzenStrings.resx file not found at: {Path}", _radzenResxPath);
             return [];
         }
 
         try
         {
-            _logger?.LogDebug("Loading Radzen resources from: {Path}", RadzenResxPath);
-            XDocument doc = XDocument.Load(RadzenResxPath);
+            _logger?.LogDebug("Loading Radzen resources from: {Path}", _radzenResxPath);
+            XDocument doc = XDocument.Load(_radzenResxPath);
 
             var resources = doc.Descendants("data")
                 .Select(element => new
@@ -245,7 +245,7 @@ internal static partial class LocalizationResourceSeedData
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "Failed to load Radzen resources from {Path}", RadzenResxPath);
+            _logger?.LogError(ex, "Failed to load Radzen resources from {Path}", _radzenResxPath);
             return [];
         }
     }
@@ -256,16 +256,16 @@ internal static partial class LocalizationResourceSeedData
     /// </summary>
     private static IEnumerable<(string Key, string Value)> GetRadzenTranslations()
     {
-        if (!File.Exists(RadzenResxPath))
+        if (!File.Exists(_radzenResxPath))
         {
-            _logger?.LogWarning("RadzenStrings.resx file not found at: {Path}", RadzenResxPath);
+            _logger?.LogWarning("RadzenStrings.resx file not found at: {Path}", _radzenResxPath);
             return [];
         }
 
         try
         {
-            _logger?.LogDebug("Loading Radzen translations from: {Path}", RadzenResxPath);
-            XDocument doc = XDocument.Load(RadzenResxPath);
+            _logger?.LogDebug("Loading Radzen translations from: {Path}", _radzenResxPath);
+            XDocument doc = XDocument.Load(_radzenResxPath);
 
             var translations = doc.Descendants("data")
                 .Select(element => new
@@ -282,7 +282,7 @@ internal static partial class LocalizationResourceSeedData
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "Failed to load Radzen translations from {Path}", RadzenResxPath);
+            _logger?.LogError(ex, "Failed to load Radzen translations from {Path}", _radzenResxPath);
             return [];
         }
     }

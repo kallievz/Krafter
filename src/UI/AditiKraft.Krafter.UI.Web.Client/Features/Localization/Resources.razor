@@ -8,13 +8,23 @@
 <LocalizationNavigation />
 
 <AdvancedDataGrid TItem="ResourceDto"
-                  Data="@_response?.Data"
-                  Count="@(_response?.Data?.Count ?? 0)"
+                  Data="@_visibleResources"
+                  Count="@_visibleResources.Count"
                   IsLoading="@_isLoading"
                   ExportFileBaseName="resources"
-                  ExportTitle="Resources"
+                  ExportTitle="@L.Localize("Entity_Resources", "Resources")"
                   ComponentKey="@RoutePath">
     <ToolbarActions>
+        <AuthorizeView Policy="@(PermissionDefinition.NameFor(PermissionAction.View, PermissionResource.LocalizationResources))">
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center" Style="margin-right: 0.75rem;">
+                <RadzenText TextStyle="TextStyle.Body2" Style="font-weight: 600;">
+                    @L.Localize("Resources_LocalizationProgress", "Localized {0}/{1} | Outstanding {2}", _localizedKeysCount, _totalKeysCount, _outstandingKeysCount)
+                </RadzenText>
+                <RadzenCheckBox @bind-Value="ShowOutstandingOnly" TriState="false" Name="ShowOutstandingOnly" />
+                <RadzenLabel Component="ShowOutstandingOnly" Text="@L.Localize("Resources_FilterOutstandingOnly", "Outstanding only")" />
+                <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Info" Icon="monitor_heart" Text="@L.Localize("Button_JobHealth", "Job Health")" Click="@CheckTranslationJobsHealthAsync" />
+            </RadzenStack>
+        </AuthorizeView>
         <AuthorizeView Policy="@(PermissionDefinition.NameFor(PermissionAction.Create, PermissionResource.LocalizationResources))">
             <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary" Icon="add_circle_outline" Text="@L.Localize("Button_AddResource", "Add Resource")" Click="@AddResourceAsync" />
         </AuthorizeView>
@@ -22,6 +32,11 @@
     <Columns>
         <RadzenDataGridColumn TItem="ResourceDto" Property="Key" Title="@L.Localize("Resource_Key", "Key")" />
         <RadzenDataGridColumn TItem="ResourceDto" Property="Description" Title="@L.Localize("Resource_Description", "Description")" />
+        <RadzenDataGridColumn TItem="ResourceDto" Title="@L.Localize("Resource_LocalizationStatus", "Localization Status")" Filterable="false" Sortable="false" Width="10rem">
+            <Template Context="data">
+                <RadzenBadge Text="@GetResourceLocalizationStatusText(data)" BadgeStyle="@GetResourceLocalizationStatusBadgeStyle(data)" />
+            </Template>
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ResourceDto" Property="CreatedOn" Title="@L.Localize("Resource_CreatedOn", "Created On")" />
         <RadzenDataGridColumn TItem="ResourceDto" Property="UpdatedOn" Title="@L.Localize("Resource_UpdatedOn", "Updated On")" />
         <RadzenDataGridColumn TItem="ResourceDto" Title="@L.Localize("DataGrid_Actions", "Actions")" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true" Width="9.28vw" FrozenPosition="FrozenColumnPosition.Right">
@@ -30,6 +45,8 @@
                     <ChildContent>
                         <AuthorizeView Policy="@(PermissionDefinition.NameFor(PermissionAction.Update, PermissionResource.LocalizationResources))">
                             <RadzenSplitButtonItem Text="@L.Localize("Button_Edit", "Edit")" Value="@PermissionAction.Update" Icon="edit" />
+                            <RadzenSplitButtonItem Text="@L.Localize("Button_Translate", "Translate")" Value="generate-translations" Icon="translate" />
+                            <RadzenSplitButtonItem Text="@L.Localize("Button_TranslationStatus", "Translation Status")" Value="translation-status" Icon="query_stats" />
                         </AuthorizeView>
                         <AuthorizeView Policy="@(PermissionDefinition.NameFor(PermissionAction.Delete, PermissionResource.LocalizationResources))">
                             <RadzenSplitButtonItem Text="@L.Localize("Button_Delete", "Delete")" Value="@PermissionAction.Delete" Icon="delete" />

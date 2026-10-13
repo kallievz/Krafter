@@ -1,4 +1,5 @@
 using AditiKraft.Krafter.Backend.Features.Localization.Common;
+using AditiKraft.Krafter.Backend.Infrastructure.Jobs;
 using AditiKraft.Krafter.Backend.Infrastructure.Localization;
 using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Backend.Web.Authorization;
@@ -15,9 +16,11 @@ public sealed class ResourcesCrud
 {
     internal sealed class Handler(
         LocalizationDbContext localizationDbContext,
-        ILocalizationTextResolver localizationTextResolver) : IScopedHandler
+        ILocalizationTextResolver localizationTextResolver,
+        IJobService jobService,
+        ILocalizationTranslationJobTracker localizationTranslationJobTracker) : IScopedHandler
     {
-        public async Task<Response<List<ResourceDto>>> GetAsync(CancellationToken cancellationToken)
+        public async Task<Response<List<ResourceDto>>> GetResourcesAsync(CancellationToken cancellationToken)
         {
             List<ResourceDto> items = await localizationDbContext.Resources.AsNoTracking()
                 .OrderBy(resource => resource.Key)
@@ -35,7 +38,7 @@ public sealed class ResourcesCrud
             return Response<List<ResourceDto>>.Success(items);
         }
 
-        public async Task<Response<ResourceDto>> CreateAsync(CreateResourceRequest request, CancellationToken cancellationToken)
+        public async Task<Response<ResourceDto>> CreateResourceAsync(CreateResourceRequest request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(request.Key))
             {
@@ -77,7 +80,7 @@ public sealed class ResourcesCrud
             return Response<ResourceDto>.Success(dto);
         }
 
-        public async Task<Response<ResourceDto>> UpdateAsync(string id, UpdateResourceRequest request, CancellationToken cancellationToken)
+        public async Task<Response<ResourceDto>> UpdateResourceAsync(string id, UpdateResourceRequest request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -131,7 +134,7 @@ public sealed class ResourcesCrud
             return Response<ResourceDto>.Success(dto);
         }
 
-        public async Task<Response> DeleteAsync(string id, CancellationToken cancellationToken)
+        public async Task<Response> DeleteResourceAsync(string id, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -154,6 +157,78 @@ public sealed class ResourcesCrud
 
             return Response.Success();
         }
+
+        public async Task<Response> TriggerBackgroundTranslationAsync(string id, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return Response.BadRequest("Resource id is required.");
+            }
+
+            Resource? entity = await localizationDbContext.Resources.AsNoTracking()
+                .FirstOrDefaultAsync(resource => resource.Id == id, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (entity is null)
+            {
+                return Response.NotFound("Resource not found.");
+            }
+
+            await jobService.EnqueueAsync(
+                new GenerateMissingLocalizationTranslationsRequestInput
+                {
+                    ResourceId = entity.Id
+                },
+                nameof(Jobs.GenerateMissingLocalizationTranslationsJobAsync),
+                cancellationToken).ConfigureAwait(false);
+
+            localizationTranslationJobTracker.MarkEnqueued(entity.Id);
+
+            return Response.Success();
+        }
+
+        public Response<LocalizationTranslationJobStatusDto> GetTranslationJobStatus(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return Response<LocalizationTranslationJobStatusDto>.BadRequest("Resource id is required.");
+            }
+
+            Resource? entity = localizationDbContext.Resources.AsNoTracking()
+                .FirstOrDefault(resource => resource.Id == id);
+
+            if (entity is null)
+            {
+                return Response<LocalizationTranslationJobStatusDto>.NotFound("Resource not found.");
+            }
+
+            LocalizationTranslationJobStatus status = localizationTranslationJobTracker.GetStatus(entity.Id);
+            LocalizationTranslationJobStatusDto dto = new()
+            {
+                ResourceId = status.ResourceId,
+                State = status.State.ToString(),
+                UpdatedOnUtc = status.UpdatedOnUtc,
+                ErrorMessage = status.ErrorMessage
+            };
+
+            return Response<LocalizationTranslationJobStatusDto>.Success(dto);
+        }
+
+        public Response<LocalizationTranslationJobHealthDto> GetTranslationJobHealth()
+        {
+            LocalizationTranslationJobHealth health = localizationTranslationJobTracker.GetHealth();
+            LocalizationTranslationJobHealthDto dto = new()
+            {
+                TotalTracked = health.TotalTracked,
+                EnqueuedCount = health.EnqueuedCount,
+                ExecutingCount = health.ExecutingCount,
+                CompletedCount = health.CompletedCount,
+                FailedCount = health.FailedCount,
+                UpdatedOnUtc = health.UpdatedOnUtc
+            };
+
+            return Response<LocalizationTranslationJobHealthDto>.Success(dto);
+        }
     }
 
     public sealed class Route : IRouteRegistrar
@@ -167,7 +242,7 @@ public sealed class ResourcesCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response<List<ResourceDto>> response = await handler.GetAsync(cancellationToken).ConfigureAwait(false);
+                    Response<List<ResourceDto>> response = await handler.GetResourcesAsync(cancellationToken).ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
                 .Produces<Response<List<ResourceDto>>>()
@@ -178,7 +253,7 @@ public sealed class ResourcesCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response<ResourceDto> response = await handler.CreateAsync(request, cancellationToken).ConfigureAwait(false);
+                    Response<ResourceDto> response = await handler.CreateResourceAsync(request, cancellationToken).ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
                 .Produces<Response<ResourceDto>>()
@@ -190,7 +265,7 @@ public sealed class ResourcesCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response<ResourceDto> response = await handler.UpdateAsync(id, request, cancellationToken).ConfigureAwait(false);
+                    Response<ResourceDto> response = await handler.UpdateResourceAsync(id, request, cancellationToken).ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
                 .Produces<Response<ResourceDto>>()
@@ -201,11 +276,41 @@ public sealed class ResourcesCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response response = await handler.DeleteAsync(id, cancellationToken).ConfigureAwait(false);
+                    Response response = await handler.DeleteResourceAsync(id, cancellationToken).ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
                 .Produces<Response>()
                 .MustHavePermission(PermissionAction.Delete, PermissionResource.LocalizationResources);
+
+            group.MapPost("/localization/resources/{id}/generate-translations", async (
+                    [FromRoute] string id,
+                    [FromServices] Handler handler,
+                    CancellationToken cancellationToken) =>
+                {
+                    Response response = await handler.TriggerBackgroundTranslationAsync(id, cancellationToken).ConfigureAwait(false);
+                    return Results.Json(response, statusCode: response.StatusCode);
+                })
+                .Produces<Response>()
+                .MustHavePermission(PermissionAction.Update, PermissionResource.LocalizationResources);
+
+            group.MapGet("/localization/resources/{id}/translation-job-status", (
+                    [FromRoute] string id,
+                    [FromServices] Handler handler) =>
+                {
+                    Response<LocalizationTranslationJobStatusDto> response = handler.GetTranslationJobStatus(id);
+                    return Results.Json(response, statusCode: response.StatusCode);
+                })
+                .Produces<Response<LocalizationTranslationJobStatusDto>>()
+                .MustHavePermission(PermissionAction.View, PermissionResource.LocalizationResources);
+
+            group.MapGet("/localization/jobs/health", (
+                    [FromServices] Handler handler) =>
+                {
+                    Response<LocalizationTranslationJobHealthDto> response = handler.GetTranslationJobHealth();
+                    return Results.Json(response, statusCode: response.StatusCode);
+                })
+                .Produces<Response<LocalizationTranslationJobHealthDto>>()
+                .MustHavePermission(PermissionAction.View, PermissionResource.LocalizationResources);
         }
     }
 }

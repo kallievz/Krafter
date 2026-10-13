@@ -17,7 +17,7 @@ public sealed class ResourceTranslationsCrud
         LocalizationDbContext localizationDbContext,
         ILocalizationTextResolver localizationTextResolver) : IScopedHandler
     {
-        public async Task<Response<List<ResourceTranslationDto>>> GetAsync(CancellationToken cancellationToken)
+        public async Task<Response<List<ResourceTranslationDto>>> GetResourceTranslationsAsync(CancellationToken cancellationToken)
         {
             List<ResourceTranslationDto> items = await (
                 from resourceTranslation in localizationDbContext.ResourceTranslations.AsNoTracking()
@@ -57,7 +57,7 @@ public sealed class ResourceTranslationsCrud
             return Response<List<ResourceTranslationDto>>.Success(items);
         }
 
-        public async Task<Response<ResourceTranslationDto>> CreateAsync(CreateResourceTranslationRequest request, CancellationToken cancellationToken)
+        public async Task<Response<ResourceTranslationDto>> CreateResourceTranslationAsync(CreateResourceTranslationRequest request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(request.ResourceId))
             {
@@ -118,7 +118,7 @@ public sealed class ResourceTranslationsCrud
             return Response<ResourceTranslationDto>.Success(dto);
         }
 
-        public async Task<Response<ResourceTranslationDto>> UpdateAsync(string id, UpdateResourceTranslationRequest request, CancellationToken cancellationToken)
+        public async Task<Response<ResourceTranslationDto>> UpdateResourceTranslationAsync(string id, UpdateResourceTranslationRequest request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -230,7 +230,7 @@ public sealed class ResourceTranslationsCrud
                 }).FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<Response> DeleteAsync(string id, CancellationToken cancellationToken)
+        public async Task<Response> DeleteResourceTranslationAsync(string id, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -267,7 +267,7 @@ public sealed class ResourceTranslationsCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response<List<ResourceTranslationDto>> response = await handler.GetAsync(cancellationToken).ConfigureAwait(false);
+                    Response<List<ResourceTranslationDto>> response = await handler.GetResourceTranslationsAsync(cancellationToken).ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
                 .Produces<Response<List<ResourceTranslationDto>>>()
@@ -278,7 +278,7 @@ public sealed class ResourceTranslationsCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response<ResourceTranslationDto> response = await handler.CreateAsync(request, cancellationToken).ConfigureAwait(false);
+                    Response<ResourceTranslationDto> response = await handler.CreateResourceTranslationAsync(request, cancellationToken).ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
                 .Produces<Response<ResourceTranslationDto>>()
@@ -290,7 +290,7 @@ public sealed class ResourceTranslationsCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response<ResourceTranslationDto> response = await handler.UpdateAsync(id, request, cancellationToken).ConfigureAwait(false);
+                    Response<ResourceTranslationDto> response = await handler.UpdateResourceTranslationAsync(id, request, cancellationToken).ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
                 .Produces<Response<ResourceTranslationDto>>()
@@ -301,7 +301,7 @@ public sealed class ResourceTranslationsCrud
                     [FromServices] Handler handler,
                     CancellationToken cancellationToken) =>
                 {
-                    Response response = await handler.DeleteAsync(id, cancellationToken).ConfigureAwait(false);
+                    Response response = await handler.DeleteResourceTranslationAsync(id, cancellationToken).ConfigureAwait(false);
                     return Results.Json(response, statusCode: response.StatusCode);
                 })
                 .Produces<Response>()
