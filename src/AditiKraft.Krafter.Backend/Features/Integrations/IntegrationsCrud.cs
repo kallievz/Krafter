@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using AditiKraft.Krafter.Backend.Common.Extensions;
 using AditiKraft.Krafter.Backend.Features.Integrations.Common;
+using AditiKraft.Krafter.Backend.Features.Integrations.Entities;
 using AditiKraft.Krafter.Backend.Features.Tenants.Common;
 using AditiKraft.Krafter.Backend.Infrastructure.Integration.Munsoft;
 using AditiKraft.Krafter.Backend.Web;

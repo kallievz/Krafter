@@ -1,6 +1,4 @@
 using System.Collections.Concurrent;
-using System.Net;
-using System.Text;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Auth;
 using AditiKraft.Krafter.UI.Web.Client.Common.Constants;

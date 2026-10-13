@@ -1,4 +1,4 @@
-namespace AditiKraft.Krafter.Backend.Features.Tenants.Common;
+namespace AditiKraft.Krafter.Backend.Features.Tenants.Entities;
 
 public sealed class TenantSetting
 {

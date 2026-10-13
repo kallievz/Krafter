@@ -1,4 +1,5 @@
 using AditiKraft.Krafter.Backend.Common.Tenants;
+using AditiKraft.Krafter.Backend.Features.Roles.Entities;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
 using AditiKraft.Krafter.Contracts.Common.Auth;
 using Microsoft.EntityFrameworkCore;

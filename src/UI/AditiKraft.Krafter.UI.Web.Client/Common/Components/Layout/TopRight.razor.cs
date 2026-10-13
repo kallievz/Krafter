@@ -8,7 +8,7 @@ public partial class TopRight(
 ) : ComponentBase
 {
     [Inject]
-    private Radzen.ILocalizer L { get; set; } = null!;
+    private ILocalizer L { get; set; } = null!;
     [CascadingParameter] public bool IsMobileDevice { get; set; }
 
     [Parameter] public bool ShowProfileCard { get; set; }

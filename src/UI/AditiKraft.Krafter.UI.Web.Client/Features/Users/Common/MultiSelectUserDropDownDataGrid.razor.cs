@@ -5,7 +5,7 @@ public partial class MultiSelectUserDropDownDataGrid(
     IUsersApi usersApi
 ) : ComponentBase
 {
-    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
+    [Inject] private ILocalizer L { get; set; } = null!;
     private RadzenDropDownDataGrid<IEnumerable<string>> _dropDownGrid = default!;
     private Response<PaginationResponse<UserDto>>? _response;
     private bool _isLoading = true;

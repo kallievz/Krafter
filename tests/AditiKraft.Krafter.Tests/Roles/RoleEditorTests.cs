@@ -158,6 +158,7 @@ public sealed class RoleEditorTests
             registrations.AddSingleton<IJSRuntime, NoJavaScript>();
             registrations.AddSingleton<DialogService>();
             registrations.AddSingleton<NotificationService>();
+            registrations.AddSingleton<ILocalizer, TestLocalizer>();
             registrations.AddSingleton<ApiCallService>();
             registrations.AddSingleton<IRolesApi>(api);
             registrations.AddSingleton<CapturingActivator>();
@@ -214,6 +215,14 @@ public sealed class RoleEditorTests
 
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) =>
             throw new NotSupportedException("Static rendering must not call JavaScript.");
+    }
+
+    private sealed class TestLocalizer : ILocalizer
+    {
+        public string? Get(string key, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
     }
 
     private sealed class RolesApi : IRolesApi

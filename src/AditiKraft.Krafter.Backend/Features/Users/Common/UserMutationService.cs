@@ -1,7 +1,8 @@
 using AditiKraft.Krafter.Backend.Common;
 using AditiKraft.Krafter.Backend.Common.Tenants;
-using AditiKraft.Krafter.Backend.Features.Roles.Common;
-using AditiKraft.Krafter.Backend.Features.Tenants.Common;
+using AditiKraft.Krafter.Backend.Features.Roles.Entities;
+using AditiKraft.Krafter.Backend.Features.Tenants.Entities;
+using AditiKraft.Krafter.Backend.Features.Users.Entities;
 using AditiKraft.Krafter.Backend.Infrastructure.Jobs;
 using AditiKraft.Krafter.Backend.Infrastructure.Localization;
 using AditiKraft.Krafter.Backend.Infrastructure.Notifications;

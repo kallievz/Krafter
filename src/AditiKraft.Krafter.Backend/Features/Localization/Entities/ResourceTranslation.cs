@@ -1,6 +1,6 @@
 using AditiKraft.Krafter.Backend.Common.Entities;
-using AditiKraft.Krafter.Backend.Features.Users.Common;
-namespace AditiKraft.Krafter.Backend.Features.Localization.Common;
+using AditiKraft.Krafter.Backend.Features.Users.Entities;
+namespace AditiKraft.Krafter.Backend.Features.Localization.Entities;
 
 public sealed class ResourceTranslation : IHistory
 {

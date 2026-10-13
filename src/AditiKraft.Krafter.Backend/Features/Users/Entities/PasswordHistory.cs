@@ -1,6 +1,6 @@
 using AditiKraft.Krafter.Backend.Common.Entities;
 
-namespace AditiKraft.Krafter.Backend.Features.Users.Common;
+namespace AditiKraft.Krafter.Backend.Features.Users.Entities;
 
 public sealed class PasswordHistory : CommonEntityProperty
 {

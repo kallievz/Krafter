@@ -1,3 +1,5 @@
+using AditiKraft.Krafter.Backend.Features.Users.Entities;
+
 namespace AditiKraft.Krafter.Backend.Features.Users.Common;
 
 public interface IPasswordPolicyService

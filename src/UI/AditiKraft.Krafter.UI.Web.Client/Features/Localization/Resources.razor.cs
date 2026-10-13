@@ -13,7 +13,6 @@ public partial class Resources(
 {
     [Inject]
     private ILocalizer L { get; set; } = null!;
-
     public const string RoutePath = ApiRoutes.LocalizationResources;
 
     private bool _isLoading = true;

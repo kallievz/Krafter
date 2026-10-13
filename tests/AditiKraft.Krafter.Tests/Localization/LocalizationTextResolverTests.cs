@@ -2,11 +2,12 @@ using System.Security.Claims;
 using AditiKraft.Krafter.Backend.Common.Auth;
 using AditiKraft.Krafter.Backend.Common.Tenants;
 using AditiKraft.Krafter.Backend.Features.Localization.Common;
+using AditiKraft.Krafter.Backend.Features.Localization.Entities;
+using AditiKraft.Krafter.Backend.Infrastructure.Jobs;
 using AditiKraft.Krafter.Backend.Infrastructure.Localization;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Localization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AditiKraft.Krafter.Tests.Localization;
@@ -31,7 +32,7 @@ public sealed class LocalizationTextResolverTests
 
         Assert.Equal("Users.Delete.Failed", result.Key);
         Assert.Equal("Record ACME could not be deleted", result.Value);
-        Assert.True(result.UsedFallback);
+        Assert.False(result.UsedFallback);
         Assert.True(result.AutoCreatedEnglishResource);
         Assert.True(result.AutoCreatedEnglishTranslation);
 
@@ -102,7 +103,7 @@ public sealed class LocalizationTextResolverTests
     }
 
     [Fact]
-    public async Task ResolveAsyncWhenPreferredTranslationMissingThenReturnsFallbackAndKeepsExistingEnglishTranslationAsync()
+    public async Task ResolveAsyncWhenPreferredTranslationMissingThenReturnsEnglishAndKeepsExistingEnglishTranslationAsync()
     {
         await using TestContext context = CreateContext();
 
@@ -137,8 +138,8 @@ public sealed class LocalizationTextResolverTests
                 CancellationToken.None)
             .ConfigureAwait(true);
 
-        Assert.Equal("Fallback text", result.Value);
-        Assert.True(result.UsedFallback);
+        Assert.Equal("English existing text", result.Value);
+        Assert.False(result.UsedFallback);
         Assert.False(result.AutoCreatedEnglishResource);
         Assert.False(result.AutoCreatedEnglishTranslation);
 
@@ -157,6 +158,7 @@ public sealed class LocalizationTextResolverTests
         services.AddMemoryCache();
         services.AddSingleton<ICurrentUser, TestCurrentUser>();
         services.AddSingleton<ITenantGetterService, TestTenantGetterService>();
+        services.AddSingleton<IJobService, NoExternalJobs>();
         services.AddDbContext<LocalizationDbContext>(options => options.UseInMemoryDatabase(databaseName));
         services.AddScoped<ILocalizationTextResolver, LocalizationTextResolver>();
 
@@ -208,5 +210,18 @@ public sealed class LocalizationTextResolverTests
             Name = "Tenant A",
             TenantLink = "https://tenant-a.example.com"
         };
+    }
+
+    private sealed class NoExternalJobs : IJobService
+    {
+        public Task EnqueueAsync<T>(T requestInput, string methodName, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task EnqueueByLogIdAsync(string emailLogId, string methodName, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

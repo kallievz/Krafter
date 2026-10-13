@@ -9,7 +9,7 @@ public partial class CreateOrUpdateUser(
 ) : ComponentBase
 {
     [Inject]
-    private Radzen.ILocalizer L { get; set; } = null!;
+    private ILocalizer L { get; set; } = null!;
     [Parameter] public UserDto UserInput { get; set; } = new();
 
     private CreateUserRequest _createUserRequest = new();

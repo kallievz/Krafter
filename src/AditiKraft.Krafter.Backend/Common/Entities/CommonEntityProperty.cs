@@ -1,4 +1,4 @@
-using AditiKraft.Krafter.Backend.Features.Users.Common;
+using AditiKraft.Krafter.Backend.Features.Users.Entities;
 
 namespace AditiKraft.Krafter.Backend.Common.Entities;
 

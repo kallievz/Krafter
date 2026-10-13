@@ -22,6 +22,10 @@
 - DELETE endpoints use `MapDelete($"/{RouteSegment.ById}", ...)` with route parameter name matching the placeholder.
 - For secured features, keep permission coverage complete: every entity must have a `PermissionResource` constant and every `PermissionResource` must include `PermissionAction.Manage` in `PermissionCatalog`.
 - Every gated endpoint must use `.MustHavePermission(...)` with the relevant `PermissionAction` and `PermissionResource` (do not leave gated endpoints on bare `.RequireAuthorization()` unless explicitly documented as auth-only).
+- For integration entity CRUD, keep one dedicated `<EntityName>Crud.cs` file per entity (do not combine multiple entities in one CRUD operation file).
+- For create/update flows, use a dedicated `ApplyRequest(...)` mapper and include all contract request fields in the entity mapping (no partial field mapping).
+- For read flows, include all DTO fields in the projection used by list/get endpoints for the entity (no partial DTO projections unless explicitly documented).
+- Keep route naming and HTTP verbs consistent across sibling CRUD files for the same integration family.
 
 ## File Placement
 - Feature operation: `src/AditiKraft.Krafter.Backend/Features/<Feature>/<Operation>.cs`

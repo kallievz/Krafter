@@ -10,7 +10,7 @@ public partial class SelfRegister(
 ) : ComponentBase
 {
     [Inject]
-    private Radzen.ILocalizer L { get; set; } = null!;
+    private ILocalizer L { get; set; } = null!;
     [CascadingParameter] public bool IsMobileDevice { get; set; }
 
     public bool IsBusy { get; set; }

@@ -5,7 +5,9 @@ namespace AditiKraft.Krafter.UI.Web.Client.Common.Components.Layout;
 
 public partial class NavigationItem()
 {
-    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
+    [Inject]
+    private ILocalizer L { get; set; } = null!;
+
     [EditorRequired]
     [Parameter]
     public Menu Example { get; set; }

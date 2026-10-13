@@ -1,5 +1,6 @@
 using AditiKraft.Krafter.Backend.Features.Roles;
 using AditiKraft.Krafter.Backend.Features.Roles.Common;
+using AditiKraft.Krafter.Backend.Features.Roles.Entities;
 using AditiKraft.Krafter.Contracts.Common.Auth;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Roles;

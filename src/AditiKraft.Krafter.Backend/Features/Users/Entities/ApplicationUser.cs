@@ -1,7 +1,7 @@
 using AditiKraft.Krafter.Backend.Common.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace AditiKraft.Krafter.Backend.Features.Users.Common;
+namespace AditiKraft.Krafter.Backend.Features.Users.Entities;
 
 public class ApplicationUser : IdentityUser<string>, ICommonAuthEntityProperty
 {

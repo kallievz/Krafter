@@ -1,8 +1,9 @@
 using AditiKraft.Krafter.Backend.Common.Auth;
-using AditiKraft.Krafter.Backend.Features.Roles.Common;
+using AditiKraft.Krafter.Backend.Features.Roles.Entities;
 using AditiKraft.Krafter.Backend.Features.Tenants.Common;
+using AditiKraft.Krafter.Backend.Features.Tenants.Entities;
 using AditiKraft.Krafter.Backend.Features.Users;
-using AditiKraft.Krafter.Backend.Features.Users.Common;
+using AditiKraft.Krafter.Backend.Features.Users.Entities;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using AditiKraft.Krafter.Contracts.Contracts.Roles;
 using AditiKraft.Krafter.Contracts.Contracts.Users;

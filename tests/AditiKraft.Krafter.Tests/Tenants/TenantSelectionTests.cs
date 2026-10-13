@@ -1,6 +1,6 @@
 using AditiKraft.Krafter.Backend.Common.Auth;
 using AditiKraft.Krafter.Backend.Common.Tenants;
-using AditiKraft.Krafter.Backend.Features.Tenants.Common;
+using AditiKraft.Krafter.Backend.Features.Tenants.Entities;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence.Tenants;
 using AditiKraft.Krafter.Backend.Web.Middleware;

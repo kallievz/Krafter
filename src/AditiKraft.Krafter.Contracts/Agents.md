@@ -10,6 +10,8 @@
 - Use `default!` for non-nullable properties set by deserialization.
 - Use `CommonDtoProperty` for DTOs with audit fields.
 - Keep XML doc style consistent with the file (only add if the file already uses XML docs).
+- For integration domain contracts, split by entity (`<EntityName>Contracts.cs`) rather than combining multiple entities into one contracts file.
+- Keep `CreateOrUpdate...Request` and `...Dto` models aligned to the full entity data contract for that endpoint set (no partial request/DTO field sets unless explicitly documented).
 
 ## 2. Decision Tree
 - Request DTO: `Contracts/<Feature>/<Name>Request.cs` (validator in same file)

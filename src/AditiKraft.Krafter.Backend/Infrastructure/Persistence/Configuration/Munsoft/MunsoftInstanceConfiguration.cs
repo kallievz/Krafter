@@ -1,4 +1,4 @@
-using AditiKraft.Krafter.Backend.Features.Integrations.Common;
+using AditiKraft.Krafter.Backend.Features.Integrations.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

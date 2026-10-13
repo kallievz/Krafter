@@ -1,17 +1,15 @@
 using AditiKraft.Krafter.Backend.Common.Entities;
-using AditiKraft.Krafter.Backend.Features.Users.Common;
+using AditiKraft.Krafter.Backend.Features.Users.Entities;
 
-namespace AditiKraft.Krafter.Backend.Features.Localization.Common;
+namespace AditiKraft.Krafter.Backend.Features.Localization.Entities;
 
-public sealed class Language : IHistory
+public sealed class Resource : IHistory
 {
     public string Id { get; set; } = Guid.CreateVersion7().ToString();
 
-    public string Code { get; set; } = string.Empty; // e.g., "en"
-    public string Name { get; set; } = string.Empty; // e.g., "English"
-    public bool IsActive { get; set; }
+    public string Key { get; set; } = string.Empty; // e.g., "HomePage_Title"
+    public string Description { get; set; } = string.Empty;
     public List<ResourceTranslation> Translations { get; set; } = new();
-
     public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
     public ApplicationUser? CreatedBy { get; set; }
     public string? CreatedById { get; set; }

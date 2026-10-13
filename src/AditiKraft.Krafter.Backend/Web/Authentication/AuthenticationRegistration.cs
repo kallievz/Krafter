@@ -1,7 +1,8 @@
 using AditiKraft.Krafter.Backend.Common.Auth;
 using AditiKraft.Krafter.Backend.Features.Auth;
 using AditiKraft.Krafter.Backend.Features.Roles.Common;
-using AditiKraft.Krafter.Backend.Features.Users.Common;
+using AditiKraft.Krafter.Backend.Features.Roles.Entities;
+using AditiKraft.Krafter.Backend.Features.Users.Entities;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
 using AditiKraft.Krafter.Backend.Web.Authorization;
 using AditiKraft.Krafter.Backend.Web.Configuration;

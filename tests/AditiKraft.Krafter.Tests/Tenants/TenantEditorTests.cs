@@ -117,6 +117,7 @@ public sealed class TenantEditorTests
             registrations.AddSingleton<IJSRuntime, NoJavaScript>();
             registrations.AddSingleton<DialogService>();
             registrations.AddSingleton<NotificationService>();
+            registrations.AddSingleton<ILocalizer, TestLocalizer>();
             registrations.AddSingleton<ApiCallService>();
             registrations.AddSingleton<ITenantsApi>(Api);
             registrations.AddSingleton<CapturingActivator>();
@@ -165,6 +166,14 @@ public sealed class TenantEditorTests
             throw new NotSupportedException("Date conversion must not call JavaScript.");
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) =>
             InvokeAsync<TValue>(identifier, args);
+    }
+
+    private sealed class TestLocalizer : ILocalizer
+    {
+        public string? Get(string key, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
     }
 
     private sealed class TenantsApi : ITenantsApi

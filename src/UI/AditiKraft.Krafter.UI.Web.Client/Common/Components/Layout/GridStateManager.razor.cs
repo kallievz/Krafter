@@ -10,7 +10,7 @@ public partial class GridStateManager(
     DialogService dialogService) : ComponentBase
 {
     [Inject]
-    private Radzen.ILocalizer L { get; set; } = null!;
+    private ILocalizer L { get; set; } = null!;
     [Parameter] public string ComponentKey { get; set; } = string.Empty;
     [Parameter] public string CurrentStateJson { get; set; } = string.Empty;
     [Parameter] public EventCallback<string> OnApplyStateJson { get; set; }

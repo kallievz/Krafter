@@ -1,4 +1,4 @@
-using AditiKraft.Krafter.Backend.Features.Localization.Common;
+using AditiKraft.Krafter.Backend.Features.Localization.Entities;
 
 namespace AditiKraft.Krafter.Backend.Infrastructure.Persistence.Seeding;
 

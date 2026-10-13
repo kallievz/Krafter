@@ -24,10 +24,12 @@ public static class LocalizerExtensions
     /// <param name="fallbackValue">The fallback value if key not found</param>
     /// <param name="args">Optional format arguments. If null or empty, formatting is skipped.</param>
     /// <returns>Localized string (cached or from fallback), optionally formatted with args</returns>
-    public static string Localize(this Radzen.ILocalizer localizer, string key, string fallbackValue, params object?[]? args)
+    public static string Localize(this ILocalizer localizer, string key, string fallbackValue, params object?[]? args)
     {
         if (localizer is null)
+        { 
             return fallbackValue;
+        }
 
         string value;
         if (localizer is Localizer concreteLocalizer)

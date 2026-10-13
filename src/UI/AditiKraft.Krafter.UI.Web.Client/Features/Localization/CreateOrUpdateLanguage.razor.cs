@@ -7,8 +7,8 @@ public partial class CreateOrUpdateLanguage(
     ApiCallService api,
     ILocalizationApi localizationApi) : ComponentBase
 {
-    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
-
+    [Inject]
+    private ILocalizer L { get; set; } = null!;
     [Parameter] public LanguageDto LanguageInput { get; set; } = new();
 
     private CreateLanguageRequest _request = new();

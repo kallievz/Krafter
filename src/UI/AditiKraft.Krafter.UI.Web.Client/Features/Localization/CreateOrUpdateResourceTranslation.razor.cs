@@ -7,8 +7,8 @@ public partial class CreateOrUpdateResourceTranslation(
     ApiCallService api,
     ILocalizationApi localizationApi) : ComponentBase
 {
-    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
-
+    [Inject]
+    private ILocalizer L { get; set; } = null!;
     [Parameter] public ResourceTranslationDto ResourceTranslationInput { get; set; } = new();
 
     private CreateResourceTranslationRequest _request = new();

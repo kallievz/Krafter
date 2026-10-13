@@ -4,7 +4,6 @@ namespace AditiKraft.Krafter.UI.Web.Client.Common.Components.Layout;
 
 public partial class Notifications(SignalRService signalRService) : IDisposable
 {
-    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
     private readonly List<string> _messages = new();
     private RadzenButton _button = null!;
     private RadzenPopup _popup = null!;

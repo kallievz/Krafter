@@ -1,5 +1,5 @@
 using AditiKraft.Krafter.Backend.Common.Tenants;
-using AditiKraft.Krafter.Backend.Features.Roles.Common;
+using AditiKraft.Krafter.Backend.Features.Roles.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

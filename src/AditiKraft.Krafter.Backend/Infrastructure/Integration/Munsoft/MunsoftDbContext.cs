@@ -1,7 +1,7 @@
 using AditiKraft.Krafter.Backend.Common.Auth;
 using AditiKraft.Krafter.Backend.Common.Entities;
 using AditiKraft.Krafter.Backend.Common.Tenants;
-using AditiKraft.Krafter.Backend.Features.Integrations.Common;
+using AditiKraft.Krafter.Backend.Features.Integrations.Entities;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence.Configuration.Munsoft;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +15,24 @@ public class MunsoftDbContext(
     ITenantGetterService tenantGetterService) : DbContext(options)
 {
     public DbSet<MunsoftInstance> MunsoftInstances { get; set; }
+    public DbSet<MunsoftDebtor> MunsoftDebtors { get; set; }
+    public DbSet<MunsoftDebtorLog> MunsoftDebtorLogs { get; set; }
+    public DbSet<MunsoftAgeing> MunsoftAgeings { get; set; }
+    public DbSet<MunsoftAgeingLog> MunsoftAgeingLogs { get; set; }
+    public DbSet<MunsoftIndigent> MunsoftIndigents { get; set; }
+    public DbSet<MunsoftIndigentLog> MunsoftIndigentLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new MunsoftInstanceConfiguration());
+        modelBuilder.ApplyConfiguration(new MunsoftDebtorConfiguration());
+        modelBuilder.ApplyConfiguration(new MunsoftDebtorLogConfiguration());
+        modelBuilder.ApplyConfiguration(new MunsoftAgeingConfiguration());
+        modelBuilder.ApplyConfiguration(new MunsoftAgeingLogConfiguration());
+        modelBuilder.ApplyConfiguration(new MunsoftIndigentConfiguration());
+        modelBuilder.ApplyConfiguration(new MunsoftIndigentLogConfiguration());
     }
 
     public override int SaveChanges()
@@ -79,3 +91,4 @@ public class MunsoftDbContext(
         }
     }
 }
+

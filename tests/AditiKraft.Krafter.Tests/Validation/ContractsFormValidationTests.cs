@@ -136,6 +136,7 @@ public sealed class ContractsFormValidationTests
             registrations.AddSingleton<IJSRuntime, NoJavaScript>();
             registrations.AddSingleton<DialogService>();
             registrations.AddSingleton<NotificationService>();
+            registrations.AddSingleton<ILocalizer, TestLocalizer>();
             registrations.AddSingleton<ApiCallService>();
             registrations.AddSingleton(_ => new HttpClient(new NoApiRequests()) { BaseAddress = new Uri("https://localhost/") });
             registrations.AddSingleton(provider => RestService.For<IRolesApi>(provider.GetRequiredService<HttpClient>()));
@@ -196,6 +197,14 @@ public sealed class ContractsFormValidationTests
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
             throw new NotSupportedException("Client validation must not call the API.");
+    }
+
+    private sealed class TestLocalizer : ILocalizer
+    {
+        public string? Get(string key, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
     }
 }
 

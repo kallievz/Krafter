@@ -1,5 +1,6 @@
 using AditiKraft.Krafter.Backend.Common;
 using AditiKraft.Krafter.Backend.Features.Localization.Common;
+using AditiKraft.Krafter.Backend.Features.Localization.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

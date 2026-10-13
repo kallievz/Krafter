@@ -12,7 +12,7 @@ public partial class MunsoftInstances(
 ) : ComponentBase
 {
     [Inject]
-    private Radzen.ILocalizer L { get; set; } = null!;
+    private ILocalizer L { get; set; } = null!;
     public const string RoutePath = $"{ApiRoutes.Integrations}/munsoft";
 
     private readonly GetRequestInput _requestInput = new();

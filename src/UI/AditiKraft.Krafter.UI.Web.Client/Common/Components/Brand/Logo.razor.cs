@@ -2,7 +2,6 @@ namespace AditiKraft.Krafter.UI.Web.Client.Common.Components.Brand;
 
 public partial class Logo(ThemeManager themeManager) : IDisposable
 {
-    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
     [Parameter] public LogoSize Size { get; set; } = LogoSize.Medium;
 
     [Parameter] public LogoOrientation Orientation { get; set; } = LogoOrientation.Horizontal;

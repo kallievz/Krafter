@@ -12,6 +12,7 @@
 - Register authenticated backend APIs with both `RefitTenantHandler` and `RefitAuthHandler`.
 - Register BFF/auth endpoints and tenant-resolved internal endpoints that do not need auth forwarding with `RefitTenantHandler` only.
 - External APIs should not use tenant/auth handlers.
+- Keep integration API sections grouped by entity and expose full CRUD signatures per entity using the shared request/DTO contracts (no partial per-entity variants).
 - `TenantIdentifier` uses injected `AppUrls`. Browser feature calls use the exact shared `ApiBaseUrl` in split host and the current origin in single host. Resolve tenant UI hosts from `TenantBaseDomain`, with the root UI hostname as its fallback. Server calls use the resolved internal address. Both browser and server calls forward the tenant header. Read [Configure application URLs](../../../../../docs/url-configuration.md) before changing address selection or tenant subdomains.
 
 ## Date and time JSON

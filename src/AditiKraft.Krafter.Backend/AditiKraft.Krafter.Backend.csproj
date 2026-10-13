@@ -83,6 +83,7 @@
     <!-- Utilities -->
     <PackageReference Include="Handlebars.Net" />
     <PackageReference Include="Mapster" />
+    <PackageReference Include="Parquet.Net" />
     <PackageReference Include="prometheus-net.AspNetCore" />
   </ItemGroup>
 
@@ -113,7 +114,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructure\Integration\Munsoft\" />
     <Folder Include="Migrations\Munsoft\" />
     <Folder Include="Migrations\TenantDb\" />
   </ItemGroup>

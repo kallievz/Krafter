@@ -5,6 +5,8 @@
 - Always check for existence before inserting seed values.
 - Split explicit logger registration into a separate class and include assembly information in the logger setup.
 - When a build error occurs, fix the root cause, update relevant Agents.md guidance to capture the prevention rule, then proceed to avoid repeating the same error.
+- Use the `MunsoftDebtor` spelling (not `MusoftDebtor`) for the debtor entity, mapper, log, and related import types in the Munsoft integration workspace.
+- For integration CRUD and contracts in this repo, use one CRUD file per entity and include full non-partial attribute mappings in request/response/dto models; document this pattern in Agents.md guidance.
 
 ## UI Component Guidelines
 - For Radzen grid components, do not expose per-grid theme toggles; theme must be configured globally and reusable grids should respect global theme settings.

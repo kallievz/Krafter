@@ -11,8 +11,7 @@ public partial class Languages(
 ) : ComponentBase
 {
     [Inject]
-    private Radzen.ILocalizer L { get; set; } = null!;
-
+    private ILocalizer L { get; set; } = null!;
     public const string RoutePath = ApiRoutes.LocalizationLanguages;
 
     private bool _isLoading = true;

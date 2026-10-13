@@ -43,7 +43,7 @@
         <AuthorizeView>
             <Authorized>
                 <div style="padding: 0.5rem">
-                    <RadzenTextBox id="find" Placeholder="@L.Localize("Placeholder_SearchMenu", "Search Menu")" type="search" @oninput="@FilterPanelMenu" style="width: 100%" Class="rz-search-input" aria-label="find"/>
+                    <RadzenTextBox id="find" Placeholder="@L.Localize("Nav_SearchMenu", "Search Menu")" type="search" @oninput="@FilterPanelMenu" style="width: 100%" Class="rz-search-input" aria-label="find"/>
                 </div>
                 <div style="flex: 1; overflow: auto">
                     <RadzenPanelMenu>
@@ -121,15 +121,15 @@
 
 
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Gap="0.5rem" class="rz-mt-3">
-                <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.P" class="rz-m-0">@L.Localize("UI_ThemePreference", "Theme Preference")</RadzenText>
+                <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.P" class="rz-m-0">@L.Localize("Theme_ThemePreference", "Theme Preference")</RadzenText>
             </RadzenStack>
 
             <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Start" Gap="0.25rem" class="rz-mt-2">
                 <RadzenRadioButtonList @bind-Value="themePreference" TValue="ThemeManager.ThemePreference">
                     <Items>
-                        <RadzenRadioButtonListItem Text="@L.Localize("UI_ThemeAuto", "Auto (System)")" Value="ThemeManager.ThemePreference.Auto"/>
-                        <RadzenRadioButtonListItem Text="@L.Localize("UI_ThemeLight", "Light")" Value="ThemeManager.ThemePreference.Light"/>
-                        <RadzenRadioButtonListItem Text="@L.Localize("UI_ThemeDark", "Dark")" Value="ThemeManager.ThemePreference.Dark"/>
+                        <RadzenRadioButtonListItem Text="@L.Localize("Theme_ThemeAuto", "Auto (System)")" Value="ThemeManager.ThemePreference.Auto"/>
+                        <RadzenRadioButtonListItem Text="@L.Localize("Theme_ThemeLight", "Light")" Value="ThemeManager.ThemePreference.Light"/>
+                        <RadzenRadioButtonListItem Text="@L.Localize("Theme_ThemeDark", "Dark")" Value="ThemeManager.ThemePreference.Dark"/>
                     </Items>
                 </RadzenRadioButtonList>
             </RadzenStack>

@@ -14,7 +14,7 @@ public partial class Login(
 ) : ComponentBase
 {
     [Inject]
-    private Radzen.ILocalizer L { get; set; } = null!;
+    private ILocalizer L { get; set; } = null!;
     [CascadingParameter] public Task<AuthenticationState> AuthState { get; set; } = default!;
 
     [SupplyParameterFromQuery(Name = "ReturnUrl")]

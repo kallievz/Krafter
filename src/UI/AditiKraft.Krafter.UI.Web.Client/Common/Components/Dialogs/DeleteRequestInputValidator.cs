@@ -5,7 +5,7 @@ namespace AditiKraft.Krafter.UI.Web.Client.Common.Components.Dialogs;
 
 public class DeleteRequestInputValidator : AbstractValidator<DeleteRequestInput>
 {
-    public DeleteRequestInputValidator(Radzen.ILocalizer localizer)
+    public DeleteRequestInputValidator(ILocalizer localizer)
     {
         RuleFor(x => x.DeleteReason)
             .NotEmpty().WithMessage(localizer.Localize("Notification_DeleteReason", "Delete Reason is required"))

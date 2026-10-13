@@ -1,8 +1,8 @@
 using AditiKraft.Krafter.Backend.Common.Entities;
-using AditiKraft.Krafter.Backend.Features.Roles.Common;
+using AditiKraft.Krafter.Backend.Features.Roles.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace AditiKraft.Krafter.Backend.Features.Users.Common;
+namespace AditiKraft.Krafter.Backend.Features.Users.Entities;
 
 public class ApplicationUserRole : IdentityUserRole<string>, ICommonAuthEntityProperty
 {

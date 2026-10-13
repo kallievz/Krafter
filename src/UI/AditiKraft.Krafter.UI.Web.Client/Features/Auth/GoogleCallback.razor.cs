@@ -10,7 +10,8 @@ public partial class GoogleCallback(IAuthenticationService authenticationService
     , NavigationManager navigationManager)
     : ComponentBase
 {
-    [Inject] private Radzen.ILocalizer L { get; set; } = null!;
+    [Inject]
+    private ILocalizer L { get; set; } = null!;
     protected override async Task OnInitializedAsync()
     {
         Uri uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);

@@ -1,7 +1,7 @@
 using AditiKraft.Krafter.Backend.Common.Auth;
 using AditiKraft.Krafter.Backend.Common.Entities;
 using AditiKraft.Krafter.Backend.Common.Tenants;
-using AditiKraft.Krafter.Backend.Features.Localization.Common;
+using AditiKraft.Krafter.Backend.Features.Localization.Entities;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence.Configuration.Localization;
 using AditiKraft.Krafter.Contracts.Common.Models;
 using Microsoft.EntityFrameworkCore;

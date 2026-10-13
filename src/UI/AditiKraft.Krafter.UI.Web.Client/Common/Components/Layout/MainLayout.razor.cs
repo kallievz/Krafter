@@ -29,7 +29,7 @@ public partial class MainLayout(
 ) : IDisposable
 {
     [Inject]
-    private Radzen.ILocalizer L { get; set; } = null!;
+    private ILocalizer L { get; set; } = null!;
 
     [CascadingParameter]
     public bool IsMobileDevice { get; set; }

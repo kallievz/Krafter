@@ -1,6 +1,6 @@
 using AditiKraft.Krafter.Backend.Common.Auth;
 using AditiKraft.Krafter.Backend.Common.Tenants;
-using AditiKraft.Krafter.Backend.Features.Localization.Common;
+using AditiKraft.Krafter.Backend.Features.Localization.Entities;
 using AditiKraft.Krafter.Backend.Infrastructure.Localization;
 using AditiKraft.Krafter.Backend.Web;
 using AditiKraft.Krafter.Contracts.Common;

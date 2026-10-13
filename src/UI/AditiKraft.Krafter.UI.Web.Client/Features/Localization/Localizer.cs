@@ -9,7 +9,7 @@ namespace AditiKraft.Krafter.UI.Web.Client.Features.Localization;
 /// Uses a local cache to enable synchronous @L(key, fallback) syntax.
 /// Supports inline fire-and-forget background auto-seeding when keys are missing.
 /// </summary>
-public class Localizer : Radzen.ILocalizer
+public class Localizer : ILocalizer
 {
     private readonly ILocalizationService _service;
     private readonly ConcurrentDictionary<string, string> _cache = new();

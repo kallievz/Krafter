@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using AditiKraft.Krafter.Backend.Features.Localization.Common;
+using AditiKraft.Krafter.Backend.Features.Localization.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 

@@ -169,6 +169,22 @@ internal sealed class OllamaLocalizationTranslator(IOptions<LocalizationOllamaOp
             value = value.Replace("```", string.Empty, StringComparison.Ordinal).Trim();
         }
 
+        if (value.StartsWith("\"", StringComparison.Ordinal))
+        {
+            int firstNewLineIndex = value.IndexOf('\n', StringComparison.Ordinal);
+            if (firstNewLineIndex >= 0)
+            {
+                value = value[(firstNewLineIndex + 1)..];
+            }
+
+            if (value.EndsWith("\"", StringComparison.Ordinal))
+            {
+                value = value[..^1];
+            }
+
+            value = value.Replace("\"", string.Empty, StringComparison.Ordinal).Trim();
+        }
+
         if (value.StartsWith('`') && value.EndsWith('`') && value.Length > 1)
         {
             value = value[1..^1].Trim();

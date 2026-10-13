@@ -1,5 +1,6 @@
 using AditiKraft.Krafter.Backend.Common;
 using AditiKraft.Krafter.Backend.Features.Tenants.Common;
+using AditiKraft.Krafter.Backend.Features.Users.Entities;
 using AditiKraft.Krafter.Backend.Infrastructure.Persistence;
 using AditiKraft.Krafter.Backend.Web.Configuration;
 using Microsoft.AspNetCore.Identity;

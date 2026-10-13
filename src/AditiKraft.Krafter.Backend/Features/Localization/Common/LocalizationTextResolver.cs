@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Globalization;
 using AditiKraft.Krafter.Backend.Common;
+using AditiKraft.Krafter.Backend.Features.Localization.Entities;
 using AditiKraft.Krafter.Backend.Infrastructure.Jobs;
 using AditiKraft.Krafter.Backend.Infrastructure.Localization;
 using AditiKraft.Krafter.Contracts.Contracts.Localization;

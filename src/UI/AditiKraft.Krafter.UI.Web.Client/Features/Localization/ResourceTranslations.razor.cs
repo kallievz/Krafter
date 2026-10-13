@@ -12,7 +12,6 @@ public partial class ResourceTranslations(
 {
     [Inject]
     private Radzen.ILocalizer L { get; set; } = null!;
-
     public const string RoutePath = ApiRoutes.LocalizationResourceTranslations;
 
     private bool _isLoading = true;
